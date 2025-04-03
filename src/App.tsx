@@ -8,6 +8,9 @@ const App: React.FC = () => {
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
   const [showSlideshow, setShowSlideshow] = useState(false);
   const [showEraserAnimation, setShowEraserAnimation] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [overlayAnimation, setOverlayAnimation] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
   const clickStart = useRef<{ x: number; y: number } | null>(null);
@@ -49,30 +52,135 @@ const App: React.FC = () => {
     height: '230px',
   });
 
-  // Add eraser animation
-  const eraserAnimation = {
-    position: 'absolute' as React.CSSProperties['position'],
-    zIndex: 20 as React.CSSProperties['zIndex'],
-    animation: 'eraserArc 3.2s linear',
-    backgroundColor: 'transparent',
-    border: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    opacity: 1,
-    transform: 'rotate(-90deg)',
-    transformOrigin: 'center',
-    willChange: 'transform',
+  // Projector slideshow state
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [isSlideshowLoading, setIsSlideshowLoading] = useState(false);
+  const [projectorSlides, setProjectorSlides] = useState<string[]>([]);
+
+  // Projector button position
+  const projectorButtonPosition = {
+    x: 1053 - (130 / 2), // 1053 is the center, subtract half the width
+    y: 5458 - (90 / 2), // 5458 is the center, subtract half the height
+    width: 130,
+    height: 90,
   };
 
-  // Add slideshow state
+  // Slideshow container position
+  const slideshowContainerPosition = {
+    x1: 912,
+    y1: 5128,
+    x2: 1258,
+    y2: 5290,
+  };
+
+  // Load slides from public/slides directory
+  useEffect(() => {
+    const loadSlides = async () => {
+      try {
+        const response = await fetch('/slides/manifest.json');
+        if (response.ok) {
+          const manifest = await response.json();
+          setProjectorSlides(manifest.slides);
+        }
+      } catch (error) {
+        console.error('Error loading slides:', error);
+      }
+    };
+    loadSlides();
+  }, []);
+
+  // Projector button style
+  const projectorButtonStyle: React.CSSProperties = {
+    position: 'absolute' as React.CSSProperties['position'],
+    top: `${projectorButtonPosition.y / imageHeight * 100}%` as React.CSSProperties['top'],
+    left: `${projectorButtonPosition.x / imageWidth * 100}%` as React.CSSProperties['left'],
+    width: `${projectorButtonPosition.width}px` as React.CSSProperties['width'],
+    height: `${projectorButtonPosition.height}px` as React.CSSProperties['height'],
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: '50%' as React.CSSProperties['borderRadius'],
+    display: 'flex' as React.CSSProperties['display'],
+    alignItems: 'center' as React.CSSProperties['alignItems'],
+    justifyContent: 'center' as React.CSSProperties['justifyContent'],
+    cursor: 'pointer' as React.CSSProperties['cursor'],
+    zIndex: 14 as React.CSSProperties['zIndex'],
+    border: '2px solid #000' as React.CSSProperties['border'],
+    opacity: 0.8 as React.CSSProperties['opacity'],
+    transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
+    pointerEvents: isSlideshowLoading ? 'none' : 'auto',
+  };
+
+  // Projector slideshow container style
+  const projectorContainerStyle: React.CSSProperties = {
+    position: 'absolute' as React.CSSProperties['position'],
+    top: `${slideshowContainerPosition.y1 / imageHeight * 100}%` as React.CSSProperties['top'],
+    left: `${slideshowContainerPosition.x1 / imageWidth * 100}%` as React.CSSProperties['left'],
+    width: `${slideshowContainerPosition.x2 - slideshowContainerPosition.x1}px` as React.CSSProperties['width'],
+    height: `${slideshowContainerPosition.y2 - slideshowContainerPosition.y1}px` as React.CSSProperties['height'],
+    backgroundColor: 'white',
+    borderRadius: '8px' as React.CSSProperties['borderRadius'],
+    display: 'flex' as React.CSSProperties['display'],
+    flexDirection: 'column' as React.CSSProperties['flexDirection'],
+    alignItems: 'center' as React.CSSProperties['alignItems'],
+    justifyContent: 'center' as React.CSSProperties['justifyContent'],
+    zIndex: 13 as React.CSSProperties['zIndex'],
+    overflow: 'hidden',
+  };
+
+  // Projector slide style
+  const projectorSlideStyle: React.CSSProperties = {
+    width: '100%' as React.CSSProperties['width'],
+    height: '100%' as React.CSSProperties['height'],
+    transition: 'transform 0.5s ease-in-out' as React.CSSProperties['transition'],
+    position: 'absolute' as React.CSSProperties['position'],
+    top: 0 as React.CSSProperties['top'],
+    left: 0 as React.CSSProperties['left'],
+    opacity: 0 as React.CSSProperties['opacity'],
+    transform: 'translateX(100%)' as React.CSSProperties['transform'],
+  };
+
+  // Handle projector slide change
+  const handleProjectorSlideChange = () => {
+    if (isSlideshowLoading) return;
+
+    setIsSlideshowLoading(true);
+    
+    // Play sound effect
+    const audio = new Audio('/Website Projector Slide Change Sound Effect 🔉📽 _ HQ 4.mp3');
+    audio.play().catch(console.error);
+
+    // Update current slide
+    const nextIndex = (currentSlideIndex + 1) % projectorSlides.length;
+    setCurrentSlideIndex(nextIndex);
+
+    // Reset loading state after animation
+    setTimeout(() => {
+      setIsSlideshowLoading(false);
+    }, 500);
+  };
+
+  // Get slide transform
+  const getSlideTransform = (index: number) => {
+    if (index === currentSlideIndex) {
+      return {
+        opacity: 1,
+        transform: 'translateX(0)',
+      };
+    }
+    return {
+      opacity: 0,
+      transform: 'translateX(100%)',
+    };
+  };
+
+  // Original slideshow state
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slides, setSlides] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Handle slide change
-  const handleSlideChange = (direction: 'left' | 'right') => {
+  // Handle original slide change
+  const handleOriginalSlideChange = (direction: 'left' | 'right') => {
     if (isLoading) return;
+
     setIsLoading(true);
     
     const newSlide = direction === 'left'
@@ -81,6 +189,141 @@ const App: React.FC = () => {
 
     setCurrentSlide(newSlide);
     setTimeout(() => setIsLoading(false), 500);
+  };
+
+  // Slideshow slide style
+  const slideshowSlideStyle: React.CSSProperties = {
+    width: '100%' as React.CSSProperties['width'],
+    height: '100%' as React.CSSProperties['height'],
+    transition: 'transform 0.5s ease-in-out' as React.CSSProperties['transition'],
+    position: 'absolute' as React.CSSProperties['position'],
+    top: 0 as React.CSSProperties['top'],
+    left: 0 as React.CSSProperties['left'],
+    opacity: 0 as React.CSSProperties['opacity'],
+    transform: 'translateX(100%)' as React.CSSProperties['transform'],
+  };
+
+  // Hoverable items data
+  const hoverableItems = [
+    { text: 'Impact', x: 975, y: 951, width: 100, height: 150 },
+    { text: 'ICAD', x: 952, y: 736, width: 80, height: 120 },
+    { text: 'Sharks', x: 990, y: 510, width: 220, height: 170, rotation: 6 },
+    { text: 'APMCs', x: 1177, y: 490, width: 100, height: 100 },
+    { text: 'Spiders', x: 1381, y: 530, width: 135, height: 150 },
+    { text: 'DMAs', x: 1401, y: 714, width: 135, height: 150 },
+    { text: 'IAAs', x: 1354, y: 932, width: 155, height: 90, rotation: -6 },
+  ];
+
+  // Text box position
+  const hoverTextBoxPosition = {
+    x1: 1137,
+    y1: 643,
+    x2: 1214,
+    y2: 765,
+  };
+
+  // Hover item style
+  const getHoverItemStyle = (item: { x: number; y: number; width: number; height: number; rotation?: number }) => {
+    const style: React.CSSProperties = {
+      position: 'absolute' as React.CSSProperties['position'],
+      top: `${(item.y - item.height / 2) / imageHeight * 100}%` as React.CSSProperties['top'],
+      left: `${(item.x - item.width / 2) / imageWidth * 100}%` as React.CSSProperties['left'],
+      width: `${item.width}px` as React.CSSProperties['width'],
+      height: `${item.height}px` as React.CSSProperties['height'],
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      borderRadius: '50px' as React.CSSProperties['borderRadius'],
+      display: 'flex' as React.CSSProperties['display'],
+      alignItems: 'center' as React.CSSProperties['alignItems'],
+      justifyContent: 'center' as React.CSSProperties['justifyContent'],
+      cursor: 'pointer' as React.CSSProperties['cursor'],
+      zIndex: 12 as React.CSSProperties['zIndex'],
+      transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
+      opacity: 0.8 as React.CSSProperties['opacity'],
+      border: '2px solid #000' as React.CSSProperties['border'],
+      fontFamily: 'WhiteboardFont' as React.CSSProperties['fontFamily'],
+      fontSize: '14px' as React.CSSProperties['fontSize'],
+    };
+
+    if (item.rotation) {
+      style.transform = `rotate(${item.rotation}deg)` as React.CSSProperties['transform'];
+    }
+
+    return style;
+  };
+
+  // Hover text box style
+  const hoverTextBoxStyle: React.CSSProperties = {
+    position: 'absolute' as React.CSSProperties['position'],
+    top: `${hoverTextBoxPosition.y1 / imageHeight * 100}%` as React.CSSProperties['top'],
+    left: `${hoverTextBoxPosition.x1 / imageWidth * 100}%` as React.CSSProperties['left'],
+    width: `${hoverTextBoxPosition.x2 - hoverTextBoxPosition.x1}px` as React.CSSProperties['width'],
+    height: `${hoverTextBoxPosition.y2 - hoverTextBoxPosition.y1}px` as React.CSSProperties['height'],
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    padding: '8px' as React.CSSProperties['padding'],
+    borderRadius: '4px' as React.CSSProperties['borderRadius'],
+    zIndex: 13 as React.CSSProperties['zIndex'],
+    pointerEvents: 'none' as React.CSSProperties['pointerEvents'],
+    display: 'flex' as React.CSSProperties['display'],
+    alignItems: 'center' as React.CSSProperties['alignItems'],
+    justifyContent: 'center' as React.CSSProperties['justifyContent'],
+    fontFamily: 'WhiteboardFont' as React.CSSProperties['fontFamily'],
+    fontSize: '16px' as React.CSSProperties['fontSize'],
+  };
+
+  // Handle hover
+  const handleHover = (text: string) => {
+    setHoveredItem(text);
+  };
+
+  const handleHoverLeave = () => {
+    setHoveredItem(null);
+  };
+
+  // Play sound effect
+  const playSound = () => {
+    const audio = new Audio('/A Stone Thrown In Water _ Sound Effects _ Water Sounds _ Human Sounds 4.mp3');
+    audio.play().catch(console.error);
+  };
+
+  // Handle button click with overlay animation
+  const handleBrandClick = (brand: string) => {
+    playSound();
+    setSelectedBrand(brand);
+    setShowSlideshow(true);
+    setShowOverlay(true);
+    
+    // Start animation after delay
+    setTimeout(() => {
+      setOverlayAnimation(true);
+      
+      // Hide overlay after animation completes
+      setTimeout(() => {
+        setShowOverlay(false);
+        setOverlayAnimation(false);
+      }, 1000);
+    }, 1000);
+
+    if (!showEraserAnimation) {
+      setShowEraserAnimation(true);
+      
+      // Set initial position
+      setEraserPosition({
+        top: `${850 / 5992 * 100}%`,
+        left: `${5500 / 8472 * 100}%`,
+        width: '667px',
+        height: '230px',
+      });
+
+      // Remove animation after completion
+      setTimeout(() => {
+        setShowEraserAnimation(false);
+      }, 3200);
+    }
+
+    // Load slides for the selected brand
+    const brandSlides = brandContent[brand]?.slides || [];
+    setSlides(brandSlides);
+    setCurrentSlide(0);
   };
 
   // Navigation button style
@@ -112,15 +355,13 @@ const App: React.FC = () => {
     left: `${textBoxPosition.x / imageWidth * 100}%` as React.CSSProperties['left'],
     width: `${textBoxPosition.width}px` as React.CSSProperties['width'],
     height: `${textBoxPosition.height}px` as React.CSSProperties['height'],
-    backgroundColor: 'rgba(255, 255, 255, 0.95)' as React.CSSProperties['backgroundColor'],
+    backgroundColor: 'white',
     padding: '16px' as React.CSSProperties['padding'],
     borderRadius: '8px' as React.CSSProperties['borderRadius'],
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' as React.CSSProperties['boxShadow'],
     zIndex: 10 as React.CSSProperties['zIndex'],
     display: 'flex' as React.CSSProperties['display'],
     alignItems: 'center' as React.CSSProperties['alignItems'],
     justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    overflow: 'auto' as React.CSSProperties['overflow'],
   };
 
   // Slideshow container style
@@ -130,9 +371,8 @@ const App: React.FC = () => {
     left: `${slideshowPosition.x / imageWidth * 100}%` as React.CSSProperties['left'],
     width: `${slideshowPosition.width}px` as React.CSSProperties['width'],
     height: `${slideshowPosition.height}px` as React.CSSProperties['height'],
-    backgroundColor: 'rgba(255, 255, 255, 0.95)' as React.CSSProperties['backgroundColor'],
+    backgroundColor: 'white',
     borderRadius: '8px' as React.CSSProperties['borderRadius'],
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' as React.CSSProperties['boxShadow'],
     display: 'flex' as React.CSSProperties['display'],
     flexDirection: 'column' as React.CSSProperties['flexDirection'],
     alignItems: 'center' as React.CSSProperties['alignItems'],
@@ -147,32 +387,30 @@ const App: React.FC = () => {
     overflow: 'hidden' as React.CSSProperties['overflow'],
   };
 
-  // Handle brand click with hover effect
-  const handleBrandClick = (brand: string) => {
-    playSound();
-    setSelectedBrand(brand);
-    setShowSlideshow(true);
-    if (!showEraserAnimation) {
-      setShowEraserAnimation(true);
-      
-      // Set initial position
-      setEraserPosition({
-        top: `${850 / 5992 * 100}%`,
-        left: `${5500 / 8472 * 100}%`,
-        width: '667px',
-        height: '230px',
-      });
+  // Overlay style
+  const overlayStyle: React.CSSProperties = {
+    position: 'absolute' as React.CSSProperties['position'],
+    top: `${slideshowPosition.y / imageHeight * 100}%` as React.CSSProperties['top'],
+    left: `${slideshowPosition.x / imageWidth * 100}%` as React.CSSProperties['left'],
+    width: `${slideshowPosition.width}px` as React.CSSProperties['width'],
+    height: `${slideshowPosition.height}px` as React.CSSProperties['height'],
+    backgroundColor: 'transparent',
+    border: 'none',
+    overflow: 'hidden',
+    zIndex: 11 as React.CSSProperties['zIndex'],
+    pointerEvents: 'none',
+    clipPath: overlayAnimation ? 'inset(0 0 0 100%)' : 'inset(0 0 0 0)',
+    transition: `clip-path 1s ease-in-out`,
+  };
 
-      // Remove animation after completion
-      setTimeout(() => {
-        setShowEraserAnimation(false);
-      }, 3200);
-    }
-
-    // Load slides for the selected brand
-    const brandSlides = brandContent[brand]?.slides || [];
-    setSlides(brandSlides);
-    setCurrentSlide(0);
+  // Overlay image style
+  const overlayImageStyle: React.CSSProperties = {
+    position: 'absolute' as React.CSSProperties['position'],
+    top: 0,
+    left: 0,
+    width: '100%' as React.CSSProperties['width'],
+    height: '100%' as React.CSSProperties['height'],
+    objectFit: 'cover' as React.CSSProperties['objectFit'],
   };
 
   // Brand text content
@@ -208,70 +446,6 @@ const App: React.FC = () => {
       slides: ['/images/headstuff-slide-1.jpg', '/images/headstuff-slide-2.jpg'],
     },
   };
-
-  // Add the keyframes to the document
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes eraserArc {
-        0% { 
-          top: ${850 / 5992 * 100}%; 
-          left: ${5500 / 8472 * 100}%; 
-          transform: translate(-50%, -50%) rotate(-90deg);
-        }
-        25% { 
-          top: ${970 / 5992 * 100}%; 
-          left: ${7080 / 8472 * 100}%; 
-          transform: translate(-50%, -50%) rotate(-90deg);
-        }
-        31.25% { 
-          top: ${890 / 5992 * 100}%; 
-          left: ${7130 / 8472 * 100}%; 
-          transform: translate(-50%, -50%) rotate(-90deg);
-        }
-        37.5% { 
-          top: ${1050 / 5992 * 100}%; 
-          left: ${7230 / 8472 * 100}%; 
-          transform: translate(-50%, -50%) rotate(-90deg);
-        }
-        43.75% { 
-          top: ${890 / 5992 * 100}%; 
-          left: ${7330 / 8472 * 100}%; 
-          transform: translate(-50%, -50%) rotate(-90deg);
-        }
-        50% { 
-          top: ${1050 / 5992 * 100}%; 
-          left: ${7430 / 8472 * 100}%; 
-          transform: translate(-50%, -50%) rotate(-90deg);
-        }
-        56.25% { 
-          top: ${890 / 5992 * 100}%; 
-          left: ${7530 / 8472 * 100}%; 
-          transform: translate(-50%, -50%) rotate(-90deg);
-        }
-        62.5% { 
-          top: ${1050 / 5992 * 100}%; 
-          left: ${7630 / 8472 * 100}%; 
-          transform: translate(-50%, -50%) rotate(-90deg);
-        }
-        75% { 
-          top: ${970 / 5992 * 100}%; 
-          left: ${7680 / 8472 * 100}%; 
-          transform: translate(-50%, -50%) rotate(-90deg);
-        }
-        100% { 
-          top: ${970 / 5992 * 100}%; 
-          left: ${8600 / 8472 * 100}%; 
-          transform: translate(-50%, -50%) rotate(-90deg);
-        }
-      }
-    `;
-    document.head.appendChild(style);
-
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
 
   // Move to a specific point and center it on screen
   const moveTo = (x: number, y: number) => {
@@ -417,10 +591,262 @@ const App: React.FC = () => {
     opacity: 0.8 as React.CSSProperties['opacity'],
   });
 
-  // Play sound effect
-  const playSound = () => {
-    const audio = new Audio('/A Stone Thrown In Water _ Sound Effects _ Water Sounds _ Human Sounds 4.mp3');
+  // Add eraser animation
+  const eraserAnimation = {
+    position: 'absolute' as React.CSSProperties['position'],
+    zIndex: 20 as React.CSSProperties['zIndex'],
+    animation: 'eraserArc 3.2s linear',
+    backgroundColor: 'transparent',
+    border: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 1,
+    transform: 'rotate(-90deg)',
+    transformOrigin: 'center',
+    willChange: 'transform',
+  };
+
+  // Add the keyframes to the document
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes eraserArc {
+        0% { 
+          top: ${850 / 5992 * 100}%; 
+          left: ${5500 / 8472 * 100}%; 
+          transform: translate(-50%, -50%) rotate(-90deg);
+        }
+        25% { 
+          top: ${970 / 5992 * 100}%; 
+          left: ${7080 / 8472 * 100}%; 
+          transform: translate(-50%, -50%) rotate(-90deg);
+        }
+        31.25% { 
+          top: ${890 / 5992 * 100}%; 
+          left: ${7130 / 8472 * 100}%; 
+          transform: translate(-50%, -50%) rotate(-90deg);
+        }
+        37.5% { 
+          top: ${1050 / 5992 * 100}%; 
+          left: ${7230 / 8472 * 100}%; 
+          transform: translate(-50%, -50%) rotate(-90deg);
+        }
+        43.75% { 
+          top: ${890 / 5992 * 100}%; 
+          left: ${7330 / 8472 * 100}%; 
+          transform: translate(-50%, -50%) rotate(-90deg);
+        }
+        50% { 
+          top: ${1050 / 5992 * 100}%; 
+          left: ${7430 / 8472 * 100}%; 
+          transform: translate(-50%, -50%) rotate(-90deg);
+        }
+        56.25% { 
+          top: ${890 / 5992 * 100}%; 
+          left: ${7530 / 8472 * 100}%; 
+          transform: translate(-50%, -50%) rotate(-90deg);
+        }
+        62.5% { 
+          top: ${1050 / 5992 * 100}%; 
+          left: ${7630 / 8472 * 100}%; 
+          transform: translate(-50%, -50%) rotate(-90deg);
+        }
+        75% { 
+          top: ${970 / 5992 * 100}%; 
+          left: ${7680 / 8472 * 100}%; 
+          transform: translate(-50%, -50%) rotate(-90deg);
+        }
+        100% { 
+          top: ${970 / 5992 * 100}%; 
+          left: ${8600 / 8472 * 100}%; 
+          transform: translate(-50%, -50%) rotate(-90deg);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
+  // Eraser animation styles
+  const eraserImageStyle: React.CSSProperties = {
+    width: '100%' as React.CSSProperties['width'],
+    height: '100%' as React.CSSProperties['height'],
+    objectFit: 'contain' as React.CSSProperties['objectFit'],
+  };
+
+  // Contact form state
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  // Contact form box coordinates
+  const contactFormBoxes = {
+    name: {
+      x1: 7323,
+      y1: 4893,
+      x2: 7439,
+      y2: 4913,
+      x3: 7318,
+      y3: 4920,
+      x4: 7433,
+      y4: 4940,
+    },
+    email: {
+      x1: 7469,
+      y1: 4918,
+      x2: 7576,
+      y2: 4935,
+      x3: 7464,
+      y3: 4944,
+      x4: 7572,
+      y4: 4962,
+    },
+    message: {
+      x1: 7316,
+      y1: 4946,
+      x2: 7566,
+      y2: 4982,
+      x3: 7275,
+      y3: 5202,
+      x4: 7512,
+      y4: 5261,
+    },
+  };
+
+  // Send button position
+  const sendButtonPosition = {
+    x: 6710 - (230 / 2), // 6710 is the center, subtract half the width
+    y: 5083 - (187 / 2), // 5083 is the center, subtract half the height
+    width: 230,
+    height: 187,
+  };
+
+  // Get box style with skew
+  const getSkewedBoxStyle = (box: { x1: number; y1: number; x2: number; y2: number; x3: number; y3: number; x4: number; y4: number }) => {
+    const width = box.x2 - box.x1;
+    const height = box.y2 - box.y1;
+    
+    // Calculate skew angles
+    const angle1 = Math.atan2(box.y2 - box.y1, box.x2 - box.x1) * (180 / Math.PI);
+    const angle2 = Math.atan2(box.y4 - box.y3, box.x4 - box.x3) * (180 / Math.PI);
+
+    return {
+      position: 'absolute' as React.CSSProperties['position'],
+      top: `${box.y1 / imageHeight * 100}%` as React.CSSProperties['top'],
+      left: `${box.x1 / imageWidth * 100}%` as React.CSSProperties['left'],
+      width: `${width}px` as React.CSSProperties['width'],
+      height: `${height}px` as React.CSSProperties['height'],
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      border: '2px solid #000' as React.CSSProperties['border'],
+      zIndex: 15 as React.CSSProperties['zIndex'],
+      transform: `skew(${angle1}deg, ${angle2}deg)` as React.CSSProperties['transform'],
+      fontFamily: 'WhiteboardFont' as React.CSSProperties['fontFamily'],
+      fontSize: '14px' as React.CSSProperties['fontSize'],
+      padding: '8px' as React.CSSProperties['padding'],
+      display: showSuccessMessage ? 'none' : 'block',
+      boxSizing: 'border-box' as React.CSSProperties['boxSizing'],
+      cursor: 'text' as React.CSSProperties['cursor'],
+    };
+  };
+
+  // Input field styles
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    border: 'none',
+    background: 'transparent',
+    outline: 'none',
+    fontSize: '14px',
+    fontFamily: 'WhiteboardFont',
+    color: '#000',
+    padding: '8px',
+    boxSizing: 'border-box',
+    transform: 'skew(-10deg, -10deg)', // Counter-skew to match the container
+    resize: 'none' as React.CSSProperties['resize'],
+  };
+
+  // Handle form input changes
+  const handleInputChange = (field: keyof typeof contactForm) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const newForm = { ...contactForm, [field]: event.target.value };
+    setContactForm(newForm);
+    validateForm(newForm);
+  };
+
+  // Validate form
+  const validateForm = (form: typeof contactForm) => {
+    const isValid = form.name.trim() !== '' && 
+                   form.email.trim() !== '' && 
+                   form.message.trim() !== '';
+    setIsFormValid(isValid);
+  };
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    if (!isFormValid || isSending) return;
+
+    setIsSending(true);
+    
+    // Play sound effect
+    const audio = new Audio('/Website Crow Sound Effect 4.mp3');
     audio.play().catch(console.error);
+
+    // Simulate form submission
+    try {
+      // In a real application, you would send this data to your backend
+      console.log('Form submitted:', contactForm);
+      setShowSuccessMessage(true);
+      setContactForm({ name: '', email: '', message: '' });
+      setIsFormValid(false);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  // Success message style
+  const successMessageStyle = {
+    position: 'absolute' as React.CSSProperties['position'],
+    top: `${contactFormBoxes.message.y1 / imageHeight * 100}%` as React.CSSProperties['top'],
+    left: `${contactFormBoxes.message.x1 / imageWidth * 100}%` as React.CSSProperties['left'],
+    width: `${contactFormBoxes.message.x2 - contactFormBoxes.message.x1}px` as React.CSSProperties['width'],
+    height: `${contactFormBoxes.message.y2 - contactFormBoxes.message.y1}px` as React.CSSProperties['height'],
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    border: '2px solid #000' as React.CSSProperties['border'],
+    zIndex: 15 as React.CSSProperties['zIndex'],
+    fontFamily: 'WhiteboardFont' as React.CSSProperties['fontFamily'],
+    fontSize: '14px' as React.CSSProperties['fontSize'],
+    padding: '8px' as React.CSSProperties['padding'],
+    display: showSuccessMessage ? 'block' : 'none',
+  };
+
+  // Send button style
+  const sendButtonStyle: React.CSSProperties = {
+    position: 'absolute' as React.CSSProperties['position'],
+    top: `${sendButtonPosition.y / imageHeight * 100}%` as React.CSSProperties['top'],
+    left: `${sendButtonPosition.x / imageWidth * 100}%` as React.CSSProperties['left'],
+    width: `${sendButtonPosition.width}px` as React.CSSProperties['width'],
+    height: `${sendButtonPosition.height}px` as React.CSSProperties['height'],
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: '50%' as React.CSSProperties['borderRadius'],
+    alignItems: 'center' as React.CSSProperties['alignItems'],
+    justifyContent: 'center' as React.CSSProperties['justifyContent'],
+    cursor: 'pointer' as React.CSSProperties['cursor'],
+    zIndex: 16 as React.CSSProperties['zIndex'],
+    border: '2px solid #000' as React.CSSProperties['border'],
+    opacity: 0.8 as React.CSSProperties['opacity'],
+    transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
+    pointerEvents: isSending || !isFormValid ? 'none' : 'auto',
+    display: showSuccessMessage ? 'none' : 'flex',
   };
 
   return (
@@ -477,7 +903,37 @@ const App: React.FC = () => {
               )}
             </div>
 
-            {/* Slideshow */}
+            {/* Projector Slideshow */}
+            <button
+              onClick={handleProjectorSlideChange}
+              style={projectorButtonStyle}
+            >
+              Projector
+            </button>
+
+            <div style={projectorContainerStyle}>
+              {projectorSlides.map((slide, index) => (
+                <div
+                  key={index}
+                  style={{
+                    ...projectorSlideStyle,
+                    ...getSlideTransform(index),
+                  }}
+                >
+                  <img
+                    src={slide}
+                    alt="Slide"
+                    style={{
+                      width: '100%' as React.CSSProperties['width'],
+                      height: '100%' as React.CSSProperties['height'],
+                      objectFit: 'cover' as React.CSSProperties['objectFit'],
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Original Slideshow */}
             {showSlideshow && (
               <>
                 <div style={slideshowContainerStyle}>
@@ -493,7 +949,7 @@ const App: React.FC = () => {
                     />
                   </div>
                   <button
-                    onClick={() => handleSlideChange('left')}
+                    onClick={() => handleOriginalSlideChange('left')}
                     style={{
                       ...navBtnStyle,
                       left: '10px' as React.CSSProperties['left'],
@@ -502,7 +958,7 @@ const App: React.FC = () => {
                     {'<'}
                   </button>
                   <button
-                    onClick={() => handleSlideChange('right')}
+                    onClick={() => handleOriginalSlideChange('right')}
                     style={{
                       ...navBtnStyle,
                       right: '10px' as React.CSSProperties['right'],
@@ -511,6 +967,15 @@ const App: React.FC = () => {
                     {'>'}
                   </button>
                 </div>
+                {showOverlay && (
+                  <div style={overlayStyle}>
+                    <img
+                      src="/images/Slideshow Overlay.png"
+                      alt="Overlay"
+                      style={overlayImageStyle}
+                    />
+                  </div>
+                )}
               </>
             )}
 
@@ -590,7 +1055,23 @@ const App: React.FC = () => {
                 {brand.text}
               </button>
             ))}
-
+            {/* Hoverable Items */}
+            {hoverableItems.map((item, index) => (
+              <button
+                key={index}
+                onMouseOver={() => handleHover(item.text)}
+                onMouseLeave={handleHoverLeave}
+                style={getHoverItemStyle(item)}
+              >
+                {item.text}
+              </button>
+            ))}
+            {/* Hover Text Box */}
+            {hoveredItem && (
+              <div style={hoverTextBoxStyle}>
+                <p>{hoveredItem}</p>
+              </div>
+            )}
             {/* Eraser Animation */}
             {showEraserAnimation && (
               <div
@@ -605,12 +1086,46 @@ const App: React.FC = () => {
                 <img
                   src="/images/eraser.png"
                   alt="Eraser"
-                  style={{
-                    width: '100%' as React.CSSProperties['width'],
-                    height: '100%' as React.CSSProperties['height'],
-                    objectFit: 'contain' as React.CSSProperties['objectFit'],
-                  }}
+                  style={eraserImageStyle}
                 />
+              </div>
+            )}
+            {/* Contact Form */}
+            <div style={getSkewedBoxStyle(contactFormBoxes.name)}>
+              <input
+                type="text"
+                value={contactForm.name}
+                onChange={handleInputChange('name')}
+                placeholder="Name"
+                style={inputStyle}
+              />
+            </div>
+            <div style={getSkewedBoxStyle(contactFormBoxes.email)}>
+              <input
+                type="email"
+                value={contactForm.email}
+                onChange={handleInputChange('email')}
+                placeholder="Email"
+                style={inputStyle}
+              />
+            </div>
+            <div style={getSkewedBoxStyle(contactFormBoxes.message)}>
+              <textarea
+                value={contactForm.message}
+                onChange={handleInputChange('message')}
+                placeholder="Message"
+                style={inputStyle}
+              />
+            </div>
+            <button
+              onClick={handleSubmit}
+              style={sendButtonStyle}
+            >
+              Send
+            </button>
+            {showSuccessMessage && (
+              <div style={successMessageStyle}>
+                <p>Thank you for your message!</p>
               </div>
             )}
           </div>
