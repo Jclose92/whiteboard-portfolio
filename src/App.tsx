@@ -687,6 +687,7 @@ const App: React.FC = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Contact form container style
   const contactFormStyle: React.CSSProperties = {
@@ -773,6 +774,7 @@ const App: React.FC = () => {
       setShowSuccessMessage(true);
       setContactForm({ name: '', email: '', message: '' });
       setIsFormValid(false);
+      setIsSubmitted(true);
     } catch (error) {
       console.error('Error submitting form:', error);
     } finally {
@@ -785,21 +787,32 @@ const App: React.FC = () => {
     position: 'absolute' as React.CSSProperties['position'],
     top: `${4893 / imageHeight * 100}%` as React.CSSProperties['top'],
     left: `${7323 / imageWidth * 100}%` as React.CSSProperties['left'],
-    width: '200px',
+    width: '250px',
     height: '300px',
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    backgroundColor: 'transparent',
     padding: '20px',
     borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    boxShadow: 'none',
     zIndex: 15,
     pointerEvents: 'auto',
     display: 'flex',
     flexDirection: 'column',
     gap: '10px',
-    fontFamily: 'Helvetica Neue, Arial, sans-serif',
+    fontFamily: 'WhiteboardFont',
     boxSizing: 'border-box' as React.CSSProperties['boxSizing'],
     cursor: 'text',
-    border: '1px solid #ddd',
+    border: 'none',
+    transform: 'rotate(10deg)',
+  };
+
+  // Success message text style
+  const successMessageTextStyle: React.CSSProperties = {
+    fontSize: '30px',
+    color: '#333',
+    textAlign: 'center' as React.CSSProperties['textAlign'],
+    fontFamily: 'WhiteboardFont',
+    margin: 'auto',
+    lineHeight: '1.5',
   };
 
   // Send button style
@@ -807,10 +820,10 @@ const App: React.FC = () => {
     position: 'absolute',
     top: `${5083 / imageHeight * 100}%`,
     left: `${6710 / imageWidth * 100}%`,
-    width: '230px',
-    height: '187px',
+    width: '260px',
+    height: '217px',
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: '50%',
+    borderRadius: '8px',
     alignItems: 'center',
     justifyContent: 'center',
     cursor: 'pointer',
@@ -821,6 +834,7 @@ const App: React.FC = () => {
     pointerEvents: 'auto',
     transform: 'translate(-50%, -50%)',
     fontFamily: 'WhiteboardFont',
+    display: 'flex',
   };
 
   return (
@@ -1067,42 +1081,48 @@ const App: React.FC = () => {
             )}
             {/* Contact Form */}
             <div style={contactFormStyle}>
-              <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={contactForm.name}
-                onChange={handleInputChange('name')}
-                onFocus={(e) => e.target.select()}
-                style={inputStyle}
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={contactForm.email}
-                onChange={handleInputChange('email')}
-                onFocus={(e) => e.target.select()}
-                style={inputStyle}
-              />
-              <textarea
-                name="message"
-                placeholder="Message"
-                value={contactForm.message}
-                onChange={handleInputChange('message')}
-                onFocus={(e) => e.target.select()}
-                style={textareaStyle}
-              />
+              {isSubmitted ? null : (
+                <>
+                  <input
+                    type="text"
+                    name="name"
+                    value={contactForm.name}
+                    onChange={handleInputChange('name')}
+                    placeholder="Name"
+                    style={inputStyle}
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    value={contactForm.email}
+                    onChange={handleInputChange('email')}
+                    placeholder="Email"
+                    style={inputStyle}
+                  />
+                  <textarea
+                    name="message"
+                    value={contactForm.message}
+                    onChange={handleInputChange('message')}
+                    placeholder="Message"
+                    style={textareaStyle}
+                  />
+                </>
+              )}
             </div>
-            <button
-              onClick={handleSubmit}
-              style={sendButtonStyle}
-            >
-              Send
-            </button>
+            {isSubmitted ? null : (
+              <button
+                onClick={handleSubmit}
+                style={sendButtonStyle}
+              >
+                Send
+              </button>
+            )}
             {showSuccessMessage && (
               <div style={successMessageStyle}>
-                <p>Thank you for your message!</p>
+                <p style={successMessageTextStyle}>
+                  Thank You!<br/>
+                  The Raven Will Deliver Your Message.
+                </p>
               </div>
             )}
           </div>
