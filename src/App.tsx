@@ -688,90 +688,57 @@ const App: React.FC = () => {
   const [isSending, setIsSending] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-  // Contact form box coordinates
-  const contactFormBoxes = {
-    name: {
-      x1: 7323,
-      y1: 4893,
-      x2: 7439,
-      y2: 4913,
-      x3: 7318,
-      y3: 4920,
-      x4: 7433,
-      y4: 4940,
-    },
-    email: {
-      x1: 7469,
-      y1: 4918,
-      x2: 7576,
-      y2: 4935,
-      x3: 7464,
-      y3: 4944,
-      x4: 7572,
-      y4: 4962,
-    },
-    message: {
-      x1: 7316,
-      y1: 4946,
-      x2: 7566,
-      y2: 4982,
-      x3: 7275,
-      y3: 5202,
-      x4: 7512,
-      y4: 5261,
-    },
+  // Contact form container style
+  const contactFormStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: `${4893 / imageHeight * 100}%`,
+    left: `${7275 / imageWidth * 100}%`,
+    width: '300px',
+    height: '450px',
+    backgroundColor: 'transparent',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: 'none',
+    zIndex: 15,
+    pointerEvents: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    fontFamily: 'WhiteboardFont',
+    boxSizing: 'border-box' as React.CSSProperties['boxSizing'],
+    cursor: 'text',
+    border: 'none',
+    transform: 'rotate(4deg)',
   };
 
-  // Send button position
-  const sendButtonPosition = {
-    x: 6710 - (230 / 2), // 6710 is the center, subtract half the width
-    y: 5083 - (187 / 2), // 5083 is the center, subtract half the height
-    width: 230,
-    height: 187,
-  };
-
-  // Get box style with skew
-  const getSkewedBoxStyle = (box: { x1: number; y1: number; x2: number; y2: number; x3: number; y3: number; x4: number; y4: number }) => {
-    const width = box.x2 - box.x1;
-    const height = box.y2 - box.y1;
-    
-    // Calculate skew angles
-    const angle1 = Math.atan2(box.y2 - box.y1, box.x2 - box.x1) * (180 / Math.PI);
-    const angle2 = Math.atan2(box.y4 - box.y3, box.x4 - box.x3) * (180 / Math.PI);
-
-    return {
-      position: 'absolute' as React.CSSProperties['position'],
-      top: `${box.y1 / imageHeight * 100}%` as React.CSSProperties['top'],
-      left: `${box.x1 / imageWidth * 100}%` as React.CSSProperties['left'],
-      width: `${width}px` as React.CSSProperties['width'],
-      height: `${height}px` as React.CSSProperties['height'],
-      backgroundColor: 'rgba(255, 255, 255, 0.95)',
-      border: '2px solid #000' as React.CSSProperties['border'],
-      zIndex: 15 as React.CSSProperties['zIndex'],
-      transform: `skew(${angle1}deg, ${angle2}deg)` as React.CSSProperties['transform'],
-      fontFamily: 'WhiteboardFont' as React.CSSProperties['fontFamily'],
-      fontSize: '14px' as React.CSSProperties['fontSize'],
-      padding: '8px' as React.CSSProperties['padding'],
-      display: showSuccessMessage ? 'none' : 'block',
-      boxSizing: 'border-box' as React.CSSProperties['boxSizing'],
-      cursor: 'text' as React.CSSProperties['cursor'],
-    };
-  };
-
-  // Input field styles
+  // Input field style
   const inputStyle: React.CSSProperties = {
     width: '100%',
-    height: '100%',
-    border: 'none',
-    background: 'transparent',
-    outline: 'none',
-    fontSize: '14px',
-    fontFamily: 'WhiteboardFont',
-    color: '#000',
     padding: '8px',
-    boxSizing: 'border-box',
-    transform: 'skew(-10deg, -10deg)', // Counter-skew to match the container
-    resize: 'none' as React.CSSProperties['resize'],
+    borderRadius: '4px',
+    border: 'none',
+    fontSize: '20px',
+    color: '#333',
+    background: 'transparent',
+    WebkitUserSelect: 'text',
+    MozUserSelect: 'text',
+    msUserSelect: 'text',
+    userSelect: 'text',
+    pointerEvents: 'auto',
+    touchAction: 'none',
+    outline: 'none',
+    transition: 'border-color 0.3s ease',
+    fontFamily: 'WhiteboardFont',
+    transform: 'rotate(4deg)',
+  };
+
+  // Textarea style
+  const textareaStyle: React.CSSProperties = {
+    ...inputStyle,
+    height: '230px',
+    resize: 'none',
+    overflow: 'auto',
+    transform: 'translate(-20px, 10px) rotate(8deg)',
   };
 
   // Handle form input changes
@@ -814,39 +781,46 @@ const App: React.FC = () => {
   };
 
   // Success message style
-  const successMessageStyle = {
+  const successMessageStyle: React.CSSProperties = {
     position: 'absolute' as React.CSSProperties['position'],
-    top: `${contactFormBoxes.message.y1 / imageHeight * 100}%` as React.CSSProperties['top'],
-    left: `${contactFormBoxes.message.x1 / imageWidth * 100}%` as React.CSSProperties['left'],
-    width: `${contactFormBoxes.message.x2 - contactFormBoxes.message.x1}px` as React.CSSProperties['width'],
-    height: `${contactFormBoxes.message.y2 - contactFormBoxes.message.y1}px` as React.CSSProperties['height'],
+    top: `${4893 / imageHeight * 100}%` as React.CSSProperties['top'],
+    left: `${7323 / imageWidth * 100}%` as React.CSSProperties['left'],
+    width: '200px',
+    height: '300px',
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    border: '2px solid #000' as React.CSSProperties['border'],
-    zIndex: 15 as React.CSSProperties['zIndex'],
-    fontFamily: 'WhiteboardFont' as React.CSSProperties['fontFamily'],
-    fontSize: '14px' as React.CSSProperties['fontSize'],
-    padding: '8px' as React.CSSProperties['padding'],
-    display: showSuccessMessage ? 'block' : 'none',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    zIndex: 15,
+    pointerEvents: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    fontFamily: 'Helvetica Neue, Arial, sans-serif',
+    boxSizing: 'border-box' as React.CSSProperties['boxSizing'],
+    cursor: 'text',
+    border: '1px solid #ddd',
   };
 
   // Send button style
   const sendButtonStyle: React.CSSProperties = {
-    position: 'absolute' as React.CSSProperties['position'],
-    top: `${sendButtonPosition.y / imageHeight * 100}%` as React.CSSProperties['top'],
-    left: `${sendButtonPosition.x / imageWidth * 100}%` as React.CSSProperties['left'],
-    width: `${sendButtonPosition.width}px` as React.CSSProperties['width'],
-    height: `${sendButtonPosition.height}px` as React.CSSProperties['height'],
+    position: 'absolute',
+    top: `${5083 / imageHeight * 100}%`,
+    left: `${6710 / imageWidth * 100}%`,
+    width: '230px',
+    height: '187px',
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: '50%' as React.CSSProperties['borderRadius'],
-    alignItems: 'center' as React.CSSProperties['alignItems'],
-    justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    cursor: 'pointer' as React.CSSProperties['cursor'],
-    zIndex: 16 as React.CSSProperties['zIndex'],
-    border: '2px solid #000' as React.CSSProperties['border'],
-    opacity: 0.8 as React.CSSProperties['opacity'],
-    transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
-    pointerEvents: isSending || !isFormValid ? 'none' : 'auto',
-    display: showSuccessMessage ? 'none' : 'flex',
+    borderRadius: '50%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    border: 'none',
+    outline: 'none',
+    transition: 'background-color 0.3s ease',
+    zIndex: 15,
+    pointerEvents: 'auto',
+    transform: 'translate(-50%, -50%)',
+    fontFamily: 'WhiteboardFont',
   };
 
   return (
@@ -869,6 +843,7 @@ const App: React.FC = () => {
           disabled: false,
           velocityDisabled: true,
           allowLeftClickPan: true,
+          excluded: ['input', 'textarea', 'button']
         }}
         doubleClick={{ disabled: true }}
         pinch={{ disabled: true }}
@@ -1091,30 +1066,32 @@ const App: React.FC = () => {
               </div>
             )}
             {/* Contact Form */}
-            <div style={getSkewedBoxStyle(contactFormBoxes.name)}>
+            <div style={contactFormStyle}>
               <input
                 type="text"
+                name="name"
+                placeholder="Name"
                 value={contactForm.name}
                 onChange={handleInputChange('name')}
-                placeholder="Name"
+                onFocus={(e) => e.target.select()}
                 style={inputStyle}
               />
-            </div>
-            <div style={getSkewedBoxStyle(contactFormBoxes.email)}>
               <input
                 type="email"
+                name="email"
+                placeholder="Email"
                 value={contactForm.email}
                 onChange={handleInputChange('email')}
-                placeholder="Email"
+                onFocus={(e) => e.target.select()}
                 style={inputStyle}
               />
-            </div>
-            <div style={getSkewedBoxStyle(contactFormBoxes.message)}>
               <textarea
+                name="message"
+                placeholder="Message"
                 value={contactForm.message}
                 onChange={handleInputChange('message')}
-                placeholder="Message"
-                style={inputStyle}
+                onFocus={(e) => e.target.select()}
+                style={textareaStyle}
               />
             </div>
             <button
