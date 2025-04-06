@@ -920,31 +920,29 @@ const App: React.FC = () => {
 
   // Text box positions
   const textBoxes = [
-    { name: 'About', x: 1062, y: 1047 },
-    { name: 'Telescope', x: 1491, y: 1149 },
-    { name: 'Turn Back', x: 2190, y: 4593 },
-    { name: 'Comedy Section', x: 1248, y: 5412 },
-    { name: 'Work Sign', x: 7266, y: 1386 },
-    { name: 'Zoom Wizard', x: 4545, y: 5145 }
+    { name: 'About', x: 1052, y: 1057, width: 265, height: 174, rotation: 0 },
+    { name: 'Telescope', x: 1459, y: 1156, width: 80, height: 33, rotation: 40 },
+    { name: 'Turn Back', x: 2190, y: 4573, width: 120, height: 45, rotation: -17 },
+    { name: 'Comedy Section', x: 1240, y: 5407, width: 155, height: 80, rotation: 0 },
+    { name: 'Work Sign', x: 7252, y: 1372, width: 156, height: 82, rotation: 0 },
+    { name: 'Zoom Wizard', x: 4535, y: 5131, width: 90, height: 80, rotation: 0 }
   ];
 
   // Text box style
   const textBoxStyle2: React.CSSProperties = {
     position: 'absolute',
-    width: '30px',
-    height: '30px',
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    border: '1px solid rgba(0, 0, 0, 0.3)',
-    borderRadius: '4px',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)', // More transparent
+    border: 'none',
+    boxShadow: 'none',
     fontFamily: 'WhiteboardFont',
-    fontSize: '12px',
     color: '#000000',
     pointerEvents: 'none',
     zIndex: 10,
     display: 'flex',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    padding: '2px 4px'
+    padding: '2px 4px',
+    cursor: 'default'
   };
 
   return (
@@ -1185,8 +1183,16 @@ const App: React.FC = () => {
                 key={box.name}
                 style={{
                   ...textBoxStyle2,
+                  width: `${box.width}px`,
+                  height: `${box.height}px`,
                   top: `${box.y / imageHeight * 100}%`,
                   left: `${box.x / imageWidth * 100}%`,
+                  transform: `rotate(${box.rotation}deg)`,
+                  fontSize: box.name === 'Telescope' || box.name === 'Work Sign' || box.name === 'Zoom Wizard' 
+                    ? '18px' 
+                    : box.name === 'Turn Back' 
+                      ? '24px' 
+                      : '24px'
                 }}
               >
                 {box.name}
