@@ -339,7 +339,7 @@ const App: React.FC = () => {
       // Remove animation after completion
       setTimeout(() => {
         setShowEraserAnimation(false);
-      }, 3200);
+      }, 3500); // Increased from 3200 to 3500ms
     }
 
     // Load slides for the selected brand
