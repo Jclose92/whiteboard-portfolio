@@ -37,18 +37,18 @@ const App: React.FC = () => {
     height: 200,
   };
 
-  const hoverTextBoxPosition = {
-    x1: 1119, // New position
-    y1: 610, // New position
-    x2: 1239, // Width reduced by 30px (1244 - 1124 = 120px)
-    y2: 793, // Height reduced by 30px (768 - 623 = 145px)
-  };
-
   const slideshowPosition = {
     x: 7200 + 100 - 30, // Move right by 70px
     y: 924 + 50 - 30, // Move down by 20px
     width: 400 + 240, // Make 240px wider
     height: 300 + 60, // Make 60px taller
+  };
+
+  const hoverTextBoxPosition = {
+    x1: 1119, // New position
+    y1: 610, // New position
+    x2: 1239, // Width reduced by 30px (1244 - 1124 = 120px)
+    y2: 793, // Height reduced by 30px (768 - 623 = 145px)
   };
 
   // Calculate percentage positions for hover areas
@@ -86,8 +86,8 @@ const App: React.FC = () => {
 
   // Add eraser animation state
   const [eraserPosition, setEraserPosition] = useState({
-    top: `${((850 + 50 - 30) + 130) / 5992 * 100}%`, // Move down by 130px total
-    left: `${(5500 + 100 - 30) / 8472 * 100}%`, // Move right by 70px
+    top: `${850 / 5992 * 100}%`,
+    left: `${5500 / 8472 * 100}%`,
     width: '667px',
     height: '230px',
   });
@@ -322,7 +322,7 @@ const App: React.FC = () => {
       setTimeout(() => {
         setShowOverlay(false);
         setOverlayAnimation(false);
-      }, 1680); // Match the animation duration
+      }, 2100); // Match the animation duration
     }, 1000);
 
     if (!showEraserAnimation) {
@@ -330,8 +330,8 @@ const App: React.FC = () => {
       
       // Set initial position
       setEraserPosition({
-        top: `${((850 + 50 - 30) + 130) / 5992 * 100}%`, // Move down by 130px total
-        left: `${(5500 + 100 - 30) / 8472 * 100}%`,
+        top: `${850 / 5992 * 100}%`,
+        left: `${5500 / 8472 * 100}%`,
         width: '667px',
         height: '230px',
       });
@@ -431,7 +431,7 @@ const App: React.FC = () => {
     overflow: 'hidden' as React.CSSProperties['overflow'],
   };
 
-  // Overlay style
+  // Slideshow overlay style
   const overlayStyle: React.CSSProperties = {
     position: 'absolute' as React.CSSProperties['position'],
     top: `${slideshowPosition.y / imageHeight * 100}%` as React.CSSProperties['top'],
@@ -444,7 +444,7 @@ const App: React.FC = () => {
     zIndex: 11 as React.CSSProperties['zIndex'],
     pointerEvents: 'none',
     clipPath: overlayAnimation ? 'inset(0 0 0 100%)' : 'inset(0 0 0 0)',
-    transition: `clip-path 1.68s ease-in-out`,
+    transition: `clip-path 1.89s ease-in-out`,
   };
 
   // Overlay image style
@@ -456,6 +456,33 @@ const App: React.FC = () => {
     height: '100%' as React.CSSProperties['height'],
     objectFit: 'cover' as React.CSSProperties['objectFit'],
   };
+
+  // Add the keyframes to the document
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes overlaySlide {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
+  // Render the overlay
+  const renderOverlay = () => (
+    <div style={overlayStyle}>
+      <img
+        src="/images/Slideshow Overlay.png"
+        alt="Overlay"
+        style={overlayImageStyle}
+      />
+    </div>
+  );
 
   // Brand text content
   const brandContent: Record<string, { title: string; description: string; slides: string[] }> = {
@@ -601,53 +628,53 @@ const App: React.FC = () => {
     style.textContent = `
       @keyframes eraserArc {
         0% { 
-          top: ${((850 + 50 - 30) + 130) / 5992 * 100}%; 
-          left: ${(5500 + 100 - 30) / 8472 * 100}%; 
+          top: ${850 / 5992 * 100}%; 
+          left: ${5500 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         25% { 
-          top: ${((970 + 50 - 30) + 130) / 5992 * 100}%; 
-          left: ${(7080 + 100 - 30) / 8472 * 100}%; 
+          top: ${(970 + 120) / 5992 * 100}%; 
+          left: ${7080 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         31.25% { 
-          top: ${((890 + 50 - 30) + 130) / 5992 * 100}%; 
-          left: ${(7130 + 100 - 30) / 8472 * 100}%; 
+          top: ${(890 + 120) / 5992 * 100}%; 
+          left: ${7130 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         37.5% { 
-          top: ${((1050 + 50 - 30) + 130) / 5992 * 100}%; 
-          left: ${(7230 + 100 - 30) / 8472 * 100}%; 
+          top: ${(1050 + 120) / 5992 * 100}%; 
+          left: ${7230 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         43.75% { 
-          top: ${((890 + 50 - 30) + 130) / 5992 * 100}%; 
-          left: ${(7330 + 100 - 30) / 8472 * 100}%; 
+          top: ${(890 + 120) / 5992 * 100}%; 
+          left: ${7330 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         50% { 
-          top: ${((1050 + 50 - 30) + 130) / 5992 * 100}%; 
-          left: ${(7430 + 100 - 30) / 8472 * 100}%; 
+          top: ${(1050 + 120) / 5992 * 100}%; 
+          left: ${7430 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         56.25% { 
-          top: ${((890 + 50 - 30) + 130) / 5992 * 100}%; 
-          left: ${(7530 + 100 - 30) / 8472 * 100}%; 
+          top: ${(890 + 120) / 5992 * 100}%; 
+          left: ${7530 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         62.5% { 
-          top: ${((1050 + 50 - 30) + 130) / 5992 * 100}%; 
-          left: ${(7630 + 100 - 30) / 8472 * 100}%; 
+          top: ${(1050 + 120) / 5992 * 100}%; 
+          left: ${7630 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         75% { 
-          top: ${((970 + 50 - 30) + 130) / 5992 * 100}%; 
-          left: ${(7680 + 100 - 30) / 8472 * 100}%; 
+          top: ${(970 + 120) / 5992 * 100}%; 
+          left: ${7680 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         100% { 
-          top: ${((970 + 50 - 30) + 130) / 5992 * 100}%; 
-          left: ${(8600 + 100 - 30) / 8472 * 100}%; 
+          top: ${(970 + 120) / 5992 * 100}%; 
+          left: ${8600 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
       }
@@ -825,84 +852,12 @@ const App: React.FC = () => {
     display: 'flex',
   };
 
-  // Raven overlay style
-  const ravenOverlayStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
+  // Send button image style
+  const sendButtonImageStyle: React.CSSProperties = {
     width: '100%',
     height: '100%',
-    zIndex: 16,
-    pointerEvents: 'none',
-  };
-
-  // Add raven textbox overlay state
-  const [showRavenOverlay, setShowRavenOverlay] = useState(false);
-
-  // Raven textbox position
-  const ravenTextBoxPosition = {
-    x: 4859,
-    y: 6813,
-    width: 250,
-    height: 100,
-  };
-
-  // Raven textbox overlay style
-  const ravenTextBoxStyle: React.CSSProperties = {
-    position: 'absolute' as React.CSSProperties['position'],
-    top: `${ravenTextBoxPosition.y / imageHeight * 100}%`,
-    left: `${ravenTextBoxPosition.x / imageWidth * 100}%`,
-    width: `${ravenTextBoxPosition.width}px`,
-    height: `${ravenTextBoxPosition.height}px`,
-    zIndex: 10 as React.CSSProperties['zIndex'],
-    pointerEvents: 'auto',
-    display: showRavenOverlay ? 'block' : 'none',
-    backgroundColor: 'transparent',
-    boxShadow: 'none',
-  };
-
-  // Text box style
-  const ravenTextBoxContentStyle: React.CSSProperties = {
-    position: 'absolute' as React.CSSProperties['position'],
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    color: 'white',
-    fontFamily: 'Whiteboard',
-    fontSize: '24px',
-    textAlign: 'center',
-    width: '90%',
-    lineHeight: '1.5',
-    backgroundColor: 'transparent',
-    boxShadow: 'none',
-  };
-
-  // Render the raven textbox overlay
-  const renderRavenTextBox = () => (
-    <div style={ravenTextBoxStyle}>
-      <div style={ravenTextBoxContentStyle}>
-        When you've written your message, click on me.
-      </div>
-      <img
-        src="/images/raventextbox.png"
-        alt="Raven Text Box"
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'contain',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 1,
-        }}
-      />
-    </div>
-  );
-
-  // Handle send button click
-  const handleSendClick = () => {
-    setShowRavenOverlay(false);
-    // Add your form submission logic here
+    objectFit: 'contain',
+    display: 'block',
   };
 
   return (
@@ -1024,15 +979,7 @@ const App: React.FC = () => {
                     {'>'}
                   </button>
                 </div>
-                {showOverlay && (
-                  <div style={overlayStyle}>
-                    <img
-                      src="/images/Slideshow Overlay.png"
-                      alt="Overlay"
-                      style={overlayImageStyle}
-                    />
-                  </div>
-                )}
+                {showOverlay && renderOverlay()}
               </>
             )}
 
@@ -1175,22 +1122,15 @@ const App: React.FC = () => {
                 </>
               )}
             </div>
-            {showRavenOverlay && renderRavenTextBox()}
             <button
-              onClick={handleSendClick}
+              onClick={handleSubmit}
               style={sendButtonStyle}
             >
-              <div style={ravenOverlayStyle}>
-                <img
-                  src="/RavenOverlay.png"
-                  alt="Raven"
-                  style={{
-                    width: '100%' as React.CSSProperties['width'],
-                    height: '100%' as React.CSSProperties['height'],
-                    objectFit: 'contain' as React.CSSProperties['objectFit'],
-                  }}
-                />
-              </div>
+              <img
+                src="ravenoverlay.png"
+                alt="Send"
+                style={sendButtonImageStyle}
+              />
             </button>
             {showSuccessMessage && (
               <div style={successMessageStyle}>
