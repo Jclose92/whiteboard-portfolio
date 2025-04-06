@@ -11,6 +11,7 @@ const App: React.FC = () => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [overlayAnimation, setOverlayAnimation] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [hasPlayedAnimations, setHasPlayedAnimations] = useState(false);
 
   const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
   const clickStart = useRef<{ x: number; y: number } | null>(null);
@@ -311,21 +312,27 @@ const App: React.FC = () => {
   const handleBrandClick = (brand: string) => {
     playSound();
     setSelectedBrand(brand);
-    setShowSlideshow(true);
-    setShowOverlay(true);
     
-    // Start animation after delay
-    setTimeout(() => {
-      setOverlayAnimation(true);
+    // Only show overlay if it hasn't been shown before
+    if (!hasPlayedAnimations) {
+      setShowSlideshow(true);
+      setShowOverlay(true);
       
-      // Hide overlay after animation completes
+      // Only set hasPlayedAnimations to true if it hasn't been set before
+      setHasPlayedAnimations(true);
+      
+      // Start overlay animation
       setTimeout(() => {
-        setShowOverlay(false);
-        setOverlayAnimation(false);
-      }, 2100); // Match the animation duration
-    }, 1000);
+        setOverlayAnimation(true);
+        
+        // Hide overlay after animation completes
+        setTimeout(() => {
+          setShowOverlay(false);
+          setOverlayAnimation(false);
+        }, 2100);
+      }, 1000);
 
-    if (!showEraserAnimation) {
+      // Show eraser animation
       setShowEraserAnimation(true);
       
       // Set initial position
@@ -339,7 +346,10 @@ const App: React.FC = () => {
       // Remove animation after completion
       setTimeout(() => {
         setShowEraserAnimation(false);
-      }, 3500); // Increased from 3200 to 3500ms
+      }, 3700);
+    } else {
+      // For subsequent clicks, just show the slideshow without the overlay
+      setShowSlideshow(true);
     }
 
     // Load slides for the selected brand
