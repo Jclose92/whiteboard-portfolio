@@ -37,11 +37,51 @@ const App: React.FC = () => {
     height: 200,
   };
 
+  const hoverTextBoxPosition = {
+    x1: 1119, // New position
+    y1: 610, // New position
+    x2: 1239, // Width reduced by 30px (1244 - 1124 = 120px)
+    y2: 793, // Height reduced by 30px (768 - 623 = 145px)
+  };
+
   const slideshowPosition = {
     x: 7200,
     y: 924,
     width: 400,
     height: 300,
+  };
+
+  // Calculate percentage positions for hover areas
+  const hoverAreas = [
+    { text: 'Spiders', x: 1381, y: 520, width: 135, height: 150 }, // 10px higher
+    { text: 'ICAD', x: 952, y: 736, width: 90, height: 120 }, // 10px wider
+    { text: 'Sharks', x: 990, y: 510, width: 220, height: 170, rotation: 6 },
+    { text: 'APMCs', x: 1177, y: 490, width: 100, height: 100 },
+    { text: 'DMAs', x: 1401, y: 714, width: 135, height: 150 },
+    { text: 'IAAs', x: 1354, y: 932, width: 170, height: 95, rotation: -6 },
+    { text: 'Impact', x: 975, y: 951, width: 100, height: 165 }, // 15px taller
+  ];
+
+  // Hoverable items data
+  const hoverableItems = [
+    { text: 'Spiders', x: 1381, y: 520, width: 135, height: 150 },
+    { text: 'ICAD', x: 952, y: 736, width: 90, height: 120 },
+    { text: 'Sharks', x: 990, y: 510, width: 220, height: 170, rotation: 6 },
+    { text: 'APMCs', x: 1177, y: 490, width: 100, height: 100 },
+    { text: 'DMAs', x: 1401, y: 714, width: 135, height: 150 },
+    { text: 'IAAs', x: 1354, y: 932, width: 170, height: 95, rotation: -6 },
+    { text: 'Impact', x: 975, y: 951, width: 100, height: 165 },
+  ];
+
+  // Hover text content
+  const hoverTextContent = {
+    Spiders: 'Spiders are an important part of our ecosystem, helping to control pest populations.',
+    ICAD: 'ICAD (International Conference on Animal Diversity) is a leading event in the field.',
+    Sharks: 'Sharks play a crucial role in maintaining marine ecosystem balance.',
+    APMCs: 'APMCs (Animal Population Management Centers) are dedicated to wildlife conservation.',
+    DMAs: 'DMAs (Digital Media Analytics) track and analyze animal behavior patterns.',
+    IAAs: 'IAAs (International Animal Awards) celebrate outstanding contributions to animal welfare.',
+    Impact: 'Impact Awards recognize significant achievements in animal conservation and research.',
   };
 
   // Add eraser animation state
@@ -96,17 +136,14 @@ const App: React.FC = () => {
     left: `${projectorButtonPosition.x / imageWidth * 100}%` as React.CSSProperties['left'],
     width: `${projectorButtonPosition.width}px` as React.CSSProperties['width'],
     height: `${projectorButtonPosition.height}px` as React.CSSProperties['height'],
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: '50%' as React.CSSProperties['borderRadius'],
+    backgroundColor: 'transparent',
+    border: 'none' as React.CSSProperties['border'],
+    color: 'transparent',
+    cursor: 'pointer' as React.CSSProperties['cursor'],
     display: 'flex' as React.CSSProperties['display'],
     alignItems: 'center' as React.CSSProperties['alignItems'],
     justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    cursor: 'pointer' as React.CSSProperties['cursor'],
-    zIndex: 14 as React.CSSProperties['zIndex'],
-    border: '2px solid #000' as React.CSSProperties['border'],
-    opacity: 0.8 as React.CSSProperties['opacity'],
-    transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
-    pointerEvents: isSlideshowLoading ? 'none' : 'auto',
+    opacity: 0,
   };
 
   // Projector slideshow container style
@@ -203,23 +240,24 @@ const App: React.FC = () => {
     transform: 'translateX(100%)' as React.CSSProperties['transform'],
   };
 
-  // Hoverable items data
-  const hoverableItems = [
-    { text: 'Impact', x: 975, y: 951, width: 100, height: 150 },
-    { text: 'ICAD', x: 952, y: 736, width: 80, height: 120 },
-    { text: 'Sharks', x: 990, y: 510, width: 220, height: 170, rotation: 6 },
-    { text: 'APMCs', x: 1177, y: 490, width: 100, height: 100 },
-    { text: 'Spiders', x: 1381, y: 530, width: 135, height: 150 },
-    { text: 'DMAs', x: 1401, y: 714, width: 135, height: 150 },
-    { text: 'IAAs', x: 1354, y: 932, width: 155, height: 90, rotation: -6 },
-  ];
-
-  // Text box position
-  const hoverTextBoxPosition = {
-    x1: 1137,
-    y1: 643,
-    x2: 1214,
-    y2: 765,
+  // Hover text box style
+  const hoverTextBoxStyle: React.CSSProperties = {
+    position: 'absolute' as React.CSSProperties['position'],
+    top: `${hoverTextBoxPosition.y1 / imageHeight * 100}%` as React.CSSProperties['top'],
+    left: `${hoverTextBoxPosition.x1 / imageWidth * 100}%` as React.CSSProperties['left'],
+    width: `${hoverTextBoxPosition.x2 - hoverTextBoxPosition.x1}px` as React.CSSProperties['width'],
+    height: `${hoverTextBoxPosition.y2 - hoverTextBoxPosition.y1}px` as React.CSSProperties['height'],
+    backgroundColor: 'transparent',
+    border: 'none',
+    padding: '8px' as React.CSSProperties['padding'],
+    borderRadius: '4px' as React.CSSProperties['borderRadius'],
+    zIndex: 13 as React.CSSProperties['zIndex'],
+    pointerEvents: 'none' as React.CSSProperties['pointerEvents'],
+    display: 'flex' as React.CSSProperties['display'],
+    alignItems: 'flex-start' as React.CSSProperties['alignItems'],
+    justifyContent: 'flex-start' as React.CSSProperties['justifyContent'],
+    fontFamily: 'WhiteboardFont' as React.CSSProperties['fontFamily'],
+    fontSize: '18px' as React.CSSProperties['fontSize'],
   };
 
   // Hover item style
@@ -230,44 +268,18 @@ const App: React.FC = () => {
       left: `${(item.x - item.width / 2) / imageWidth * 100}%` as React.CSSProperties['left'],
       width: `${item.width}px` as React.CSSProperties['width'],
       height: `${item.height}px` as React.CSSProperties['height'],
-      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-      borderRadius: '50px' as React.CSSProperties['borderRadius'],
+      backgroundColor: 'transparent',
       display: 'flex' as React.CSSProperties['display'],
       alignItems: 'center' as React.CSSProperties['alignItems'],
       justifyContent: 'center' as React.CSSProperties['justifyContent'],
       cursor: 'pointer' as React.CSSProperties['cursor'],
       zIndex: 12 as React.CSSProperties['zIndex'],
       transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
-      opacity: 0.8 as React.CSSProperties['opacity'],
-      border: '2px solid #000' as React.CSSProperties['border'],
-      fontFamily: 'WhiteboardFont' as React.CSSProperties['fontFamily'],
-      fontSize: '14px' as React.CSSProperties['fontSize'],
+      opacity: 1 as React.CSSProperties['opacity'],
+      border: 'none',
     };
 
-    if (item.rotation) {
-      style.transform = `rotate(${item.rotation}deg)` as React.CSSProperties['transform'];
-    }
-
     return style;
-  };
-
-  // Hover text box style
-  const hoverTextBoxStyle: React.CSSProperties = {
-    position: 'absolute' as React.CSSProperties['position'],
-    top: `${hoverTextBoxPosition.y1 / imageHeight * 100}%` as React.CSSProperties['top'],
-    left: `${hoverTextBoxPosition.x1 / imageWidth * 100}%` as React.CSSProperties['left'],
-    width: `${hoverTextBoxPosition.x2 - hoverTextBoxPosition.x1}px` as React.CSSProperties['width'],
-    height: `${hoverTextBoxPosition.y2 - hoverTextBoxPosition.y1}px` as React.CSSProperties['height'],
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    padding: '8px' as React.CSSProperties['padding'],
-    borderRadius: '4px' as React.CSSProperties['borderRadius'],
-    zIndex: 13 as React.CSSProperties['zIndex'],
-    pointerEvents: 'none' as React.CSSProperties['pointerEvents'],
-    display: 'flex' as React.CSSProperties['display'],
-    alignItems: 'center' as React.CSSProperties['alignItems'],
-    justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    fontFamily: 'WhiteboardFont' as React.CSSProperties['fontFamily'],
-    fontSize: '16px' as React.CSSProperties['fontSize'],
   };
 
   // Handle hover
@@ -277,6 +289,16 @@ const App: React.FC = () => {
 
   const handleHoverLeave = () => {
     setHoveredItem(null);
+  };
+
+  // Render hover text
+  const renderHoverText = () => {
+    if (!hoveredItem) return null;
+    return (
+      <div style={hoverTextBoxStyle}>
+        <p>{hoverTextContent[hoveredItem as keyof typeof hoverTextContent]}</p>
+      </div>
+    );
   };
 
   // Play sound effect
@@ -326,27 +348,49 @@ const App: React.FC = () => {
     setCurrentSlide(0);
   };
 
-  // Navigation button style
-  const navBtnStyle: React.CSSProperties = {
-    position: 'absolute' as React.CSSProperties['position'],
-    top: '50%' as React.CSSProperties['top'],
-    transform: 'translateY(-50%)' as React.CSSProperties['transform'],
-    width: '40px' as React.CSSProperties['width'],
-    height: '40px' as React.CSSProperties['height'],
-    backgroundColor: 'rgba(0, 0, 0, 0.5)' as React.CSSProperties['backgroundColor'],
-    border: 'none' as React.CSSProperties['border'],
-    borderRadius: '50%' as React.CSSProperties['borderRadius'],
-    cursor: 'pointer' as React.CSSProperties['cursor'],
-    color: 'white' as React.CSSProperties['color'],
-    fontWeight: 'bold' as React.CSSProperties['fontWeight'],
-    fontSize: '16px' as React.CSSProperties['fontSize'],
-    display: 'flex' as React.CSSProperties['display'],
-    alignItems: 'center' as React.CSSProperties['alignItems'],
-    justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    zIndex: 21 as React.CSSProperties['zIndex'],
-    transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
-    opacity: 0.8 as React.CSSProperties['opacity'],
-  };
+  // Button style for central buttons
+  const btnStyle = (top: string, left: string, color: string, rotate: string): React.CSSProperties => ({
+    position: 'absolute',
+    top,
+    left,
+    width: '120px',
+    height: '60px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: '32px',
+    fontFamily: 'WhiteboardFont, sans-serif',
+    padding: '0 4px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'opacity 0.2s ease',
+    opacity: 0.8,
+    transform: `translate(-50%, -50%) rotate(${rotate})`,
+  });
+
+  // Return button style
+  const returnBtnStyle = (top: string, left: string, color: string, width: string = '220px', height: string = '220px'): React.CSSProperties => ({
+    position: 'absolute',
+    top,
+    left,
+    width,
+    height,
+    backgroundColor: 'transparent',
+    color: 'black',
+    border: 'none',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    fontSize: '24px',
+    fontFamily: 'WhiteboardFont, sans-serif',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.3s ease',
+    transform: 'translate(-50%, -50%)',
+    transformOrigin: 'center',
+  });
 
   // Text box style
   const textBoxStyle: React.CSSProperties = {
@@ -492,56 +536,6 @@ const App: React.FC = () => {
     clickStart.current = null;
   };
 
-  // Button style for central buttons
-  const btnStyle = (top: string, left: string, color: string, rotate: string): React.CSSProperties => ({
-    position: 'absolute' as React.CSSProperties['position'],
-    top,
-    left,
-    width: '120px' as React.CSSProperties['width'],
-    height: '60px' as React.CSSProperties['height'],
-    backgroundColor: color as React.CSSProperties['backgroundColor'],
-    border: 'none' as React.CSSProperties['border'],
-    color: 'white' as React.CSSProperties['color'],
-    fontWeight: 'bold' as React.CSSProperties['fontWeight'],
-    fontSize: '16px' as React.CSSProperties['fontSize'],
-    padding: '0 4px' as React.CSSProperties['padding'],
-    display: 'flex' as React.CSSProperties['display'],
-    alignItems: 'center' as React.CSSProperties['alignItems'],
-    justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)' as React.CSSProperties['boxShadow'],
-    transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
-    opacity: 0.8 as React.CSSProperties['opacity'],
-    transform: `translate(-50%, -50%) rotate(${rotate})` as React.CSSProperties['transform'],
-    transformOrigin: 'center' as React.CSSProperties['transformOrigin'],
-    cursor: 'pointer' as React.CSSProperties['cursor'],
-  });
-
-  // Return button style
-  const returnBtnStyle = (top: string, left: string, color: string): React.CSSProperties => ({
-    position: 'absolute' as React.CSSProperties['position'],
-    top,
-    left,
-    width: '180px' as React.CSSProperties['width'],
-    height: '180px' as React.CSSProperties['height'],
-    backgroundColor: color as React.CSSProperties['backgroundColor'],
-    border: 'none' as React.CSSProperties['border'],
-    borderRadius: '50%' as React.CSSProperties['borderRadius'],
-    zIndex: 20 as React.CSSProperties['zIndex'],
-    transform: 'translate(-50%, -50%)' as React.CSSProperties['transform'],
-    transformOrigin: 'center' as React.CSSProperties['transformOrigin'],
-    cursor: 'pointer' as React.CSSProperties['cursor'],
-    color: 'white' as React.CSSProperties['color'],
-    fontWeight: 'bold' as React.CSSProperties['fontWeight'],
-    fontSize: '16px' as React.CSSProperties['fontSize'],
-    padding: '0 4px' as React.CSSProperties['padding'],
-    display: 'flex' as React.CSSProperties['display'],
-    alignItems: 'center' as React.CSSProperties['alignItems'],
-    justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)' as React.CSSProperties['boxShadow'],
-    transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
-    opacity: 0.8 as React.CSSProperties['opacity'],
-  });
-
   // Slideshow control button style
   const slideshowBtnStyle = (top: string, left: string, color: string): React.CSSProperties => ({
     position: 'absolute' as React.CSSProperties['position'],
@@ -560,7 +554,6 @@ const App: React.FC = () => {
     display: 'flex' as React.CSSProperties['display'],
     alignItems: 'center' as React.CSSProperties['alignItems'],
     justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)' as React.CSSProperties['boxShadow'],
     transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
     opacity: 0.8 as React.CSSProperties['opacity'],
   });
@@ -586,7 +579,6 @@ const App: React.FC = () => {
     display: 'flex' as React.CSSProperties['display'],
     alignItems: 'center' as React.CSSProperties['alignItems'],
     justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)' as React.CSSProperties['boxShadow'],
     transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
     opacity: 0.8 as React.CSSProperties['opacity'],
   });
@@ -784,9 +776,9 @@ const App: React.FC = () => {
 
   // Success message style
   const successMessageStyle: React.CSSProperties = {
-    position: 'absolute' as React.CSSProperties['position'],
-    top: `${4893 / imageHeight * 100}%` as React.CSSProperties['top'],
-    left: `${7323 / imageWidth * 100}%` as React.CSSProperties['left'],
+    position: 'absolute',
+    top: `${4893 / imageHeight * 100}%`,
+    left: `${7323 / imageWidth * 100}%`,
     width: '250px',
     height: '300px',
     backgroundColor: 'transparent',
@@ -940,7 +932,7 @@ const App: React.FC = () => {
                   <button
                     onClick={() => handleOriginalSlideChange('left')}
                     style={{
-                      ...navBtnStyle,
+                      ...slideshowBtnStyle,
                       left: '10px' as React.CSSProperties['left'],
                     }}
                   >
@@ -949,7 +941,7 @@ const App: React.FC = () => {
                   <button
                     onClick={() => handleOriginalSlideChange('right')}
                     style={{
-                      ...navBtnStyle,
+                      ...slideshowBtnStyle,
                       right: '10px' as React.CSSProperties['right'],
                     }}
                   >
@@ -984,52 +976,58 @@ const App: React.FC = () => {
 
             {/* Navigation Buttons */}
             <button
-              onClick={() => moveTo(934, 1200)}
               style={btnStyle('46.783%', '47.299%', 'red', '16deg')}
+              onClick={() => moveTo(934, 1200)}
             >
-              1
+              About
             </button>
+
             <button
-              onClick={() => moveTo(930, 5320)}
               style={btnStyle('48.806%', '47.236%', 'blue', '-17deg')}
+              onClick={() => moveTo(930, 5320)}
             >
-              2
+              Danger
             </button>
+
             <button
-              onClick={() => moveTo(6850, 5075)}
               style={btnStyle('47.936%', '49.236%', 'green', '16deg')}
+              onClick={() => moveTo(6850, 5075)}
             >
-              3
+              Contact
             </button>
+
             <button
-              onClick={() => moveTo(7014, 1400)}
               style={btnStyle('45.396%', '49.256%', 'yellow', '-18deg')}
+              onClick={() => moveTo(7014, 1400)}
             >
-              4
+              Work
             </button>
 
             {/* Return Buttons */}
             <button
+              style={returnBtnStyle('17.55%', '19.3%', 'purple', '230px', '230px')} 
               onClick={() => moveTo(4070, 2990)}
-              style={returnBtnStyle('17.72%', '18.70%', 'purple')}
             >
               Return
             </button>
+
             <button
+              style={returnBtnStyle('90.85%', '9.53%', 'purple', '260px', '260px')}
               onClick={() => moveTo(4070, 2990)}
-              style={returnBtnStyle('90.85%', '9.53%', 'purple')}
             >
               Return
             </button>
+
             <button
+              style={returnBtnStyle('78.47%', '84.84%', 'purple', '260px', '260px')}
               onClick={() => moveTo(4070, 2990)}
-              style={returnBtnStyle('78.47%', '84.84%', 'purple')}
             >
               Return
             </button>
+
             <button
+              style={returnBtnStyle('19.66%', '77.95%', 'purple', '260px', '260px')}
               onClick={() => moveTo(4070, 2990)}
-              style={returnBtnStyle('19.66%', '77.95%', 'purple')}
             >
               Return
             </button>
@@ -1051,16 +1049,10 @@ const App: React.FC = () => {
                 onMouseOver={() => handleHover(item.text)}
                 onMouseLeave={handleHoverLeave}
                 style={getHoverItemStyle(item)}
-              >
-                {item.text}
-              </button>
+              />
             ))}
             {/* Hover Text Box */}
-            {hoveredItem && (
-              <div style={hoverTextBoxStyle}>
-                <p>{hoveredItem}</p>
-              </div>
-            )}
+            {renderHoverText()}
             {/* Eraser Animation */}
             {showEraserAnimation && (
               <div
