@@ -31,9 +31,9 @@ const App: React.FC = () => {
 
   // Calculate percentage positions for text box and slideshow
   const textBoxPosition = {
-    x: 6900,
-    y: 924,
-    width: 250,
+    x: 6900 - 5, // Move left by 5px
+    y: 924 - 15, // Move up by 15px
+    width: 250 - 15 - 5 - 8, // Make 28px narrower total (15px + 5px + 8px)
     height: 200,
   };
 
@@ -45,10 +45,10 @@ const App: React.FC = () => {
   };
 
   const slideshowPosition = {
-    x: 7200,
-    y: 924,
-    width: 400,
-    height: 300,
+    x: 7200 + 100 - 30, // Move right by 70px
+    y: 924 + 50 - 30, // Move down by 20px
+    width: 400 + 240, // Make 240px wider
+    height: 300 + 60, // Make 60px taller
   };
 
   // Calculate percentage positions for hover areas
@@ -86,8 +86,8 @@ const App: React.FC = () => {
 
   // Add eraser animation state
   const [eraserPosition, setEraserPosition] = useState({
-    top: `${850 / 5992 * 100}%`,
-    left: `${5500 / 8472 * 100}%`,
+    top: `${((850 + 50 - 30) + 130) / 5992 * 100}%`, // Move down by 130px total
+    left: `${(5500 + 100 - 30) / 8472 * 100}%`, // Move right by 70px
     width: '667px',
     height: '230px',
   });
@@ -274,7 +274,7 @@ const App: React.FC = () => {
       justifyContent: 'center' as React.CSSProperties['justifyContent'],
       cursor: 'pointer' as React.CSSProperties['cursor'],
       zIndex: 12 as React.CSSProperties['zIndex'],
-      transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
+      transition: 'opacity 0.2s ease',
       opacity: 1 as React.CSSProperties['opacity'],
       border: 'none',
     };
@@ -322,7 +322,7 @@ const App: React.FC = () => {
       setTimeout(() => {
         setShowOverlay(false);
         setOverlayAnimation(false);
-      }, 1000);
+      }, 1680); // Match the animation duration
     }, 1000);
 
     if (!showEraserAnimation) {
@@ -330,8 +330,8 @@ const App: React.FC = () => {
       
       // Set initial position
       setEraserPosition({
-        top: `${850 / 5992 * 100}%`,
-        left: `${5500 / 8472 * 100}%`,
+        top: `${((850 + 50 - 30) + 130) / 5992 * 100}%`, // Move down by 130px total
+        left: `${(5500 + 100 - 30) / 8472 * 100}%`,
         width: '667px',
         height: '230px',
       });
@@ -444,7 +444,7 @@ const App: React.FC = () => {
     zIndex: 11 as React.CSSProperties['zIndex'],
     pointerEvents: 'none',
     clipPath: overlayAnimation ? 'inset(0 0 0 100%)' : 'inset(0 0 0 0)',
-    transition: `clip-path 1s ease-in-out`,
+    transition: `clip-path 1.68s ease-in-out`,
   };
 
   // Overlay image style
@@ -565,38 +565,34 @@ const App: React.FC = () => {
     left,
     width,
     height,
-    backgroundColor: color as React.CSSProperties['backgroundColor'],
+    backgroundColor: 'transparent',
     border: 'none' as React.CSSProperties['border'],
     borderRadius: '50%' as React.CSSProperties['borderRadius'],
-    zIndex: 20 as React.CSSProperties['zIndex'],
     transform: `translate(-50%, -50%) rotate(${rotate})` as React.CSSProperties['transform'],
-    transformOrigin: 'center' as React.CSSProperties['transformOrigin'],
     cursor: 'pointer' as React.CSSProperties['cursor'],
-    color: 'white' as React.CSSProperties['color'],
-    fontWeight: 'bold' as React.CSSProperties['fontWeight'],
-    fontSize: '12px' as React.CSSProperties['fontSize'],
-    padding: '0 4px' as React.CSSProperties['padding'],
-    display: 'flex' as React.CSSProperties['display'],
-    alignItems: 'center' as React.CSSProperties['alignItems'],
-    justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
-    opacity: 0.8 as React.CSSProperties['opacity'],
+    zIndex: 12,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: 'none',
+    pointerEvents: 'auto',
+    transition: 'opacity 0.3s ease',
   });
 
-  // Add eraser animation
-  const eraserAnimation = {
+  // Eraser animation style
+  const eraserAnimation: React.CSSProperties = {
     position: 'absolute' as React.CSSProperties['position'],
     zIndex: 20 as React.CSSProperties['zIndex'],
     animation: 'eraserArc 3.2s linear',
     backgroundColor: 'transparent',
     border: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    opacity: 1,
-    transform: 'rotate(-90deg)',
-    transformOrigin: 'center',
-    willChange: 'transform',
+    display: 'flex' as React.CSSProperties['display'],
+    alignItems: 'center' as React.CSSProperties['alignItems'],
+    justifyContent: 'center' as React.CSSProperties['justifyContent'],
+    opacity: 1 as React.CSSProperties['opacity'],
+    transform: 'rotate(-90deg)' as React.CSSProperties['transform'],
+    transformOrigin: 'center' as React.CSSProperties['transformOrigin'],
+    willChange: 'transform' as React.CSSProperties['willChange'],
   };
 
   // Add the keyframes to the document
@@ -605,53 +601,53 @@ const App: React.FC = () => {
     style.textContent = `
       @keyframes eraserArc {
         0% { 
-          top: ${850 / 5992 * 100}%; 
-          left: ${5500 / 8472 * 100}%; 
+          top: ${((850 + 50 - 30) + 130) / 5992 * 100}%; 
+          left: ${(5500 + 100 - 30) / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         25% { 
-          top: ${970 / 5992 * 100}%; 
-          left: ${7080 / 8472 * 100}%; 
+          top: ${((970 + 50 - 30) + 130) / 5992 * 100}%; 
+          left: ${(7080 + 100 - 30) / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         31.25% { 
-          top: ${890 / 5992 * 100}%; 
-          left: ${7130 / 8472 * 100}%; 
+          top: ${((890 + 50 - 30) + 130) / 5992 * 100}%; 
+          left: ${(7130 + 100 - 30) / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         37.5% { 
-          top: ${1050 / 5992 * 100}%; 
-          left: ${7230 / 8472 * 100}%; 
+          top: ${((1050 + 50 - 30) + 130) / 5992 * 100}%; 
+          left: ${(7230 + 100 - 30) / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         43.75% { 
-          top: ${890 / 5992 * 100}%; 
-          left: ${7330 / 8472 * 100}%; 
+          top: ${((890 + 50 - 30) + 130) / 5992 * 100}%; 
+          left: ${(7330 + 100 - 30) / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         50% { 
-          top: ${1050 / 5992 * 100}%; 
-          left: ${7430 / 8472 * 100}%; 
+          top: ${((1050 + 50 - 30) + 130) / 5992 * 100}%; 
+          left: ${(7430 + 100 - 30) / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         56.25% { 
-          top: ${890 / 5992 * 100}%; 
-          left: ${7530 / 8472 * 100}%; 
+          top: ${((890 + 50 - 30) + 130) / 5992 * 100}%; 
+          left: ${(7530 + 100 - 30) / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         62.5% { 
-          top: ${1050 / 5992 * 100}%; 
-          left: ${7630 / 8472 * 100}%; 
+          top: ${((1050 + 50 - 30) + 130) / 5992 * 100}%; 
+          left: ${(7630 + 100 - 30) / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         75% { 
-          top: ${970 / 5992 * 100}%; 
-          left: ${7680 / 8472 * 100}%; 
+          top: ${((970 + 50 - 30) + 130) / 5992 * 100}%; 
+          left: ${(7680 + 100 - 30) / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
         100% { 
-          top: ${970 / 5992 * 100}%; 
-          left: ${8600 / 8472 * 100}%; 
+          top: ${((970 + 50 - 30) + 130) / 5992 * 100}%; 
+          left: ${(8600 + 100 - 30) / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
       }
@@ -814,7 +810,7 @@ const App: React.FC = () => {
     left: `${6710 / imageWidth * 100}%`,
     width: '260px',
     height: '217px',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'transparent',
     borderRadius: '8px',
     alignItems: 'center',
     justifyContent: 'center',
@@ -827,6 +823,86 @@ const App: React.FC = () => {
     transform: 'translate(-50%, -50%)',
     fontFamily: 'WhiteboardFont',
     display: 'flex',
+  };
+
+  // Raven overlay style
+  const ravenOverlayStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: 16,
+    pointerEvents: 'none',
+  };
+
+  // Add raven textbox overlay state
+  const [showRavenOverlay, setShowRavenOverlay] = useState(false);
+
+  // Raven textbox position
+  const ravenTextBoxPosition = {
+    x: 4859,
+    y: 6813,
+    width: 250,
+    height: 100,
+  };
+
+  // Raven textbox overlay style
+  const ravenTextBoxStyle: React.CSSProperties = {
+    position: 'absolute' as React.CSSProperties['position'],
+    top: `${ravenTextBoxPosition.y / imageHeight * 100}%`,
+    left: `${ravenTextBoxPosition.x / imageWidth * 100}%`,
+    width: `${ravenTextBoxPosition.width}px`,
+    height: `${ravenTextBoxPosition.height}px`,
+    zIndex: 10 as React.CSSProperties['zIndex'],
+    pointerEvents: 'auto',
+    display: showRavenOverlay ? 'block' : 'none',
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+  };
+
+  // Text box style
+  const ravenTextBoxContentStyle: React.CSSProperties = {
+    position: 'absolute' as React.CSSProperties['position'],
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    color: 'white',
+    fontFamily: 'Whiteboard',
+    fontSize: '24px',
+    textAlign: 'center',
+    width: '90%',
+    lineHeight: '1.5',
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+  };
+
+  // Render the raven textbox overlay
+  const renderRavenTextBox = () => (
+    <div style={ravenTextBoxStyle}>
+      <div style={ravenTextBoxContentStyle}>
+        When you've written your message, click on me.
+      </div>
+      <img
+        src="/images/raventextbox.png"
+        alt="Raven Text Box"
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'contain',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 1,
+        }}
+      />
+    </div>
+  );
+
+  // Handle send button click
+  const handleSendClick = () => {
+    setShowRavenOverlay(false);
+    // Add your form submission logic here
   };
 
   return (
@@ -1037,10 +1113,8 @@ const App: React.FC = () => {
               <button
                 key={index}
                 onClick={() => handleBrandClick(brand.text)}
-                style={brandBtnStyle(`${brand.y / imageHeight * 100}%`, `${brand.x / imageWidth * 100}%`, 'orange', '0deg', `${brand.width}px`, `${brand.height}px`)}
-              >
-                {brand.text}
-              </button>
+                style={brandBtnStyle(`${brand.y / imageHeight * 100}%`, `${brand.x / imageWidth * 100}%`, 'transparent', '0deg', `${brand.width}px`, `${brand.height}px`)}
+              />
             ))}
             {/* Hoverable Items */}
             {hoverableItems.map((item, index) => (
@@ -1101,14 +1175,23 @@ const App: React.FC = () => {
                 </>
               )}
             </div>
-            {isSubmitted ? null : (
-              <button
-                onClick={handleSubmit}
-                style={sendButtonStyle}
-              >
-                Send
-              </button>
-            )}
+            {showRavenOverlay && renderRavenTextBox()}
+            <button
+              onClick={handleSendClick}
+              style={sendButtonStyle}
+            >
+              <div style={ravenOverlayStyle}>
+                <img
+                  src="/RavenOverlay.png"
+                  alt="Raven"
+                  style={{
+                    width: '100%' as React.CSSProperties['width'],
+                    height: '100%' as React.CSSProperties['height'],
+                    objectFit: 'contain' as React.CSSProperties['objectFit'],
+                  }}
+                />
+              </div>
+            </button>
             {showSuccessMessage && (
               <div style={successMessageStyle}>
                 <p style={successMessageTextStyle}>
