@@ -703,6 +703,53 @@ const App: React.FC = () => {
   const [isSending, setIsSending] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [sendButtonVisible, setSendButtonVisible] = useState(true);
+
+  // Speech bubble position
+  const speechBubblePosition = {
+    x: 6773,  // Moved 30px to the right from 6743
+    y: 4859,
+    width: 300,
+    height: 200
+  };
+
+  // Speech bubble container style
+  const speechBubbleContainerStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: `${speechBubblePosition.y / imageHeight * 100}%`,
+    left: `${speechBubblePosition.x / imageWidth * 100}%`,
+    width: `${speechBubblePosition.width}px`,
+    height: `${speechBubblePosition.height}px`,
+    zIndex: 15,
+    pointerEvents: 'none',
+    transform: 'rotate(4deg)',
+    display: isSubmitted ? 'none' : 'block'
+  };
+
+  // Speech bubble image style
+  const speechBubbleImageStyle: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 1
+  };
+
+  // Speech bubble text style
+  const speechBubbleTextStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '20%',
+    left: '10%',
+    width: '80%',
+    height: '60%',
+    fontFamily: 'WhiteboardFont',
+    fontSize: '32px',  // Changed from 16px to 32px (2 times larger)
+    color: '#000000',
+    zIndex: 2,
+    padding: '10px',
+    pointerEvents: 'none'
+  };
 
   // Contact form container style
   const contactFormStyle: React.CSSProperties = {
@@ -790,6 +837,7 @@ const App: React.FC = () => {
       setContactForm({ name: '', email: '', message: '' });
       setIsFormValid(false);
       setIsSubmitted(true);
+      setSendButtonVisible(false);
     } catch (error) {
       console.error('Error submitting form:', error);
     } finally {
@@ -1092,6 +1140,19 @@ const App: React.FC = () => {
                 />
               </div>
             )}
+            {/* Speech Bubble */}
+            {!isSubmitted && (
+              <div style={speechBubbleContainerStyle}>
+                <img 
+                  src="speechbubble.png" 
+                  alt="Speech Bubble" 
+                  style={speechBubbleImageStyle}
+                />
+                <div style={speechBubbleTextStyle}>
+                  click me when you've written your message
+                </div>
+              </div>
+            )}
             {/* Contact Form */}
             <div style={contactFormStyle}>
               {isSubmitted ? null : (
@@ -1122,16 +1183,18 @@ const App: React.FC = () => {
                 </>
               )}
             </div>
-            <button
-              onClick={handleSubmit}
-              style={sendButtonStyle}
-            >
-              <img
-                src="ravenoverlay.png"
-                alt="Send"
-                style={sendButtonImageStyle}
-              />
-            </button>
+            {sendButtonVisible && (
+              <button
+                onClick={handleSubmit}
+                style={sendButtonStyle}
+              >
+                <img
+                  src="ravenoverlay.png"
+                  alt="Send"
+                  style={sendButtonImageStyle}
+                />
+              </button>
+            )}
             {showSuccessMessage && (
               <div style={successMessageStyle}>
                 <p style={successMessageTextStyle}>
