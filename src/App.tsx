@@ -21,12 +21,12 @@ const App: React.FC = () => {
 
   // Calculate percentage positions for brand buttons
   const brandButtons = [
-    { text: 'Certa', x: 7064, y: 1416 },
-    { text: 'Tayto', x: 7064, y: 1544 },
-    { text: 'Lyons', x: 7064, y: 1660 },
-    { text: 'Kerry', x: 7580, y: 1420 },
-    { text: 'Aer Lingus', x: 7580, y: 1532 },
-    { text: 'Headstuff', x: 7580, y: 1688 },
+    { text: 'Certa', x: 7074, y: 1406, width: 190, height: 120 },
+    { text: 'Tayto', x: 7084, y: 1544, width: 320, height: 100 },
+    { text: 'Lyons', x: 7094, y: 1660, width: 450, height: 100 },
+    { text: 'Kerry', x: 7580, y: 1420, width: 170, height: 85 },
+    { text: 'Aer Lingus', x: 7580, y: 1532, width: 350, height: 130 },
+    { text: 'Headstuff', x: 7580, y: 1693, width: 440, height: 180 },
   ];
 
   // Calculate percentage positions for text box and slideshow
@@ -559,12 +559,12 @@ const App: React.FC = () => {
   });
 
   // Brand button style
-  const brandBtnStyle = (top: string, left: string, color: string, rotate: string): React.CSSProperties => ({
+  const brandBtnStyle = (top: string, left: string, color: string, rotate: string, width: string, height: string): React.CSSProperties => ({
     position: 'absolute' as React.CSSProperties['position'],
     top,
     left,
-    width: '60px' as React.CSSProperties['width'],
-    height: '60px' as React.CSSProperties['height'],
+    width,
+    height,
     backgroundColor: color as React.CSSProperties['backgroundColor'],
     border: 'none' as React.CSSProperties['border'],
     borderRadius: '50%' as React.CSSProperties['borderRadius'],
@@ -1037,7 +1037,7 @@ const App: React.FC = () => {
               <button
                 key={index}
                 onClick={() => handleBrandClick(brand.text)}
-                style={brandBtnStyle(`${brand.y / imageHeight * 100}%`, `${brand.x / imageWidth * 100}%`, 'orange', '0deg')}
+                style={brandBtnStyle(`${brand.y / imageHeight * 100}%`, `${brand.x / imageWidth * 100}%`, 'orange', '0deg', `${brand.width}px`, `${brand.height}px`)}
               >
                 {brand.text}
               </button>
