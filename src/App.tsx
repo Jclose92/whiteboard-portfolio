@@ -918,6 +918,35 @@ const App: React.FC = () => {
     display: 'block',
   };
 
+  // Text box positions
+  const textBoxes = [
+    { name: 'About', x: 1062, y: 1047 },
+    { name: 'Telescope', x: 1491, y: 1149 },
+    { name: 'Turn Back', x: 2190, y: 4593 },
+    { name: 'Comedy Section', x: 1248, y: 5412 },
+    { name: 'Work Sign', x: 7266, y: 1386 },
+    { name: 'Zoom Wizard', x: 4545, y: 5145 }
+  ];
+
+  // Text box style
+  const textBoxStyle2: React.CSSProperties = {
+    position: 'absolute',
+    width: '30px',
+    height: '30px',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    border: '1px solid rgba(0, 0, 0, 0.3)',
+    borderRadius: '4px',
+    fontFamily: 'WhiteboardFont',
+    fontSize: '12px',
+    color: '#000000',
+    pointerEvents: 'none',
+    zIndex: 10,
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    padding: '2px 4px'
+  };
+
   return (
     <div
       style={{
@@ -1150,6 +1179,19 @@ const App: React.FC = () => {
                 />
               </div>
             )}
+            {/* Text Boxes */}
+            {textBoxes.map((box) => (
+              <div
+                key={box.name}
+                style={{
+                  ...textBoxStyle2,
+                  top: `${box.y / imageHeight * 100}%`,
+                  left: `${box.x / imageWidth * 100}%`,
+                }}
+              >
+                {box.name}
+              </div>
+            ))}
             {/* Speech Bubble */}
             {!isSubmitted && (
               <div style={speechBubbleContainerStyle}>
