@@ -76,13 +76,13 @@ const App: React.FC = () => {
 
   // Hover text content
   const hoverTextContent = {
-    Spiders: 'Spiders are an important part of our ecosystem, helping to control pest populations.',
-    ICAD: 'ICAD (International Conference on Animal Diversity) is a leading event in the field.',
-    Sharks: 'Sharks play a crucial role in maintaining marine ecosystem balance.',
-    APMCs: 'APMCs (Animal Population Management Centers) are dedicated to wildlife conservation.',
-    DMAs: 'DMAs (Digital Media Analytics) track and analyze animal behavior patterns.',
-    IAAs: 'IAAs (International Animal Awards) celebrate outstanding contributions to animal welfare.',
-    Impact: 'Impact Awards recognize significant achievements in animal conservation and research.',
+    Spiders: "Spiders\n\n2023\nWhere is Mr Tayto?\nGold in Social Media",
+    ICAD: "ICADs\n\n2023\nWhere is Mr Tayto?\nBronze in Integrated",
+    Sharks: "Kinsale Sharks\n\n2024\nAer Lingus \"Calm\"\nBronze in Digital\n\n2022\nWhere is Mr Tayto?\nSilver in PR & Tactical\nBronze in Food & Confectionery/ Social Media/ Integrated Campaign/ Social Media for influencer content",
+    APMCs: "APMCs\n\n2024\nLyons \"We're Square\"\nSilver in Non-Alc Beverage\nBronze in Integrated Campaign / Use of Talent\n\n2023\nWhere is Mr Tayto?\nGold in Use of Digital / FMCG\nSilver in Integrated Campaign",
+    DMAs: "Digital Media Awards\n\n2022\nWhere is Mr Tayto?\nGold in Strategy",
+    IAAs: "Irish Audio Awards\n\n2025\nLyons Gen Tea\nWin in Casting\nShortlists in Innovation / Consumer\n\n2024\nHeadstuff \"If this sounds like you…\"\nShortlist in Copywriting Craft",
+    Impact: "European Impact Awards\n\n2024\nLyons \"We're Square\"\nBronze in Integrated\n\n2023\nWhere is Mr Tayto?\nGold in Integrated"
   };
 
   // Add eraser animation state
@@ -243,22 +243,24 @@ const App: React.FC = () => {
 
   // Hover text box style
   const hoverTextBoxStyle: React.CSSProperties = {
-    position: 'absolute' as React.CSSProperties['position'],
-    top: `${hoverTextBoxPosition.y1 / imageHeight * 100}%` as React.CSSProperties['top'],
-    left: `${hoverTextBoxPosition.x1 / imageWidth * 100}%` as React.CSSProperties['left'],
-    width: `${hoverTextBoxPosition.x2 - hoverTextBoxPosition.x1}px` as React.CSSProperties['width'],
-    height: `${hoverTextBoxPosition.y2 - hoverTextBoxPosition.y1}px` as React.CSSProperties['height'],
+    position: 'absolute',
+    top: `${(582 + 5) / imageHeight * 100}%`,
+    left: `${(1086 - 6) / imageWidth * 100}%`,
+    width: '180px',
+    height: '250px',
     backgroundColor: 'transparent',
     border: 'none',
-    padding: '8px' as React.CSSProperties['padding'],
-    borderRadius: '4px' as React.CSSProperties['borderRadius'],
-    zIndex: 13 as React.CSSProperties['zIndex'],
-    pointerEvents: 'none' as React.CSSProperties['pointerEvents'],
-    display: 'flex' as React.CSSProperties['display'],
-    alignItems: 'flex-start' as React.CSSProperties['alignItems'],
-    justifyContent: 'flex-start' as React.CSSProperties['justifyContent'],
-    fontFamily: 'WhiteboardFont' as React.CSSProperties['fontFamily'],
-    fontSize: '18px' as React.CSSProperties['fontSize'],
+    padding: '8px',
+    borderRadius: '4px',
+    zIndex: 13,
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    fontFamily: 'WhiteboardFont',
+    fontSize: '18px',
+    overflow: 'auto',
+    whiteSpace: 'pre-wrap'
   };
 
   // Hover item style
@@ -418,6 +420,18 @@ const App: React.FC = () => {
     justifyContent: 'center' as React.CSSProperties['justifyContent'],
   };
 
+  // Initial text style
+  const initialTextStyle: React.CSSProperties = {
+    fontSize: '25px',
+    lineHeight: '1.5'
+  };
+
+  // Brand text style
+  const brandTextStyle: React.CSSProperties = {
+    fontSize: '21px',
+    lineHeight: '1.5'
+  };
+
   // Slideshow container style
   const slideshowContainerStyle: React.CSSProperties = {
     position: 'absolute' as React.CSSProperties['position'],
@@ -497,8 +511,8 @@ const App: React.FC = () => {
   // Brand text content
   const brandContent: Record<string, { title: string; description: string; slides: string[] }> = {
     Certa: {
-      title: 'Certa',
-      description: 'Description about Certa collaboration',
+      title: 'Pick a piece of work.',
+      description: 'I\'ll tell you what the hook is.',
       slides: ['/images/certa-slide-1.jpg', '/images/certa-slide-2.jpg'],
     },
     Tayto: {
@@ -1106,8 +1120,13 @@ const App: React.FC = () => {
           >
             {/* Text Box */}
             <div style={textBoxStyle}>
-              {selectedBrand && (
-                <div>
+              {!selectedBrand ? (
+                <div style={initialTextStyle}>
+                  <h2>Pick a piece of work.</h2>
+                  <p>I'll tell you what the hook is.</p>
+                </div>
+              ) : (
+                <div style={brandTextStyle}>
                   <h2>{brandContent[selectedBrand]?.title}</h2>
                   <p>{brandContent[selectedBrand]?.description}</p>
                 </div>
