@@ -32,10 +32,10 @@ const App: React.FC = () => {
 
   // Calculate percentage positions for text box and slideshow
   const textBoxPosition = {
-    x: 6900 - 5, // Move left by 5px
-    y: 924 - 15, // Move up by 15px
-    width: 250 - 15 - 5 - 8, // Make 28px narrower total (15px + 5px + 8px)
-    height: 200,
+    x: 6900 - 12 - 10 + 8, // Move left by 12px and then 10px more, then 8px right
+    y: 924 - 12 - 14 - 8 - 6 - 25 - 15, // Move up by 12px and then 14px more, then 8px more, then 6px more, then 25px more, then 15px more
+    width: 250 - 15 - 5 - 8 + 20 + 8 + 8 + 20 + 20 + 15 + 5, // Make 28px narrower total (15px + 5px + 8px) and add 20px as requested, plus 8px more, plus 8px more, plus 20px more, plus 20px more, plus 15px more, plus 5px more
+    height: 200 + 20 + 30 + 25, // Increase height by 20px and then 30px more, then 25px more
   };
 
   const slideshowPosition = {
@@ -411,13 +411,13 @@ const App: React.FC = () => {
     left: `${textBoxPosition.x / imageWidth * 100}%` as React.CSSProperties['left'],
     width: `${textBoxPosition.width}px` as React.CSSProperties['width'],
     height: `${textBoxPosition.height}px` as React.CSSProperties['height'],
-    backgroundColor: 'white',
-    padding: '16px' as React.CSSProperties['padding'],
+    backgroundColor: 'transparent',
+    padding: '8px' as React.CSSProperties['padding'],
     borderRadius: '8px' as React.CSSProperties['borderRadius'],
     zIndex: 10 as React.CSSProperties['zIndex'],
     display: 'flex' as React.CSSProperties['display'],
-    alignItems: 'center' as React.CSSProperties['alignItems'],
-    justifyContent: 'center' as React.CSSProperties['justifyContent'],
+    alignItems: 'flex-start' as React.CSSProperties['alignItems'],
+    justifyContent: 'flex-start' as React.CSSProperties['justifyContent'],
   };
 
   // Initial text style
@@ -428,8 +428,9 @@ const App: React.FC = () => {
 
   // Brand text style
   const brandTextStyle: React.CSSProperties = {
-    fontSize: '21px',
-    lineHeight: '1.5'
+    fontSize: '19.5px',
+    lineHeight: '1.3',
+    whiteSpace: 'pre-wrap'
   };
 
   // Slideshow container style
@@ -509,37 +510,31 @@ const App: React.FC = () => {
   );
 
   // Brand text content
-  const brandContent: Record<string, { title: string; description: string; slides: string[] }> = {
-    Certa: {
-      title: 'Pick a piece of work.',
-      description: 'I\'ll tell you what the hook is.',
-      slides: ['/images/certa-slide-1.jpg', '/images/certa-slide-2.jpg'],
+  const brandContent: Record<string, { description: string; slides: string[] }> = {
+    Lyons: {
+      description: 'We\'re Square\nWhat?\nTransition them from their beloved pyramid bags to their new square ones.\nHow?\nA full PR and advertising campaign celebrating just how spiritually square both tea and the people who drink it are, and how great it is when we own that.',
+      slides: ['/images/lyons-slide-1.jpg', '/images/lyons-slide-2.jpg']
     },
     Tayto: {
-      title: 'Tayto',
-      description: 'Description about Tayto collaboration',
-      slides: ['/images/tayto-slide-1.jpg', '/images/tayto-slide-2.jpg'],
-    },
-    Lyons: {
-      title: 'Lyons',
-      description: 'Description about Lyons collaboration',
-      slides: ['/images/lyons-slide-1.jpg', '/images/lyons-slide-2.jpg'],
-    },
-    Kerry: {
-      title: 'Kerry',
-      description: 'Description about Kerry collaboration',
-      slides: ['/images/kerry-slide-1.jpg', '/images/kerry-slide-2.jpg'],
+      description: 'Where Is Mr Tayto\nWhat?\nWe made Mr. Tayto relevant to the Gen-Z audience.\nHow?\nA 2 week PR stunt touting Mr Tayto\'s disappearance from packaging before unveiling a 6 week long, 50 video, TikTok campaign of him travelling the globe in-person, doubling Tayto\'s online following.',
+      slides: ['/images/tayto-slide-1.jpg', '/images/tayto-slide-2.jpg']
     },
     'Aer Lingus': {
-      title: 'Aer Lingus',
-      description: 'Description about Aer Lingus collaboration',
-      slides: ['/images/aer-lingus-slide-1.jpg', '/images/aer-lingus-slide-2.jpg'],
+      description: 'Sadie\'s Home\nWhat?\nFilm their Christmas within an incredibly quick turnaround time.\nHow?\nEfficiently delivering a heart melting twist on a classic airport reunion and showing Aer Lingus\' passion for bringing us together at Christmas time.',
+      slides: ['/images/aer-lingus-slide-1.jpg', '/images/aer-lingus-slide-2.jpg']
+    },
+    Certa: {
+      description: 'Breaking Boundaries\nWhat?\nLaunch their sponsorship of the Irish women\'s cricket team.\nHow?\nThree digital videos of outdated cricket relics being smashed apart in mesmerising slow motion, along with any old notions of the sport or this exceptional team.',
+      slides: ['/images/certa-slide-1.jpg', '/images/certa-slide-2.jpg']
     },
     Headstuff: {
-      title: 'Headstuff',
-      description: 'Description about Headstuff collaboration',
-      slides: ['/images/headstuff-slide-1.jpg', '/images/headstuff-slide-2.jpg'],
+      description: 'Join the Cast\nWhat?\nWe brought them fresh listeners and ideas for podcasts.\nHow?\nA competition, which we bolstered with 2 audio ads, requiring a short voice note pitch for a podcast, where finalists record a pilot for a clash to win their own series.',
+      slides: ['/images/headstuff-slide-1.jpg', '/images/headstuff-slide-2.jpg']
     },
+    Kerry: {
+      description: 'Pride of Kerry\nWhat?\nWe celebrated their 30 year sponsorship of the Kerry GAA team.\nHow?\nA docu-film showing where both Kerry, the team, and everyone in The Kingdom\'s overwhelming pride comes from, perfectly timing its release for the All Ireland.',
+      slides: ['/images/kerry-slide-1.jpg', '/images/kerry-slide-2.jpg']
+    }
   };
 
   // Move to a specific point and center it on screen
@@ -1127,8 +1122,7 @@ const App: React.FC = () => {
                 </div>
               ) : (
                 <div style={brandTextStyle}>
-                  <h2>{brandContent[selectedBrand]?.title}</h2>
-                  <p>{brandContent[selectedBrand]?.description}</p>
+                  <p style={{ fontSize: '19.5px' }}>{brandContent[selectedBrand]?.description}</p>
                 </div>
               )}
             </div>
