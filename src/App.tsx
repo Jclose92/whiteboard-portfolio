@@ -754,7 +754,7 @@ const App: React.FC = () => {
     width: '80%',
     height: '60%',
     fontFamily: 'WhiteboardFont',
-    fontSize: '16px',  
+    fontSize: '32px',  
     color: '#000000',
     zIndex: 2,
     padding: '10px',
@@ -1303,20 +1303,20 @@ const App: React.FC = () => {
                   left: `${box.x / imageWidth * 100}%`,
                   transform: `rotate(${box.rotation}deg)`,
                   fontSize: box.name === 'Telescope' || box.name === 'Work Sign' || box.name === 'Zoom Wizard' 
-                    ? '18px' 
+                    ? '20px' 
                     : box.name === 'Turn Back' 
                       ? '24px' 
                       : '24px'
                 }}
               >
-                {box.name === 'About' ? aboutTexts[currentAboutIndex] : box.text}
+                {box.name === 'About' ? aboutTexts[currentAboutIndex] : <span style={{ fontSize: '20px' }}>{box.text}</span>}
               </div>
             ))}
             {/* Speech Bubble */}
             {!isSubmitted && (
               <div style={speechBubbleContainerStyle}>
                 <img 
-                  src="speechbubble.png" 
+                  src="/images/speechbubble.png" 
                   alt="Speech Bubble" 
                   style={speechBubbleImageStyle}
                 />
