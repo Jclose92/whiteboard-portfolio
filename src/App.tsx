@@ -974,7 +974,7 @@ const App: React.FC = () => {
       width: 156, 
       height: 82, 
       rotation: 0,
-      text: "Branded Stones.\n\nChuck a Branded Stone in the water and watch the surface ripple into work."
+      text: "Chuck a Branded Stone in the water and watch the surface ripple into work."
     },
     { 
       name: 'Zoom Wizard', 
