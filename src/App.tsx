@@ -754,7 +754,7 @@ const App: React.FC = () => {
     width: '80%',
     height: '60%',
     fontFamily: 'WhiteboardFont',
-    fontSize: '32px',  // Changed from 16px to 32px (2 times larger)
+    fontSize: '16px',  
     color: '#000000',
     zIndex: 2,
     padding: '10px',
@@ -918,20 +918,106 @@ const App: React.FC = () => {
     display: 'block',
   };
 
+  // Define text box type
+  interface TextBox {
+    name: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    rotation: number;
+    text?: string;
+  }
+
   // Text box positions
-  const textBoxes = [
-    { name: 'About', x: 1052, y: 1057, width: 265, height: 174, rotation: 0 },
-    { name: 'Telescope', x: 1459, y: 1156, width: 80, height: 33, rotation: 40 },
-    { name: 'Turn Back', x: 2190, y: 4573, width: 120, height: 45, rotation: -17 },
-    { name: 'Comedy Section', x: 1240, y: 5407, width: 155, height: 80, rotation: 0 },
-    { name: 'Work Sign', x: 7252, y: 1372, width: 156, height: 82, rotation: 0 },
-    { name: 'Zoom Wizard', x: 4535, y: 5131, width: 90, height: 80, rotation: 0 }
+  const textBoxes: TextBox[] = [
+    { 
+      name: 'About', 
+      x: 1052, 
+      y: 1057, 
+      width: 265, 
+      height: 174, 
+      rotation: 0,
+      text: "Hi there, I'm John Close.\n\nI've been a copywriter at Verve|Showrunner since 2022.\n\nPet my dog, and I'll tell you more about me."
+    },
+    { 
+      name: 'Telescope', 
+      x: 1468, 
+      y: 1155, 
+      width: 80, 
+      height: 33, 
+      rotation: 40,
+      text: "Award Scope"
+    },
+    { 
+      name: 'Turn Back', 
+      x: 2190, 
+      y: 4573, 
+      width: 120, 
+      height: 45, 
+      rotation: -17,
+      text: "Danger!\nTurn Back!"
+    },
+    { 
+      name: 'Comedy Section', 
+      x: 1240, 
+      y: 5407, 
+      width: 155, 
+      height: 80, 
+      rotation: 0,
+      text: "Click the projector to check out my comedy."
+    },
+    { 
+      name: 'Work Sign', 
+      x: 7252, 
+      y: 1372, 
+      width: 156, 
+      height: 82, 
+      rotation: 0,
+      text: "Branded Stones.\n\nChuck a Branded Stone in the water and watch the surface ripple into work."
+    },
+    { 
+      name: 'Zoom Wizard', 
+      x: 4535, 
+      y: 5131, 
+      width: 90, 
+      height: 80, 
+      rotation: 0,
+      text: "Bet you wish you could zoom out, eh?\n\nTake this!"
+    }
   ];
+
+  // About text pieces
+  const aboutTexts = [
+    "Hi there, I'm John Close.\n\nI've been a copywriter at Verve|Showrunner since 2022.\n\nPet my dog, and I'll tell you more about me.",
+    "Good work! Now...",
+    "I'm a copywriter for money. And for love.\n\nBut mostly for money.",
+    "I like my work to be enjoyable and honest.\n\nLike that bit about the money.",
+    "I also like to create ads that are smart and simple.\n\nThat way, people actually enjoy them and they stay great quality.",
+    "It's the only way I can feel good about my ideas when friends and family ask about them.",
+    "Particularly my niece...\n\nShe's too young to know polite from cutthroat.\n\nMy doodle may be smiling, but the writer behind it is wincing at the thought.",
+    "Now, many great advertisers aim for honest, smart, simple work.\n\nBut these are the things that really set me apart:",
+    "My 'yes and' attitude to ideas.\n\nBrave the 'Danger' section, and you'll see I'm a dedicated improviser.",
+    "My delightful golden retriever energy.\n\nMessage me for a coffee and you'll get the picture.\n\nAnd hopefully want to work with me.",
+    "Finally, I'll go the distance to bring an idea to life.\n\nWhether it's learning new skills or working on the weekend.",
+    "Just take this whiteboard website. I'm not a coder or a designer.\n\nThis is all DIY, baby!",
+    "Anyway, I'm proud to say this has led me to a fair few awards.\n\nHover over them in the sky above for more details on what I've won.",
+    "And if you want to see the work they're for, head over to my work section.",
+    "Oh, you want me to say all this again?\n\nWell... if you insist."
+  ];
+
+  // State for current text index
+  const [currentAboutIndex, setCurrentAboutIndex] = useState(0);
+
+  // Handle button click
+  const handleDogClick = () => {
+    setCurrentAboutIndex((prevIndex) => (prevIndex + 1) % aboutTexts.length);
+  };
 
   // Text box style
   const textBoxStyle2: React.CSSProperties = {
     position: 'absolute',
-    backgroundColor: 'rgba(255, 255, 255, 0.3)', // More transparent
+    backgroundColor: 'transparent', 
     border: 'none',
     boxShadow: 'none',
     fontFamily: 'WhiteboardFont',
@@ -942,7 +1028,35 @@ const App: React.FC = () => {
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     padding: '2px 4px',
-    cursor: 'default'
+    cursor: 'default',
+    whiteSpace: 'pre-line'
+  };
+
+  // Button style
+  const buttonStyle: React.CSSProperties = {
+    position: 'absolute',
+    width: '225px',
+    height: '130px',
+    backgroundColor: 'transparent',
+    borderRadius: '25px',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: 'transparent',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: '1410px',
+    left: '1327px',
+    transform: 'translate(-50%, -50%)',
+    zIndex: 10,
+    transition: 'background-color 0.3s ease',
+  };
+
+  // Button hover style
+  const buttonHoverStyle: React.CSSProperties = {
+    backgroundColor: '#FFA500',
   };
 
   return (
@@ -1195,7 +1309,7 @@ const App: React.FC = () => {
                       : '24px'
                 }}
               >
-                {box.name}
+                {box.name === 'About' ? aboutTexts[currentAboutIndex] : box.text}
               </div>
             ))}
             {/* Speech Bubble */}
@@ -1261,6 +1375,15 @@ const App: React.FC = () => {
                 </p>
               </div>
             )}
+            {/* Button */}
+            <button
+              style={{
+                ...buttonStyle,
+              }}
+              onClick={handleDogClick}
+            >
+              Pet Dog
+            </button>
           </div>
         </TransformComponent>
       </TransformWrapper>
