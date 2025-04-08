@@ -37,6 +37,9 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
 }) => {
   const [currentSlide, setCurrentSlide] = useState(initialSlide);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [videoLoading, setVideoLoading] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
 
   const currentSlideData = slides[currentSlide];
 
@@ -55,6 +58,18 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
       });
     }
   }, [currentSlide, currentSlideData]);
+
+  useEffect(() => {
+    if (currentSlideData?.type === 'video') {
+      setVideoLoading(true);
+      setVideoError(false);
+      setCurrentVideoUrl(currentSlideData.url);
+    } else {
+      setVideoLoading(false);
+      setVideoError(false);
+      setCurrentVideoUrl(null);
+    }
+  }, [currentSlideData]);
 
   const handleNext = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -78,22 +93,104 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
     });
 
     if (type === 'video') {
-      // For videos, we'll use an iframe regardless of the URL format
       return (
-        <iframe
-          src={url}
-          style={{
-            width: '100%',
-            height: '100%',
-            border: 'none',
+        <div 
+          style={{ 
+            width: '100%', 
+            height: '100%', 
+            position: 'relative',
+            backgroundColor: '#000'
           }}
-          onError={(e) => {
-            console.error('Video failed to load:', url);
-          }}
-          onLoad={(e) => {
-            console.log('Video loaded:', url);
-          }}
-        />
+        >
+          {videoLoading && !videoError && (
+            <div style={{ 
+              width: '100%', 
+              height: '100%', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1
+            }}>
+              <div>Loading video...</div>
+            </div>
+          )}
+
+          {videoError && (
+            <div style={{ 
+              width: '100%', 
+              height: '100%', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              flexDirection: 'column',
+              gap: '10px',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1
+            }}>
+              <div>Video failed to load</div>
+              <button onClick={() => {
+                setVideoError(false);
+                setVideoLoading(true);
+              }}>Retry</button>
+            </div>
+          )}
+
+          {!videoError && (
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              height: '100%',
+              overflow: 'hidden'
+            }}>
+              <iframe
+                src={url}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  display: videoLoading ? 'none' : 'block',
+                  objectFit: 'contain'
+                }}
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture; clipboard-write"
+                allowFullScreen
+                frameBorder="0"
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation allow-downloads"
+                onLoad={(e) => {
+                  console.log('Video loaded:', url);
+                  setVideoLoading(false);
+                  // Try to autoplay the video
+                  const iframe = e.target as HTMLIFrameElement;
+                  const player = iframe.contentWindow;
+                  if (player) {
+                    player.postMessage({
+                      event: 'command',
+                      func: 'playVideo'
+                    }, '*');
+                  }
+                }}
+                onError={(e) => {
+                  console.error('Video failed to load:', url);
+                  setVideoLoading(false);
+                  setVideoError(true);
+                }}
+              />
+            </div>
+          )}
+        </div>
       );
     }
 
