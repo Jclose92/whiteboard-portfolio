@@ -99,14 +99,26 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
       );
     }
 
+    // For images, use the original Google Drive URL with proper CORS handling
+    const imageUrl = currentSlideData.url;
+    
     return (
       <img
-        src={currentSlideData.url}
+        src={imageUrl}
         alt={currentSlideData.title || 'Slide'}
         style={{
           width: '100%',
           height: '100%',
           objectFit: 'contain',
+        }}
+        crossOrigin="anonymous"
+        onError={(e) => {
+          console.error('Image failed to load:', imageUrl);
+          // Add a fallback background color
+          e.currentTarget.style.background = '#f0f0f0';
+        }}
+        onLoad={(e) => {
+          console.log('Image loaded:', imageUrl);
         }}
       />
     );
