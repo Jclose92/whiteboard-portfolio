@@ -93,316 +93,78 @@ const App: React.FC = () => {
     height: '230px',
   });
 
-  // Projector slideshow state
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isSlideshowLoading, setIsSlideshowLoading] = useState(false);
-  const [projectorSlides, setProjectorSlides] = useState<string[]>([]);
-
-  // Projector button position
-  const projectorButtonPosition = {
-    x: 1053 - (130 / 2), // 1053 is the center, subtract half the width
-    y: 5458 - (90 / 2), // 5458 is the center, subtract half the height
-    width: 130,
-    height: 90,
+  // Brand text content
+  const brandContent: Record<string, { description: string; slides: string[] }> = {
+    Lyons: {
+      description: 'We\'re Square\nWhat?\nTransition them from their beloved pyramid bags to their new square ones.\nHow?\nA full PR and advertising campaign celebrating just how spiritually square both tea and the people who drink it are, and how great it is when we own that.',
+      slides: ['/images/lyons-slide-1.jpg', '/images/lyons-slide-2.jpg']
+    },
+    Tayto: {
+      description: 'Where Is Mr Tayto\nWhat?\nWe made Mr. Tayto relevant to the Gen-Z audience.\nHow?\nA 2 week PR stunt touting Mr Tayto\'s disappearance from packaging before unveiling a 6 week long, 50 video, TikTok campaign of him travelling the globe in-person, doubling Tayto\'s online following.',
+      slides: ['/images/tayto-slide-1.jpg', '/images/tayto-slide-2.jpg']
+    },
+    'Aer Lingus': {
+      description: 'Sadie\'s Home\nWhat?\nFilm their Christmas within an incredibly quick turnaround time.\nHow?\nEfficiently delivering a heart melting twist on a classic airport reunion and showing Aer Lingus\' passion for bringing us together at Christmas time.',
+      slides: ['/images/aer-lingus-slide-1.jpg', '/images/aer-lingus-slide-2.jpg']
+    },
+    Certa: {
+      description: 'Breaking Boundaries\nWhat?\nLaunch their sponsorship of the Irish women\'s cricket team.\nHow?\nThree digital videos of outdated cricket relics being smashed apart in mesmerising slow motion, along with any old notions of the sport or this exceptional team.',
+      slides: ['/images/certa-slide-1.jpg', '/images/certa-slide-2.jpg']
+    },
+    Headstuff: {
+      description: 'Join the Cast\nWhat?\nWe brought them fresh listeners and ideas for podcasts.\nHow?\nA competition, which we bolstered with 2 audio ads, requiring a short voice note pitch for a podcast, where finalists record a pilot for a clash to win their own series.',
+      slides: ['/images/headstuff-slide-1.jpg', '/images/headstuff-slide-2.jpg']
+    },
+    Kerry: {
+      description: 'Pride of Kerry\nWhat?\nWe celebrated their 30 year sponsorship of the Kerry GAA team.\nHow?\nA docu-film showing where both Kerry, the team, and everyone in The Kingdom\'s overwhelming pride comes from, perfectly timing its release for the All Ireland.',
+      slides: ['/images/kerry-slide-1.jpg', '/images/kerry-slide-2.jpg']
+    }
   };
 
-  // Slideshow container position
-  const slideshowContainerPosition = {
-    x1: 912,
-    y1: 5128,
-    x2: 1258,
-    y2: 5290,
+  // Move to a specific point and center it on screen
+  const moveTo = (x: number, y: number) => {
+    const screenCenterX = window.innerWidth / 2;
+    const screenCenterY = window.innerHeight / 2;
+
+    const scaledX = x * scale;
+    const scaledY = y * scale;
+
+    const targetX = screenCenterX - scaledX;
+    const targetY = screenCenterY - scaledY;
+
+    if (transformRef.current) {
+      transformRef.current.setTransform(targetX, targetY, scale);
+    }
   };
 
-  // Load slides from public/slides directory
+  // Center after image loads and transform wrapper is ready
   useEffect(() => {
-    const loadSlides = async () => {
-      try {
-        const response = await fetch('/slides/manifest.json');
-        if (response.ok) {
-          const manifest = await response.json();
-          setProjectorSlides(manifest.slides);
-        }
-      } catch (error) {
-        console.error('Error loading slides:', error);
+    if (imageLoaded && transformRef.current && !initialized) {
+      const timeout = setTimeout(() => {
+        moveTo(4070, 2990); // Your preferred view
+        setInitialized(true);
+      }, 400); // Give TransformWrapper time to initialize
+
+      return () => clearTimeout(timeout);
+    }
+  }, [imageLoaded, initialized]);
+
+  // Prevent accidental pan on click (only allow if user dragged)
+  const handleMouseDown = (e: React.MouseEvent) => {
+    clickStart.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (clickStart.current) {
+      const dx = Math.abs(e.clientX - clickStart.current.x);
+      const dy = Math.abs(e.clientY - clickStart.current.y);
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < 5 && transformRef.current) {
+        transformRef.current.resetTransform(); // Reset transform to prevent accidental pan
       }
-    };
-    loadSlides();
-  }, []);
-
-  // Projector button style
-  const projectorButtonStyle: React.CSSProperties = {
-    position: 'absolute' as React.CSSProperties['position'],
-    top: `${projectorButtonPosition.y / imageHeight * 100}%` as React.CSSProperties['top'],
-    left: `${projectorButtonPosition.x / imageWidth * 100}%` as React.CSSProperties['left'],
-    width: `${projectorButtonPosition.width}px` as React.CSSProperties['width'],
-    height: `${projectorButtonPosition.height}px` as React.CSSProperties['height'],
-    backgroundColor: 'transparent',
-    border: 'none' as React.CSSProperties['border'],
-    color: 'transparent',
-    cursor: 'pointer' as React.CSSProperties['cursor'],
-    display: 'flex' as React.CSSProperties['display'],
-    alignItems: 'center' as React.CSSProperties['alignItems'],
-    justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    opacity: 0,
-  };
-
-  // Projector slideshow container style
-  const projectorContainerStyle: React.CSSProperties = {
-    position: 'absolute' as React.CSSProperties['position'],
-    top: `${slideshowContainerPosition.y1 / imageHeight * 100}%` as React.CSSProperties['top'],
-    left: `${slideshowContainerPosition.x1 / imageWidth * 100}%` as React.CSSProperties['left'],
-    width: `${slideshowContainerPosition.x2 - slideshowContainerPosition.x1}px` as React.CSSProperties['width'],
-    height: `${slideshowContainerPosition.y2 - slideshowContainerPosition.y1}px` as React.CSSProperties['height'],
-    backgroundColor: 'white',
-    borderRadius: '8px' as React.CSSProperties['borderRadius'],
-    display: 'flex' as React.CSSProperties['display'],
-    flexDirection: 'column' as React.CSSProperties['flexDirection'],
-    alignItems: 'center' as React.CSSProperties['alignItems'],
-    justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    zIndex: 13 as React.CSSProperties['zIndex'],
-    overflow: 'hidden',
-  };
-
-  // Projector slide style
-  const projectorSlideStyle: React.CSSProperties = {
-    width: '100%' as React.CSSProperties['width'],
-    height: '100%' as React.CSSProperties['height'],
-    transition: 'transform 0.5s ease-in-out' as React.CSSProperties['transition'],
-    position: 'absolute' as React.CSSProperties['position'],
-    top: 0 as React.CSSProperties['top'],
-    left: 0 as React.CSSProperties['left'],
-    opacity: 0 as React.CSSProperties['opacity'],
-    transform: 'translateX(100%)' as React.CSSProperties['transform'],
-  };
-
-  // Handle projector slide change
-  const handleProjectorSlideChange = () => {
-    if (isSlideshowLoading) return;
-
-    setIsSlideshowLoading(true);
-    
-    // Play sound effect
-    const audio = new Audio('/Website Projector Slide Change Sound Effect 🔉📽 _ HQ 4.mp3');
-    audio.play().catch(console.error);
-
-    // Update current slide
-    const nextIndex = (currentSlideIndex + 1) % projectorSlides.length;
-    setCurrentSlideIndex(nextIndex);
-
-    // Reset loading state after animation
-    setTimeout(() => {
-      setIsSlideshowLoading(false);
-    }, 500);
-  };
-
-  // Get slide transform
-  const getSlideTransform = (index: number) => {
-    if (index === currentSlideIndex) {
-      return {
-        opacity: 1,
-        transform: 'translateX(0)',
-      };
     }
-    return {
-      opacity: 0,
-      transform: 'translateX(100%)',
-    };
+    clickStart.current = null;
   };
-
-  // Original slideshow state
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [slides, setSlides] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Handle original slide change
-  const handleOriginalSlideChange = (direction: 'left' | 'right') => {
-    if (isLoading) return;
-
-    setIsLoading(true);
-    
-    const newSlide = direction === 'left'
-      ? (currentSlide - 1 + slides.length) % slides.length
-      : (currentSlide + 1) % slides.length;
-
-    setCurrentSlide(newSlide);
-    setTimeout(() => setIsLoading(false), 500);
-  };
-
-  // Slideshow slide style
-  const slideshowSlideStyle: React.CSSProperties = {
-    width: '100%' as React.CSSProperties['width'],
-    height: '100%' as React.CSSProperties['height'],
-    transition: 'transform 0.5s ease-in-out' as React.CSSProperties['transition'],
-    position: 'absolute' as React.CSSProperties['position'],
-    top: 0 as React.CSSProperties['top'],
-    left: 0 as React.CSSProperties['left'],
-    opacity: 0 as React.CSSProperties['opacity'],
-    transform: 'translateX(100%)' as React.CSSProperties['transform'],
-  };
-
-  // Hover text box style
-  const hoverTextBoxStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: `${(582 + 5) / imageHeight * 100}%`,
-    left: `${(1086 - 6) / imageWidth * 100}%`,
-    width: '180px',
-    height: '250px',
-    backgroundColor: 'transparent',
-    border: 'none',
-    padding: '8px',
-    borderRadius: '4px',
-    zIndex: 13,
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    fontFamily: 'WhiteboardFont',
-    fontSize: '18px',
-    overflow: 'auto',
-    whiteSpace: 'pre-wrap'
-  };
-
-  // Hover item style
-  const getHoverItemStyle = (item: { x: number; y: number; width: number; height: number; rotation?: number }) => {
-    const style: React.CSSProperties = {
-      position: 'absolute' as React.CSSProperties['position'],
-      top: `${(item.y - item.height / 2) / imageHeight * 100}%` as React.CSSProperties['top'],
-      left: `${(item.x - item.width / 2) / imageWidth * 100}%` as React.CSSProperties['left'],
-      width: `${item.width}px` as React.CSSProperties['width'],
-      height: `${item.height}px` as React.CSSProperties['height'],
-      backgroundColor: 'transparent',
-      display: 'flex' as React.CSSProperties['display'],
-      alignItems: 'center' as React.CSSProperties['alignItems'],
-      justifyContent: 'center' as React.CSSProperties['justifyContent'],
-      cursor: 'pointer' as React.CSSProperties['cursor'],
-      zIndex: 12 as React.CSSProperties['zIndex'],
-      transition: 'opacity 0.2s ease',
-      opacity: 1 as React.CSSProperties['opacity'],
-      border: 'none',
-    };
-
-    return style;
-  };
-
-  // Handle hover
-  const handleHover = (text: string) => {
-    setHoveredItem(text);
-  };
-
-  const handleHoverLeave = () => {
-    setHoveredItem(null);
-  };
-
-  // Render hover text
-  const renderHoverText = () => {
-    if (!hoveredItem) return null;
-    return (
-      <div style={hoverTextBoxStyle}>
-        <p>{hoverTextContent[hoveredItem as keyof typeof hoverTextContent]}</p>
-      </div>
-    );
-  };
-
-  // Play sound effect
-  const playSound = () => {
-    const audio = new Audio('/A Stone Thrown In Water _ Sound Effects _ Water Sounds _ Human Sounds 4.mp3');
-    audio.play().catch(console.error);
-  };
-
-  // Handle button click with overlay animation
-  const handleBrandClick = (brand: string) => {
-    playSound();
-    setSelectedBrand(brand);
-    
-    // Only show overlay if it hasn't been shown before
-    if (!hasPlayedAnimations) {
-      setShowSlideshow(true);
-      setShowOverlay(true);
-      
-      // Only set hasPlayedAnimations to true if it hasn't been set before
-      setHasPlayedAnimations(true);
-      
-      // Start overlay animation
-      setTimeout(() => {
-        setOverlayAnimation(true);
-        
-        // Hide overlay after animation completes
-        setTimeout(() => {
-          setShowOverlay(false);
-          setOverlayAnimation(false);
-        }, 2100);
-      }, 1000);
-
-      // Show eraser animation
-      setShowEraserAnimation(true);
-      
-      // Set initial position
-      setEraserPosition({
-        top: `${850 / 5992 * 100}%`,
-        left: `${5500 / 8472 * 100}%`,
-        width: '667px',
-        height: '230px',
-      });
-
-      // Remove animation after completion
-      setTimeout(() => {
-        setShowEraserAnimation(false);
-      }, 3700);
-    } else {
-      // For subsequent clicks, just show the slideshow without the overlay
-      setShowSlideshow(true);
-    }
-
-    // Load slides for the selected brand
-    const brandSlides = brandContent[brand]?.slides || [];
-    setSlides(brandSlides);
-    setCurrentSlide(0);
-  };
-
-  // Button style for central buttons
-  const btnStyle = (top: string, left: string, color: string, rotate: string): React.CSSProperties => ({
-    position: 'absolute',
-    top,
-    left,
-    width: '120px',
-    height: '60px',
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: 'black',
-    fontWeight: 'bold',
-    fontSize: '32px',
-    fontFamily: 'WhiteboardFont, sans-serif',
-    padding: '0 4px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'opacity 0.2s ease',
-    opacity: 0.8,
-    transform: `translate(-50%, -50%) rotate(${rotate})`,
-  });
-
-  // Return button style
-  const returnBtnStyle = (top: string, left: string, color: string, width: string = '220px', height: string = '220px'): React.CSSProperties => ({
-    position: 'absolute',
-    top,
-    left,
-    width,
-    height,
-    backgroundColor: 'transparent',
-    color: 'black',
-    border: 'none',
-    borderRadius: '50%',
-    cursor: 'pointer',
-    fontSize: '24px',
-    fontFamily: 'WhiteboardFont, sans-serif',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'all 0.3s ease',
-    transform: 'translate(-50%, -50%)',
-    transformOrigin: 'center',
-  });
 
   // Text box style
   const textBoxStyle: React.CSSProperties = {
@@ -502,107 +264,63 @@ const App: React.FC = () => {
   const renderOverlay = () => (
     <div style={overlayStyle}>
       <img
-        src="/images/Slideshow Overlay.png"
+        src="/images/Slideshow Overlay.jpg"
         alt="Overlay"
         style={overlayImageStyle}
       />
     </div>
   );
 
-  // Brand text content
-  const brandContent: Record<string, { description: string; slides: string[] }> = {
-    Lyons: {
-      description: 'We\'re Square\nWhat?\nTransition them from their beloved pyramid bags to their new square ones.\nHow?\nA full PR and advertising campaign celebrating just how spiritually square both tea and the people who drink it are, and how great it is when we own that.',
-      slides: ['/images/lyons-slide-1.jpg', '/images/lyons-slide-2.jpg']
-    },
-    Tayto: {
-      description: 'Where Is Mr Tayto\nWhat?\nWe made Mr. Tayto relevant to the Gen-Z audience.\nHow?\nA 2 week PR stunt touting Mr Tayto\'s disappearance from packaging before unveiling a 6 week long, 50 video, TikTok campaign of him travelling the globe in-person, doubling Tayto\'s online following.',
-      slides: ['/images/tayto-slide-1.jpg', '/images/tayto-slide-2.jpg']
-    },
-    'Aer Lingus': {
-      description: 'Sadie\'s Home\nWhat?\nFilm their Christmas within an incredibly quick turnaround time.\nHow?\nEfficiently delivering a heart melting twist on a classic airport reunion and showing Aer Lingus\' passion for bringing us together at Christmas time.',
-      slides: ['/images/aer-lingus-slide-1.jpg', '/images/aer-lingus-slide-2.jpg']
-    },
-    Certa: {
-      description: 'Breaking Boundaries\nWhat?\nLaunch their sponsorship of the Irish women\'s cricket team.\nHow?\nThree digital videos of outdated cricket relics being smashed apart in mesmerising slow motion, along with any old notions of the sport or this exceptional team.',
-      slides: ['/images/certa-slide-1.jpg', '/images/certa-slide-2.jpg']
-    },
-    Headstuff: {
-      description: 'Join the Cast\nWhat?\nWe brought them fresh listeners and ideas for podcasts.\nHow?\nA competition, which we bolstered with 2 audio ads, requiring a short voice note pitch for a podcast, where finalists record a pilot for a clash to win their own series.',
-      slides: ['/images/headstuff-slide-1.jpg', '/images/headstuff-slide-2.jpg']
-    },
-    Kerry: {
-      description: 'Pride of Kerry\nWhat?\nWe celebrated their 30 year sponsorship of the Kerry GAA team.\nHow?\nA docu-film showing where both Kerry, the team, and everyone in The Kingdom\'s overwhelming pride comes from, perfectly timing its release for the All Ireland.',
-      slides: ['/images/kerry-slide-1.jpg', '/images/kerry-slide-2.jpg']
-    }
+  // Play sound effect
+  const playSound = () => {
+    const audio = new Audio('/A Stone Thrown In Water _ Sound Effects _ Water Sounds _ Human Sounds 4.mp3');
+    audio.play().catch(console.error);
   };
 
-  // Move to a specific point and center it on screen
-  const moveTo = (x: number, y: number) => {
-    const screenCenterX = window.innerWidth / 2;
-    const screenCenterY = window.innerHeight / 2;
+  // Handle button click with overlay animation
+  const handleBrandClick = (brand: string) => {
+    playSound();
+    setSelectedBrand(brand);
+    
+    // Only show overlay if it hasn't been shown before
+    if (!hasPlayedAnimations) {
+      setShowSlideshow(true);
+      setShowOverlay(true);
+      
+      // Only set hasPlayedAnimations to true if it hasn't been set before
+      setHasPlayedAnimations(true);
+      
+      // Start overlay animation
+      setTimeout(() => {
+        setOverlayAnimation(true);
+        
+        // Hide overlay after animation completes
+        setTimeout(() => {
+          setShowOverlay(false);
+          setOverlayAnimation(false);
+        }, 2100);
+      }, 1000);
 
-    const scaledX = x * scale;
-    const scaledY = y * scale;
+      // Show eraser animation
+      setShowEraserAnimation(true);
+      
+      // Set initial position
+      setEraserPosition({
+        top: `${850 / 5992 * 100}%`,
+        left: `${5500 / 8472 * 100}%`,
+        width: '667px',
+        height: '230px',
+      });
 
-    const targetX = screenCenterX - scaledX;
-    const targetY = screenCenterY - scaledY;
-
-    if (transformRef.current) {
-      transformRef.current.setTransform(targetX, targetY, scale);
+      // Remove animation after completion
+      setTimeout(() => {
+        setShowEraserAnimation(false);
+      }, 3700);
+    } else {
+      // For subsequent clicks, just show the slideshow without the overlay
+      setShowSlideshow(true);
     }
   };
-
-  // Center after image loads and transform wrapper is ready
-  useEffect(() => {
-    if (imageLoaded && transformRef.current && !initialized) {
-      const timeout = setTimeout(() => {
-        moveTo(4070, 2990); // Your preferred view
-        setInitialized(true);
-      }, 400); // Give TransformWrapper time to initialize
-
-      return () => clearTimeout(timeout);
-    }
-  }, [imageLoaded, initialized]);
-
-  // Prevent accidental pan on click (only allow if user dragged)
-  const handleMouseDown = (e: React.MouseEvent) => {
-    clickStart.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handleMouseUp = (e: React.MouseEvent) => {
-    if (clickStart.current) {
-      const dx = Math.abs(e.clientX - clickStart.current.x);
-      const dy = Math.abs(e.clientY - clickStart.current.y);
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance < 5 && transformRef.current) {
-        transformRef.current.resetTransform(); // Reset transform to prevent accidental pan
-      }
-    }
-    clickStart.current = null;
-  };
-
-  // Slideshow control button style
-  const slideshowBtnStyle = (top: string, left: string, color: string): React.CSSProperties => ({
-    position: 'absolute' as React.CSSProperties['position'],
-    top,
-    left,
-    width: '40px' as React.CSSProperties['width'],
-    height: '40px' as React.CSSProperties['height'],
-    backgroundColor: color as React.CSSProperties['backgroundColor'],
-    border: 'none' as React.CSSProperties['border'],
-    borderRadius: '50%' as React.CSSProperties['borderRadius'],
-    zIndex: 20 as React.CSSProperties['zIndex'],
-    cursor: 'pointer' as React.CSSProperties['cursor'],
-    color: 'white' as React.CSSProperties['color'],
-    fontWeight: 'bold' as React.CSSProperties['fontWeight'],
-    fontSize: '16px' as React.CSSProperties['fontSize'],
-    display: 'flex' as React.CSSProperties['display'],
-    alignItems: 'center' as React.CSSProperties['alignItems'],
-    justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    transition: 'opacity 0.2s ease' as React.CSSProperties['transition'],
-    opacity: 0.8 as React.CSSProperties['opacity'],
-  });
 
   // Brand button style
   const brandBtnStyle = (top: string, left: string, color: string, rotate: string, width: string, height: string): React.CSSProperties => ({
@@ -611,19 +329,126 @@ const App: React.FC = () => {
     left,
     width,
     height,
-    backgroundColor: 'transparent',
+    backgroundColor: color as React.CSSProperties['backgroundColor'],
     border: 'none' as React.CSSProperties['border'],
     borderRadius: '50%' as React.CSSProperties['borderRadius'],
     transform: `translate(-50%, -50%) rotate(${rotate})` as React.CSSProperties['transform'],
     cursor: 'pointer' as React.CSSProperties['cursor'],
-    zIndex: 12,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    zIndex: 12 as React.CSSProperties['zIndex'],
+    display: 'flex' as React.CSSProperties['display'],
+    alignItems: 'center' as React.CSSProperties['alignItems'],
+    justifyContent: 'center' as React.CSSProperties['justifyContent'],
     boxShadow: 'none',
     pointerEvents: 'auto',
     transition: 'opacity 0.3s ease',
   });
+
+  // Button style for central buttons
+  const btnStyle = (top: string, left: string, color: string, rotate: string): React.CSSProperties => ({
+    position: 'absolute',
+    top,
+    left,
+    width: '120px',
+    height: '60px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: '32px',
+    fontFamily: 'WhiteboardFont, sans-serif',
+    padding: '0 4px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'opacity 0.2s ease',
+    opacity: 0.8,
+    transform: `translate(-50%, -50%) rotate(${rotate})`,
+  });
+
+  // Return button style
+  const returnBtnStyle = (top: string, left: string, color: string, width: string = '220px', height: string = '220px'): React.CSSProperties => ({
+    position: 'absolute',
+    top,
+    left,
+    width,
+    height,
+    backgroundColor: 'transparent',
+    color: 'black',
+    border: 'none',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    fontSize: '24px',
+    fontFamily: 'WhiteboardFont, sans-serif',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.3s ease',
+    transform: 'translate(-50%, -50%)',
+    transformOrigin: 'center',
+  });
+
+  // Hover text box style
+  const hoverTextBoxStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: `${(582 + 5) / imageHeight * 100}%`,
+    left: `${(1086 - 6) / imageWidth * 100}%`,
+    width: '180px',
+    height: '250px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    padding: '8px',
+    borderRadius: '4px',
+    zIndex: 13,
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    fontFamily: 'WhiteboardFont',
+    fontSize: '18px',
+    overflow: 'auto',
+    whiteSpace: 'pre-wrap'
+  };
+
+  // Hover item style
+  const getHoverItemStyle = (item: { x: number; y: number; width: number; height: number; rotation?: number }) => {
+    const style: React.CSSProperties = {
+      position: 'absolute' as React.CSSProperties['position'],
+      top: `${(item.y - item.height / 2) / imageHeight * 100}%` as React.CSSProperties['top'],
+      left: `${(item.x - item.width / 2) / imageWidth * 100}%` as React.CSSProperties['left'],
+      width: `${item.width}px` as React.CSSProperties['width'],
+      height: `${item.height}px` as React.CSSProperties['height'],
+      backgroundColor: 'transparent',
+      display: 'flex' as React.CSSProperties['display'],
+      alignItems: 'center' as React.CSSProperties['alignItems'],
+      justifyContent: 'center' as React.CSSProperties['justifyContent'],
+      cursor: 'pointer' as React.CSSProperties['cursor'],
+      zIndex: 12 as React.CSSProperties['zIndex'],
+      transition: 'opacity 0.2s ease',
+      opacity: 1 as React.CSSProperties['opacity'],
+      border: 'none',
+    };
+
+    return style;
+  };
+
+  // Handle hover
+  const handleHover = (text: string) => {
+    setHoveredItem(text);
+  };
+
+  const handleHoverLeave = () => {
+    setHoveredItem(null);
+  };
+
+  // Render hover text
+  const renderHoverText = () => {
+    if (!hoveredItem) return null;
+    return (
+      <div style={hoverTextBoxStyle}>
+        <p>{hoverTextContent[hoveredItem as keyof typeof hoverTextContent]}</p>
+      </div>
+    );
+  };
 
   // Eraser animation style
   const eraserAnimation: React.CSSProperties = {
@@ -1127,25 +952,12 @@ const App: React.FC = () => {
               )}
             </div>
 
-            {/* Projector Slideshow */}
-            <button
-              onClick={handleProjectorSlideChange}
-              style={projectorButtonStyle}
-            >
-              Projector
-            </button>
-
-            <div style={projectorContainerStyle}>
-              {projectorSlides.map((slide, index) => (
-                <div
-                  key={index}
-                  style={{
-                    ...projectorSlideStyle,
-                    ...getSlideTransform(index),
-                  }}
-                >
+            {/* Original Slideshow */}
+            {showSlideshow && selectedBrand && (
+              <div style={slideshowContainerStyle}>
+                <div style={slideshowImageStyle}>
                   <img
-                    src={slide}
+                    src={brandContent[selectedBrand]?.slides?.[0] || '/images/placeholder.jpg'}
                     alt="Slide"
                     style={{
                       width: '100%' as React.CSSProperties['width'],
@@ -1154,47 +966,9 @@ const App: React.FC = () => {
                     }}
                   />
                 </div>
-              ))}
-            </div>
-
-            {/* Original Slideshow */}
-            {showSlideshow && (
-              <>
-                <div style={slideshowContainerStyle}>
-                  <div style={slideshowImageStyle}>
-                    <img
-                      src={slides[currentSlide]}
-                      alt="Slide"
-                      style={{
-                        width: '100%' as React.CSSProperties['width'],
-                        height: '100%' as React.CSSProperties['height'],
-                        objectFit: 'cover' as React.CSSProperties['objectFit'],
-                      }}
-                    />
-                  </div>
-                  <button
-                    onClick={() => handleOriginalSlideChange('left')}
-                    style={{
-                      ...slideshowBtnStyle,
-                      left: '10px' as React.CSSProperties['left'],
-                    }}
-                  >
-                    {'<'}
-                  </button>
-                  <button
-                    onClick={() => handleOriginalSlideChange('right')}
-                    style={{
-                      ...slideshowBtnStyle,
-                      right: '10px' as React.CSSProperties['right'],
-                    }}
-                  >
-                    {'>'}
-                  </button>
-                </div>
-                {showOverlay && renderOverlay()}
-              </>
+              </div>
             )}
-
+            {showOverlay && renderOverlay()}
             <img
               src="/Portfolio Website Main Image 4 copy.jpg"
               alt="Portfolio Whiteboard"
@@ -1268,17 +1042,24 @@ const App: React.FC = () => {
             </button>
 
             {/* Brand Buttons */}
-            {brandButtons.map((brand, index) => (
+            {brandButtons.map((brand) => (
               <button
-                key={index}
+                key={brand.text}
                 onClick={() => handleBrandClick(brand.text)}
-                style={brandBtnStyle(`${brand.y / imageHeight * 100}%`, `${brand.x / imageWidth * 100}%`, 'transparent', '0deg', `${brand.width}px`, `${brand.height}px`)}
+                style={brandBtnStyle(
+                  `${brand.y / imageHeight * 100}%`,
+                  `${brand.x / imageWidth * 100}%`,
+                  'transparent',
+                  '0deg',
+                  `${brand.width}px`,
+                  `${brand.height}px`
+                )}
               />
             ))}
             {/* Hoverable Items */}
-            {hoverableItems.map((item, index) => (
+            {hoverableItems.map((item) => (
               <button
-                key={index}
+                key={item.text}
                 onMouseOver={() => handleHover(item.text)}
                 onMouseLeave={handleHoverLeave}
                 style={getHoverItemStyle(item)}
