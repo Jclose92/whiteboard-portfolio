@@ -97,27 +97,70 @@ const App: React.FC = () => {
   const brandContent: Record<string, { description: string; slides: string[] }> = {
     Lyons: {
       description: 'We\'re Square\nWhat?\nTransition them from their beloved pyramid bags to their new square ones.\nHow?\nA full PR and advertising campaign celebrating just how spiritually square both tea and the people who drink it are, and how great it is when we own that.',
-      slides: ['/images/lyons-slide-1.jpg', '/images/lyons-slide-2.jpg']
+      slides: [
+        'https://lh3.googleusercontent.com/d/1NQrYVED2G54hhl4cKv_zPrfWuMuwVtH4',
+        'https://lh3.googleusercontent.com/d/1CpzUwRmRax9c8PSlZEw-mR4FX0dubYe-',
+        'https://lh3.googleusercontent.com/d/1Nd2qIlW45gLmUfKOdfAex8BWYyNP6ec-',
+        'https://lh3.googleusercontent.com/d/1ryHRz4AXdNsmcEO7AzP4_c0wGuZX5RAj',
+        'https://lh3.googleusercontent.com/d/1lClZrPKMdeKOcG4-veYuj8a-RtQ9wWzp',
+        'https://lh3.googleusercontent.com/d/1IUHwGiyWL54CDFWzz5MTy9wbHd9iv1rd',
+        'https://lh3.googleusercontent.com/d/1hTAGaHk50rrtIrVStjptZmnNv_lDbXhk',
+        'https://lh3.googleusercontent.com/d/1JPKghp0qQSWakjdZtZ0F70mr5OzdCeAK',
+        'https://lh3.googleusercontent.com/d/1ozA3J-7YBS8BmApUxT5hqBAQvHCgw0XN',
+        'https://lh3.googleusercontent.com/d/1TmiHdwrUVQstabfuQ1A6FDOkpGrUiySl',
+        'https://lh3.googleusercontent.com/d/1j687Vgae0nsUlW3TnAugtW7ND4713Y4e',
+        'https://lh3.googleusercontent.com/d/1NatbnSB6u2h8zrZ5Z7HjEtoZd-rmntKq',
+        'https://lh3.googleusercontent.com/d/1Fy3qsbCOL9AG67p5mKD9Cy8zUuz3bukU',
+        'https://lh3.googleusercontent.com/d/1Tk5Hb_X9zwr4-f_ndSACik2cQj58qgZq',
+        'https://lh3.googleusercontent.com/d/11__8QbUNirZW7dGc_eW61a2A-tTyX2-k',
+        'https://lh3.googleusercontent.com/d/1Df6zl2wRhgLlxUXKQDNcexHMyL-RHvM4',
+        'https://lh3.googleusercontent.com/d/12c1Eh-xowoibPFIRTDfpvIPxEpwDHFU5',
+        'https://lh3.googleusercontent.com/d/1CD3KmCVd8mNH5dfNiVWXpiLoZcvDbBfm'
+      ]
     },
     Tayto: {
-      description: 'Where Is Mr Tayto\nWhat?\nWe made Mr. Tayto relevant to the Gen-Z audience.\nHow?\nA 2 week PR stunt touting Mr Tayto\'s disappearance from packaging before unveiling a 6 week long, 50 video, TikTok campaign of him travelling the globe in-person, doubling Tayto\'s online following.',
-      slides: ['/images/tayto-slide-1.jpg', '/images/tayto-slide-2.jpg']
-    },
-    'Aer Lingus': {
-      description: 'Sadie\'s Home\nWhat?\nFilm their Christmas within an incredibly quick turnaround time.\nHow?\nEfficiently delivering a heart melting twist on a classic airport reunion and showing Aer Lingus\' passion for bringing us together at Christmas time.',
-      slides: ['/images/aer-lingus-slide-1.jpg', '/images/aer-lingus-slide-2.jpg']
-    },
-    Certa: {
-      description: 'Breaking Boundaries\nWhat?\nLaunch their sponsorship of the Irish women\'s cricket team.\nHow?\nThree digital videos of outdated cricket relics being smashed apart in mesmerising slow motion, along with any old notions of the sport or this exceptional team.',
-      slides: ['/images/certa-slide-1.jpg', '/images/certa-slide-2.jpg']
-    },
-    Headstuff: {
-      description: 'Join the Cast\nWhat?\nWe brought them fresh listeners and ideas for podcasts.\nHow?\nA competition, which we bolstered with 2 audio ads, requiring a short voice note pitch for a podcast, where finalists record a pilot for a clash to win their own series.',
-      slides: ['/images/headstuff-slide-1.jpg', '/images/headstuff-slide-2.jpg']
+      description: 'Where Is Mr Tayto\nWhat?\nWe made Mr. Tayto relevant to the Gen-Z audience.\nHow?\nA 2 week PR stunt touting Mr Tayto\'s disappearance from packaging before unveiling a 50 video, TikTok campaign of him travelling the globe in-person, doubling Tayto\'s online following.',
+      slides: [
+        'https://lh3.googleusercontent.com/d/1QKtDkmBtEpkBdfXOiajz9i7atViXJy8K',
+        'https://lh3.googleusercontent.com/d/19uvguWDXZa_vyjI4SdPgC9wB-frpgwJs',
+        'https://lh3.googleusercontent.com/d/1SkK0GWSf2ilXQJOWnh-Gt7-G1XORLsTJ',
+        'https://lh3.googleusercontent.com/d/1lCBUzBlKKHmZ1Rj5yhCvfdcfLdBlwmJQ',
+        'https://lh3.googleusercontent.com/d/1clYdMoRyXKsvj1SmlNZn0iMGJGF8XnD0',
+        'https://lh3.googleusercontent.com/d/1eFi9_1z9d7xU7QiWppQ0Z1BGdV8w_PNI',
+        'https://lh3.googleusercontent.com/d/1LN-KrS3rSjXAWDDAGyYqr0cEstnGKKS8',
+        'https://lh3.googleusercontent.com/d/1zebyXCigSxhSe3Pt4Bitqa3nMa61Yklj'
+      ]
     },
     Kerry: {
       description: 'Pride of Kerry\nWhat?\nWe celebrated their 30 year sponsorship of the Kerry GAA team.\nHow?\nA docu-film showing where both Kerry, the team, and everyone in The Kingdom\'s overwhelming pride comes from, perfectly timing its release for the All Ireland.',
-      slides: ['/images/kerry-slide-1.jpg', '/images/kerry-slide-2.jpg']
+      slides: [
+        'https://lh3.googleusercontent.com/d/1NE3dQCKTOFJYPHpygrctYd27uyvCoYI-',
+        'https://lh3.googleusercontent.com/d/1ZuxMQ7a2tBTTYQT-xJEcogXHBH9Bmeot',
+        'https://lh3.googleusercontent.com/d/1e5BSWf5i0gQgKMkLGngBZuXGPDhSGkgX',
+        'https://lh3.googleusercontent.com/d/1VwmvseffaV5PXmQ_kRlHULvndk8zaogB'
+      ]
+    },
+    Certa: {
+      description: 'Breaking Boundaries\nWhat?\nLaunch their sponsorship of the Irish women\'s cricket team.\nHow?\nThree digital videos of outdated cricket relics being smashed apart in mesmerising slow motion, along with any old notions of the sport or this exceptional team.',
+      slides: [
+        'https://lh3.googleusercontent.com/d/15sOBTvKH2tJhCtTX5DeDK9FtmgrDGvq8',
+        'https://lh3.googleusercontent.com/d/1qdGHIrpxSBt6uaToELrr_IBtAwDQn7Wm',
+        'https://lh3.googleusercontent.com/d/1h0qHaHhrToued1LACuCCkGJyB0FZzWPH'
+      ]
+    },
+    Headstuff: {
+      description: 'If This Sounds Like You\nWhat?\nCreate a recruitment campaign for Headstuff.\nHow?\nA 30 second, 15 second, and 6 second campaign of an AI generated voiceover, with a simple but impactful visual of a hand writing on a whiteboard.\nResults?\n100% of candidates who applied for the role had seen the campaign.',
+      slides: [
+        'https://lh3.googleusercontent.com/d/1kA0teOILfxwbxkwk3iwZVwIx19ymVPKO',
+        'https://lh3.googleusercontent.com/d/1LNjQUX_HL1AWM6pYyBTy5knO-Iq-wcAc'
+      ]
+    },
+    'Aer Lingus': {
+      description: 'Sadie\'s Home\nWhat?\nFilm their Christmas within an incredibly quick turnaround time.\nHow?\nEfficiently delivering a heart melting twist on a classic airport reunion and showing Aer Lingus\' passion for bringing us together at Christmas time.',
+      slides: [
+        'https://lh3.googleusercontent.com/d/1JelRhbwXGZxNb84EED35Ers7JXSRB1R_',
+        'https://lh3.googleusercontent.com/d/1kS-hfb3RmxUtkFw2VcTpjLWQ5KvJyIfq'
+      ]
     }
   };
 
