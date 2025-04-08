@@ -123,9 +123,9 @@ const App: React.FC = () => {
       description: 'Where Is Mr Tayto\nWhat?\nWe made Mr. Tayto relevant to the Gen-Z audience.\nHow?\nA 2 week PR stunt touting Mr Tayto\'s disappearance from packaging before unveiling a 50 video, TikTok campaign of him travelling the globe in-person, doubling Tayto\'s online following.',
       slides: [
         { url: 'https://drive.google.com/file/d/1QKtDkmBtEpkBdfXOiajz9i7atViXJy8K/preview', type: 'video' },
-        { url: 'https://lh3.googleusercontent.com/d/19uvguWDXZa_vyjI4SdPgC9wB-frpgwJs', type: 'image' },
-        { url: 'https://lh3.googleusercontent.com/d/1SkK0GWSf2ilXQJOWnh-Gt7-G1XORLsTJ', type: 'image' },
-        { url: 'https://lh3.googleusercontent.com/d/1lCBUzBlKKHmZ1Rj5yhCvfdcfLdBlwmJQ', type: 'image' },
+        { url: 'https://drive.google.com/file/d/19uvguWDXZa_vyjI4SdPgC9wB-frpgwJs/preview', type: 'video' },
+        { url: 'https://drive.google.com/file/d/1SkK0GWSf2ilXQJOWnh-Gt7-G1XORLsTJ/preview', type: 'video' },
+        { url: 'https://drive.google.com/file/d/1lCBUzBlKKHmZ1Rj5yhCvfdcfLdBlwmJQ/preview', type: 'video' },
         { url: 'https://drive.google.com/file/d/1clYdMoRyXKsvj1SmlNZn0iMGJGF8XnD0/preview', type: 'video' },
         { url: 'https://drive.google.com/file/d/1eFi9_1z9d7xU7QiWppQ0Z1BGdV8w_PNI/preview', type: 'video' },
         { url: 'https://drive.google.com/file/d/1LN-KrS3rSjXAWDDAGyYqr0cEstnGKKS8/preview', type: 'video' },
@@ -136,31 +136,31 @@ const App: React.FC = () => {
       description: 'Pride of Kerry\nWhat?\nWe celebrated their 30 year sponsorship of the Kerry GAA team.\nHow?\nA docu-film showing where both Kerry, the team, and everyone in The Kingdom\'s overwhelming pride comes from, perfectly timing its release for the All Ireland.',
       slides: [
         { url: 'https://drive.google.com/file/d/1NE3dQCKTOFJYPHpygrctYd27uyvCoYI-/preview', type: 'video' },
-        { url: 'https://lh3.googleusercontent.com/d/1ZuxMQ7a2tBTTYQT-xJEcogXHBH9Bmeot', type: 'image' },
-        { url: 'https://lh3.googleusercontent.com/d/1e5BSWf5i0gQgKMkLGngBZuXGPDhSGkgX', type: 'image' },
-        { url: 'https://lh3.googleusercontent.com/d/1VwmvseffaV5PXmQ_kRlHULvndk8zaogB', type: 'image' }
+        { url: 'https://drive.google.com/file/d/1ZuxMQ7a2tBTTYQT-xJEcogXHBH9Bmeot/preview', type: 'video' },
+        { url: 'https://drive.google.com/file/d/1e5BSWf5i0gQgKMkLGngBZuXGPDhSGkgX/preview', type: 'video' },
+        { url: 'https://drive.google.com/file/d/1VwmvseffaV5PXmQ_kRlHULvndk8zaogB/preview', type: 'video' }
       ]
     },
     Certa: {
       description: 'Breaking Boundaries\nWhat?\nLaunch their sponsorship of the Irish women\'s cricket team.\nHow?\nThree digital videos of outdated cricket relics being smashed apart in mesmerising slow motion, along with any old notions of the sport or this exceptional team.',
       slides: [
-        { url: 'https://lh3.googleusercontent.com/d/15sOBTvKH2tJhCtTX5DeDK9FtmgrDGvq8', type: 'image' },
-        { url: 'https://lh3.googleusercontent.com/d/1qdGHIrpxSBt6uaToELrr_IBtAwDQn7Wm', type: 'image' },
-        { url: 'https://lh3.googleusercontent.com/d/1h0qHaHhrToued1LACuCCkGJyB0FZzWPH', type: 'image' }
+        { url: 'https://drive.google.com/file/d/15sOBTvKH2tJhCtTX5DeDK9FtmgrDGvq8/preview', type: 'video' },
+        { url: 'https://drive.google.com/file/d/1qdGHIrpxSBt6uaToELrr_IBtAwDQn7Wm/preview', type: 'video' },
+        { url: 'https://drive.google.com/file/d/1h0qHaHhrToued1LACuCCkGJyB0FZzWPH/preview', type: 'video' }
       ]
     },
     Headstuff: {
       description: 'If This Sounds Like You\nWhat?\nCreate a recruitment campaign for Headstuff.\nHow?\nA 30 second, 15 second, and 6 second campaign of an AI generated voiceover, with a simple but impactful visual of a hand writing on a whiteboard.\nResults?\n100% of candidates who applied for the role had seen the campaign.',
       slides: [
-        { url: 'https://lh3.googleusercontent.com/d/1kA0teOILfxwbxkwk3iwZVwIx19ymVPKO', type: 'image' },
-        { url: 'https://lh3.googleusercontent.com/d/1LNjQUX_HL1AWM6pYyBTy5knO-Iq-wcAc', type: 'image' }
+        { url: 'https://drive.google.com/file/d/1kA0teOILfxwbxkwk3iwZVwIx19ymVPKO/preview', type: 'video' },
+        { url: 'https://drive.google.com/file/d/1LNjQUX_HL1AWM6pYyBTy5knO-Iq-wcAc/preview', type: 'video' }
       ]
     },
     'Aer Lingus': {
       description: 'Sadie\'s Home\nWhat?\nFilm their Christmas within an incredibly quick turnaround time.\nHow?\nEfficiently delivering a heart melting twist on a classic airport reunion and showing Aer Lingus\' passion for bringing us together at Christmas time.',
       slides: [
-        { url: 'https://lh3.googleusercontent.com/d/1JelRhbwXGZxNb84EED35Ers7JXSRB1R_', type: 'image' },
-        { url: 'https://lh3.googleusercontent.com/d/1kS-hfb3RmxUtkFw2VcTpjLWQ5KvJyIfq', type: 'image' }
+        { url: 'https://drive.google.com/file/d/1JelRhbwXGZxNb84EED35Ers7JXSRB1R_/preview', type: 'video' },
+        { url: 'https://drive.google.com/file/d/1kS-hfb3RmxUtkFw2VcTpjLWQ5KvJyIfq/preview', type: 'video' }
       ]
     }
   };
