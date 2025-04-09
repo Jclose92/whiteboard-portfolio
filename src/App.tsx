@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import GoogleDriveSlideshow from './components/GoogleDriveSlideshow';
+import ComedySlideshow from './components/ComedySlideshow';
 import './index.css';
 
 const App: React.FC = () => {
@@ -83,8 +84,7 @@ const App: React.FC = () => {
     APMCs: "APMCs\n\n2024\nLyons \"We're Square\"\nSilver in Non-Alc Beverage\nBronze in Integrated Campaign / Use of Talent\n\n2023\nWhere is Mr Tayto?\nGold in Use of Digital / FMCG\nSilver in Integrated Campaign",
     DMAs: "Digital Media Awards\n\n2022\nWhere is Mr Tayto?\nGold in Strategy",
     IAAs: "Irish Audio Awards\n\n2025\nLyons Gen Tea\nWin in Casting\nShortlists in Innovation / Consumer\n\n2024\nHeadstuff \"If this sounds like you…\"\nShortlist in Copywriting Craft",
-    Impact: "European Impact Awards\n\n2024\nLyons \"We're Square\"\nBronze in Integrated\n\n2023\nWhere is Mr Tayto?\nGold in Integrated",
-    Work: "Chuck a Stone in and watch work ripple to the surface."
+    Impact: "European Impact Awards\n\n2024\nLyons \"We're Square\"\nBronze in Integrated\n\n2023\nWhere is Mr Tayto?\nGold in Integrated"
   };
 
   // Add eraser animation state
@@ -97,10 +97,6 @@ const App: React.FC = () => {
 
   // Brand text content
   const brandContent: Record<string, { description: string; slides: { url: string; type: 'video' | 'image' }[] }> = {
-    Work: {
-      description: 'Chuck a Stone in and watch work ripple to the surface.',
-      slides: []
-    },
     Lyons: {
       description: 'We\'re Square\nWhat?\nTransition them from their beloved pyramid bags to their new square ones.\nHow?\nA full PR and advertising campaign celebrating just how spiritually square both tea and the people who drink it are, and how great it is when we own that.',
       slides: [
@@ -857,7 +853,7 @@ const App: React.FC = () => {
       width: 156, 
       height: 82, 
       rotation: 0,
-      text: "Chuck a Branded Stone in the water and watch the surface ripple into work."
+      text: "Chuck a Stone in and watch work ripple to the surface."
     },
     { 
       name: 'Zoom Wizard', 
@@ -940,6 +936,23 @@ const App: React.FC = () => {
   // Button hover style
   const buttonHoverStyle: React.CSSProperties = {
     backgroundColor: '#FFA500',
+  };
+
+  // Comedy slideshow configuration
+  const comedySlideshow = {
+    slides: [], // Will be populated with video/image URLs later
+    x: 888,
+    y: 5124,
+    width: 400, // 1288 - 888 = 400
+    height: 200  // 5324 - 5124 = 200
+  };
+
+  // Comedy button position
+  const comedyButtonPosition = {
+    x: 1046,
+    y: 5454,
+    width: 130,
+    height: 100
   };
 
   return (
@@ -1234,6 +1247,34 @@ const App: React.FC = () => {
               onClick={handleDogClick}
             >
               Pet Dog
+            </button>
+            {/* Comedy Slideshow */}
+            <ComedySlideshow
+              slides={comedySlideshow.slides}
+              x={comedySlideshow.x}
+              y={comedySlideshow.y}
+              width={comedySlideshow.width}
+              height={comedySlideshow.height}
+            />
+            {/* Comedy Button */}
+            <button
+              style={{
+                position: 'absolute',
+                top: `${comedyButtonPosition.y / 5992 * 100}%`,
+                left: `${comedyButtonPosition.x / 8472 * 100}%`,
+                width: `${comedyButtonPosition.width}px`,
+                height: `${comedyButtonPosition.height}px`,
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                pointerEvents: 'auto',
+                zIndex: 10
+              }}
+              onClick={() => {
+                // This will be handled by the ComedySlideshow component
+              }}
+            >
+              {/* Button content will be added later */}
             </button>
           </div>
         </TransformComponent>

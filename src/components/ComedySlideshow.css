@@ -1,0 +1,38 @@
+.comedy-screen {
+  position: absolute;
+  top: 5124px;
+  left: 888px;
+  width: 400px;  /* 1288 - 888 = 400 */
+  height: 200px; /* 5324 - 5124 = 200 */
+  background-color: #000;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.comedy-button {
+  position: absolute;
+  top: 5404px;
+  left: 981px; /* 1046 - 65 = 981 */
+  width: 130px;
+  height: 100px;
+  background-color: transparent;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 11;
+  transition: opacity 0.3s ease;
+  color: transparent;
+  font-size: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comedy-button:hover {
+  opacity: 0.7;
+}
+
+.comedy-sound {
+  display: none;
+}
