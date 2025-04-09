@@ -161,7 +161,9 @@ const App: React.FC = () => {
       ]
     },
     'Aer Lingus': {
-      description: 'Sadie\'s Home\nWhat?\nFilm their Christmas within an incredibly quick turnaround time.\nHow?\nEfficiently delivering a heart melting twist on a classic airport reunion and showing Aer Lingus\' passion for bringing us together at Christmas time.',
+      description: currentSlide === 1 
+        ? 'Calm\nWhat?\nDemonstrate how welcoming and soothing it is aboard their flights.\nHow?\nA series of 8 hour long ambience videos for their YouTube, immersing audiences into Aer Lingus window seats and aeroplane soundscapes, perfect to work or relax to.'
+        : 'Sadie\'s Home\nWhat?\nFilm their Christmas within an incredibly quick turnaround time.\nHow?\nEfficiently delivering a heart melting twist on a classic airport reunion and showing Aer Lingus\' passion for bringing us together at Christmas time.',
       slides: [
         { url: 'https://drive.google.com/file/d/1JelRhbwXGZxNb84EED35Ers7JXSRB1R_/preview', type: 'video' },
         { url: 'https://drive.google.com/file/d/1kS-hfb3RmxUtkFw2VcTpjLWQ5KvJyIfq/preview', type: 'video' }
