@@ -83,7 +83,8 @@ const App: React.FC = () => {
     APMCs: "APMCs\n\n2024\nLyons \"We're Square\"\nSilver in Non-Alc Beverage\nBronze in Integrated Campaign / Use of Talent\n\n2023\nWhere is Mr Tayto?\nGold in Use of Digital / FMCG\nSilver in Integrated Campaign",
     DMAs: "Digital Media Awards\n\n2022\nWhere is Mr Tayto?\nGold in Strategy",
     IAAs: "Irish Audio Awards\n\n2025\nLyons Gen Tea\nWin in Casting\nShortlists in Innovation / Consumer\n\n2024\nHeadstuff \"If this sounds like you…\"\nShortlist in Copywriting Craft",
-    Impact: "European Impact Awards\n\n2024\nLyons \"We're Square\"\nBronze in Integrated\n\n2023\nWhere is Mr Tayto?\nGold in Integrated"
+    Impact: "European Impact Awards\n\n2024\nLyons \"We're Square\"\nBronze in Integrated\n\n2023\nWhere is Mr Tayto?\nGold in Integrated",
+    Work: "Chuck a Stone in and watch work ripple to the surface."
   };
 
   // Add eraser animation state
@@ -96,6 +97,10 @@ const App: React.FC = () => {
 
   // Brand text content
   const brandContent: Record<string, { description: string; slides: { url: string; type: 'video' | 'image' }[] }> = {
+    Work: {
+      description: 'Chuck a Stone in and watch work ripple to the surface.',
+      slides: []
+    },
     Lyons: {
       description: 'We\'re Square\nWhat?\nTransition them from their beloved pyramid bags to their new square ones.\nHow?\nA full PR and advertising campaign celebrating just how spiritually square both tea and the people who drink it are, and how great it is when we own that.',
       slides: [
@@ -150,7 +155,7 @@ const App: React.FC = () => {
       ]
     },
     Headstuff: {
-      description: 'If This Sounds Like You\nWhat?\nCreate a recruitment campaign for Headstuff.\nHow?\nA 30 second, 15 second, and 6 second campaign of an AI generated voiceover, with a simple but impactful visual of a hand writing on a whiteboard.\nResults?\n100% of candidates who applied for the role had seen the campaign.',
+      description: 'Join the Cast\nWhat?\nWe brought them fresh listeners and ideas for podcasts.\nHow?\nA competition, which we bolstered with 2 audio ads, requiring a short voice note pitch for a podcast, where finalists record a pilot for a clash to win their own series.',
       slides: [
         { url: 'https://drive.google.com/file/d/1kA0teOILfxwbxkwk3iwZVwIx19ymVPKO/preview', type: 'video' },
         { url: 'https://drive.google.com/file/d/1LNjQUX_HL1AWM6pYyBTy5knO-Iq-wcAc/preview', type: 'video' }
