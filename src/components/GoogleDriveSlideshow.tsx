@@ -166,22 +166,36 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
     <div className={`google-drive-slideshow ${className}`} style={{ width, height }}>
       <div className="slideshow-content">
         {getMediaElement()}
-        {showTitle && currentSlideData?.title && (
-          <h2>{currentSlideData.title}</h2>
-        )}
-        {showDescription && currentSlideData?.description && (
-          <p>{currentSlideData.description}</p>
+        {showControls && (
+          <div className="slideshow-navigation-buttons">
+            <button 
+              className="slideshow-navigation-button prev"
+              onClick={handlePrev}
+              disabled={slides.length <= 1}
+              title="Previous slide"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button 
+              className="slideshow-navigation-button next"
+              onClick={handleNext}
+              disabled={slides.length <= 1}
+              title="Next slide"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         )}
       </div>
-      {showControls && (
-        <div className="slideshow-controls">
-          <button onClick={handlePrev} disabled={slides.length <= 1}>
-            Previous
-          </button>
-          <button onClick={handleNext} disabled={slides.length <= 1}>
-            Next
-          </button>
-        </div>
+      {showTitle && currentSlideData?.title && (
+        <h2>{currentSlideData.title}</h2>
+      )}
+      {showDescription && currentSlideData?.description && (
+        <p>{currentSlideData.description}</p>
       )}
       {showNavigation && (
         <div className="slideshow-navigation">

@@ -8,6 +8,7 @@
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .slideshow-info {
@@ -89,4 +90,48 @@
   background: white;
   width: 12px;
   height: 12px;
+}
+
+.slideshow-navigation-buttons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.slideshow-navigation-button {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background-color 0.2s ease;
+}
+
+.slideshow-navigation-button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.slideshow-navigation-button.prev {
+  left: 10px;
+}
+
+.slideshow-navigation-button.next {
+  right: 10px;
+}
+
+.slideshow-navigation-button svg {
+  width: 20px;
+  height: 20px;
 }
