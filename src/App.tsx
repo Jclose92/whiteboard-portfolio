@@ -940,11 +940,27 @@ const App: React.FC = () => {
 
   // Comedy slideshow configuration
   const comedySlideshow = {
-    slides: [], // Will be populated with video/image URLs later
+    slides: [
+      { url: 'https://lh3.googleusercontent.com/d/18IukjC7Bfj0fEovg9T-tkZnDwGlnlONH', type: 'image' },
+      { url: 'https://drive.google.com/file/d/1uXkXPzRdHxyh3w6jG30wHA1Ui5xzDNnu/preview', type: 'video' },
+      { url: 'https://lh3.googleusercontent.com/d/1nXenwLfnnvjmA3R4PUyhwJSB2r5t23AM', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/1lDPGyQymQ4ASZ9O7c37Vewzy8grrzXil', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/1coWXwzX0e0kcCO4aseFXaSVZnMB7yCoi', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/1BWL2gTrk29mYswZqgrrIhCDQ3EV1cxJ1', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/1yJcB1RMX1g6BFIXHVuAC9KXB7RV4HWBI', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/1I70Z61a_3w7sY5rdcOpDWh8gSYV8Wfum', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/11b6Osj9KAHEchHe3ElMu1EGgFOb5rMRr', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/1LE8zRTJd81AUDZ3BGoU2hn-VJSIQhbjK', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/13D4OPBrmEtT-9ZojVhJE2ibNPxrSCEKY', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/1ZrST0o-HkQCjeXmyotViK0bskSdfGdFB', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/1OWZ1a8XEp0Y1-6kAXWvJ-q39SHvX48zv', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/1Jm5iAgRKV6Q8NPnlAORnxu8hb7xeInkn', type: 'image' },
+      { url: 'https://lh3.googleusercontent.com/d/1tU6griG5MkEjJP1g02-qpeLJCclN0imy', type: 'image' }
+    ] as { url: string; type: 'video' | 'image' }[],
     x: 888,
-    y: 5124,
-    width: 400, // 1288 - 888 = 400
-    height: 200  // 5324 - 5124 = 200
+    y: 5084, // 5124 - 40
+    width: 400,
+    height: 240  // 200 + 40
   };
 
   // Comedy button position

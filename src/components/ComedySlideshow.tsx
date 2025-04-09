@@ -36,7 +36,7 @@ const ComedySlideshow: React.FC<ComedySlideshowProps> = ({ slides = [], x = 0, y
 
     const currentSlide = slides[currentSlideIndex % slides.length];
     
-    if (!currentSlide) {
+    if (!currentSlide?.url) {
       return null;
     }
 
@@ -57,6 +57,7 @@ const ComedySlideshow: React.FC<ComedySlideshowProps> = ({ slides = [], x = 0, y
       );
     }
 
+    // For l3h URLs, we can use them directly
     return (
       <img
         src={currentSlide.url}
