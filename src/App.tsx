@@ -96,9 +96,12 @@ const App: React.FC = () => {
   });
 
   // Brand text content
+  const [currentSlide, setCurrentSlide] = useState(0);
   const brandContent: Record<string, { description: string; slides: { url: string; type: 'video' | 'image' }[] }> = {
     Lyons: {
-      description: 'We\'re Square\nWhat?\nTransition them from their beloved pyramid bags to their new square ones.\nHow?\nA full PR and advertising campaign celebrating just how spiritually square both tea and the people who drink it are, and how great it is when we own that.',
+      description: currentSlide >= 10 && currentSlide <= 17 
+        ? 'Gen Tea\nWhat?\nReaffirm Lyons\' \"Puts the Talk into Tea\" position in a campaign that needed to be radio first.\nHow?\nCharming cut downs of real chats between actual Lyons tea drinkers from different generations, showing tea brings us together no matter our age.'
+        : 'We\'re Square\nWhat?\nTransition them from their beloved pyramid bags to their new square ones.\nHow?\nA full PR and advertising campaign celebrating just how spiritually square both tea and the people who drink it are, and how great it is when we own that.',
       slides: [
         { url: 'https://drive.google.com/file/d/1NQrYVED2G54hhl4cKv_zPrfWuMuwVtH4/preview', type: 'video' },
         { url: 'https://lh3.googleusercontent.com/d/1CpzUwRmRax9c8PSlZEw-mR4FX0dubYe-', type: 'image' },
@@ -408,6 +411,7 @@ const App: React.FC = () => {
     alignItems: 'center',
     justifyContent: 'center',
     transition: 'all 0.3s ease',
+    zIndex: 10,
     transform: 'translate(-50%, -50%)',
     transformOrigin: 'center',
   });
@@ -1031,6 +1035,7 @@ const App: React.FC = () => {
                   width="100%"
                   height="100%"
                   className="slideshow-container"
+                  onSlideChange={(slideIndex) => setCurrentSlide(slideIndex)}
                 />
               </div>
             )}

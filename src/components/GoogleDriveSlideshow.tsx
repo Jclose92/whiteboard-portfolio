@@ -20,6 +20,7 @@ interface GoogleDriveSlideshowProps {
   width?: string | number;
   height?: string | number;
   className?: string;
+  onSlideChange?: (slideIndex: number) => void;
 }
 
 const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
@@ -34,6 +35,7 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
   width = '100%',
   height = '100%',
   className = '',
+  onSlideChange,
 }) => {
   const [currentSlide, setCurrentSlide] = useState(initialSlide);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -43,11 +45,15 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
   const currentSlideData = slides[currentSlide];
 
   const handleNext = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    const nextSlide = (currentSlide + 1) % slides.length;
+    setCurrentSlide(nextSlide);
+    onSlideChange?.(nextSlide);
   };
 
   const handlePrev = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    const prevSlide = (currentSlide - 1 + slides.length) % slides.length;
+    setCurrentSlide(prevSlide);
+    onSlideChange?.(prevSlide);
   };
 
   const getMediaElement = () => {
