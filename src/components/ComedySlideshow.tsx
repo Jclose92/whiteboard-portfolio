@@ -17,6 +17,8 @@ interface ComedySlideshowProps {
 const ComedySlideshow: React.FC<ComedySlideshowProps> = ({ slides = [], x = 0, y = 0, width = 0, height = 0 }) => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [videoLoading, setVideoLoading] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const soundRef = useRef<HTMLAudioElement>(null);
 
   const handleNextSlide = () => {
@@ -42,22 +44,98 @@ const ComedySlideshow: React.FC<ComedySlideshowProps> = ({ slides = [], x = 0, y
 
     if (currentSlide.type === 'video') {
       return (
-        <iframe
-          src={currentSlide.url}
-          allow="autoplay; encrypted-media; fullscreen"
-          allowFullScreen
-          frameBorder="0"
-          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain',
+        <div 
+          style={{ 
+            width: '100%', 
+            height: '100%', 
+            position: 'relative',
+            backgroundColor: '#000'
           }}
-        />
+        >
+          {videoLoading && !videoError && (
+            <div style={{ 
+              width: '100%', 
+              height: '100%', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1
+            }}>
+              <div>Loading video...</div>
+            </div>
+          )}
+
+          {videoError && (
+            <div style={{ 
+              width: '100%', 
+              height: '100%', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              flexDirection: 'column',
+              gap: '10px',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1
+            }}>
+              <div>Video failed to load</div>
+              <button onClick={() => {
+                setVideoError(false);
+                setVideoLoading(true);
+              }}>Retry</button>
+            </div>
+          )}
+
+          {!videoError && (
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              height: '100%',
+              overflow: 'hidden'
+            }}>
+              <iframe
+                src={currentSlide.url}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  display: videoLoading ? 'none' : 'block',
+                  objectFit: 'contain'
+                }}
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture; clipboard-write"
+                allowFullScreen
+                frameBorder="0"
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation allow-downloads"
+                onLoad={() => {
+                  console.log('Video loaded');
+                  setVideoLoading(false);
+                }}
+                onError={() => {
+                  console.error('Video failed to load');
+                  setVideoLoading(false);
+                  setVideoError(true);
+                }}
+              />
+            </div>
+          )}
+        </div>
       );
     }
 
-    // For l3h URLs, we can use them directly
+    // For images, we can use them directly
     return (
       <img
         src={currentSlide.url}
@@ -73,6 +151,8 @@ const ComedySlideshow: React.FC<ComedySlideshowProps> = ({ slides = [], x = 0, y
 
   useEffect(() => {
     setCurrentSlideIndex(0);
+    setVideoLoading(false);
+    setVideoError(false);
   }, [slides]);
 
   return (
