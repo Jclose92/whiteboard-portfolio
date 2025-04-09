@@ -39,37 +39,8 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoLoading, setVideoLoading] = useState(false);
   const [videoError, setVideoError] = useState(false);
-  const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
 
   const currentSlideData = slides[currentSlide];
-
-  useEffect(() => {
-    return () => {
-      // Cleanup function
-    };
-  }, []);
-
-  useEffect(() => {
-    if (currentSlideData) {
-      console.log('Slide changed:', {
-        index: currentSlide,
-        type: currentSlideData.type,
-        url: currentSlideData.url
-      });
-    }
-  }, [currentSlide, currentSlideData]);
-
-  useEffect(() => {
-    if (currentSlideData?.type === 'video') {
-      setVideoLoading(true);
-      setVideoError(false);
-      setCurrentVideoUrl(currentSlideData.url);
-    } else {
-      setVideoLoading(false);
-      setVideoError(false);
-      setCurrentVideoUrl(null);
-    }
-  }, [currentSlideData]);
 
   const handleNext = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -83,14 +54,6 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
     if (!currentSlideData) return null;
 
     const { url, type } = currentSlideData;
-
-    // Log the type and URL for debugging
-    console.log('Processing slide:', {
-      type,
-      url,
-      isDriveUrl: url.includes('drive.google.com'),
-      isGoogleImage: url.includes('lh3.googleusercontent.com')
-    });
 
     if (type === 'video') {
       return (
@@ -169,21 +132,12 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
                 allowFullScreen
                 frameBorder="0"
                 sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation allow-downloads"
-                onLoad={(e) => {
-                  console.log('Video loaded:', url);
+                onLoad={() => {
+                  console.log('Video loaded');
                   setVideoLoading(false);
-                  // Try to autoplay the video
-                  const iframe = e.target as HTMLIFrameElement;
-                  const player = iframe.contentWindow;
-                  if (player) {
-                    player.postMessage({
-                      event: 'command',
-                      func: 'playVideo'
-                    }, '*');
-                  }
                 }}
-                onError={(e) => {
-                  console.error('Video failed to load:', url);
+                onError={() => {
+                  console.error('Video failed to load');
                   setVideoLoading(false);
                   setVideoError(true);
                 }}
@@ -194,53 +148,24 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
       );
     }
 
-    // For images, we'll use an img tag
+    // For images, use the l3h format
     return (
       <img
         src={url}
         alt=""
-        className="media-item"
         style={{
           width: '100%',
           height: '100%',
           objectFit: 'contain',
         }}
-        crossOrigin="anonymous"
-        onError={(e) => {
-          console.error('Image failed to load:', url);
-          e.currentTarget.style.background = '#f0f0f0';
-        }}
-        onLoad={(e) => {
-          console.log('Image loaded:', url);
-        }}
       />
     );
   };
 
-  const renderNavigationDots = () => {
-    if (!showNavigation) return null;
-
-    return (
-      <div className="slideshow-navigation">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            className={`dot ${index === currentSlide ? 'active' : ''}`}
-            onClick={() => setCurrentSlide(index)}
-          />
-        ))}
-      </div>
-    );
-  };
-
   return (
-    <div
-      className={`google-drive-slideshow ${className}`}
-      style={{ width, height }}
-    >
+    <div className={`google-drive-slideshow ${className}`} style={{ width, height }}>
       <div className="slideshow-content">
         {getMediaElement()}
-        
         {showTitle && currentSlideData?.title && (
           <h2>{currentSlideData.title}</h2>
         )}
@@ -248,27 +173,27 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
           <p>{currentSlideData.description}</p>
         )}
       </div>
-
       {showControls && (
-        <>
-          <button
-            className="slideshow-control prev"
-            onClick={handlePrev}
-            aria-label="Previous slide"
-          >
-            ❮
+        <div className="slideshow-controls">
+          <button onClick={handlePrev} disabled={slides.length <= 1}>
+            Previous
           </button>
-          <button
-            className="slideshow-control next"
-            onClick={handleNext}
-            aria-label="Next slide"
-          >
-            ❯
+          <button onClick={handleNext} disabled={slides.length <= 1}>
+            Next
           </button>
-        </>
+        </div>
       )}
-
-      {renderNavigationDots()}
+      {showNavigation && (
+        <div className="slideshow-navigation">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={index === currentSlide ? 'active' : ''}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
