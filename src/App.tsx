@@ -367,27 +367,6 @@ const App: React.FC = () => {
     }
   };
 
-  // Brand button style
-  const brandBtnStyle = (top: string, left: string, color: string, rotate: string, width: string, height: string): React.CSSProperties => ({
-    position: 'absolute' as React.CSSProperties['position'],
-    top,
-    left,
-    width,
-    height,
-    backgroundColor: color as React.CSSProperties['backgroundColor'],
-    border: 'none' as React.CSSProperties['border'],
-    borderRadius: '50%' as React.CSSProperties['borderRadius'],
-    transform: `translate(-50%, -50%) rotate(${rotate})` as React.CSSProperties['transform'],
-    cursor: 'pointer' as React.CSSProperties['cursor'],
-    zIndex: 12 as React.CSSProperties['zIndex'],
-    display: 'flex' as React.CSSProperties['display'],
-    alignItems: 'center' as React.CSSProperties['alignItems'],
-    justifyContent: 'center' as React.CSSProperties['justifyContent'],
-    boxShadow: 'none',
-    pointerEvents: 'auto',
-    transition: 'opacity 0.3s ease',
-  });
-
   // Button style for central buttons
   const btnStyle = (top: string, left: string, color: string, rotate: string): React.CSSProperties => ({
     position: 'absolute',
@@ -405,9 +384,10 @@ const App: React.FC = () => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    transition: 'opacity 0.2s ease',
+    transition: 'opacity 0.2s ease, transform 0.2s ease',
     opacity: 0.8,
     transform: `translate(-50%, -50%) rotate(${rotate})`,
+    cursor: 'pointer'
   });
 
   // Return button style
@@ -1155,7 +1135,7 @@ const App: React.FC = () => {
             {/* Navigation Buttons */}
             <button
               style={btnStyle('46.783%', '47.299%', 'red', '16deg')}
-              onClick={() => moveTo(934, 1200)}
+              onClick={() => moveTo(1052, 1057)}
             >
               About
             </button>
@@ -1215,14 +1195,27 @@ const App: React.FC = () => {
               <button
                 key={brand.text}
                 onClick={() => handleBrandClick(brand.text)}
-                style={brandBtnStyle(
-                  `${brand.y / imageHeight * 100}%`,
-                  `${brand.x / imageWidth * 100}%`,
-                  'transparent',
-                  '0deg',
-                  `${brand.width}px`,
-                  `${brand.height}px`
-                )}
+                style={{
+                  position: 'absolute',
+                  top: `${brand.y / imageHeight * 100}%`,
+                  left: `${brand.x / imageWidth * 100}%`,
+                  width: `${brand.width}px`,
+                  height: `${brand.height}px`,
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: 'black',
+                  fontWeight: 'bold',
+                  fontSize: '32px',
+                  fontFamily: 'WhiteboardFont, sans-serif',
+                  padding: '0 4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'opacity 0.2s ease, transform 0.2s ease',
+                  opacity: 0.8,
+                  transform: `translate(-50%, -50%) rotate(0deg)`,
+                  cursor: 'pointer'
+                }}
               />
             ))}
             {/* Hoverable Items */}
