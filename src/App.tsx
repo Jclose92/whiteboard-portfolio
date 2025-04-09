@@ -1074,8 +1074,8 @@ const App: React.FC = () => {
               style={{
                 position: 'absolute',
                 top: `${2974 / 5992 * 100}%`,
-                left: `${3501 / 8472 * 100}%`,
-                width: '245px',
+                left: `${3491 / 8472 * 100}%`,
+                width: '275px', // Increased width by 15px
                 height: '110px',
                 pointerEvents: 'none',
                 zIndex: 10,
@@ -1085,10 +1085,11 @@ const App: React.FC = () => {
                 textAlign: 'center',
                 fontFamily: 'WhiteboardFont',
                 color: '#000000',
-                fontSize: '19px',
+                fontSize: '23px',
                 lineHeight: '1.4',
                 textTransform: 'uppercase',
-                letterSpacing: '1px'
+                letterSpacing: '1px',
+                fontWeight: 'bold'
               }}
             >
               Advertising, Copywriting, Creative, Strategy, Direction, Writing, Ideation.
@@ -1109,9 +1110,9 @@ const App: React.FC = () => {
                 textAlign: 'center',
                 fontFamily: 'WhiteboardFont',
                 color: '#000000',
-                fontSize: '27px',
+                fontSize: '27px', // Increased font size
                 lineHeight: '1.5',
-                fontWeight: 'bold'
+                fontWeight: 'bold' // Added bold styling
               }}
             >
               John Close<br/>
