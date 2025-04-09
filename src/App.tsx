@@ -1119,6 +1119,39 @@ const App: React.FC = () => {
               Copywriter
             </div>
 
+            {/* Social Media Links */}
+            <a
+              href="https://www.instagram.com/johncloseinbriefs/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                position: 'absolute',
+                top: `${(5244 - (120 / 2)) / 5992 * 100}%`,
+                left: `${(6894 - (120 / 2)) / 8472 * 100}%`,
+                width: '120px',
+                height: '120px',
+                pointerEvents: 'auto',
+                zIndex: 10,
+                cursor: 'pointer'
+              }}
+            />
+
+            <a
+              href="https://www.linkedin.com/in/john-close/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                position: 'absolute',
+                top: `${(5246 - (130 / 2)) / 5992 * 100}%`,
+                left: `${(7024 - (110 / 2)) / 8472 * 100}%`,
+                width: '110px',
+                height: '130px',
+                pointerEvents: 'auto',
+                zIndex: 10,
+                cursor: 'pointer'
+              }}
+            />
+
             {/* Navigation Buttons */}
             <button
               style={btnStyle('46.783%', '47.299%', 'red', '16deg')}
