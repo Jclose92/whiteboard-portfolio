@@ -857,12 +857,12 @@ const App: React.FC = () => {
     },
     { 
       name: 'Zoom Wizard', 
-      x: 4535, 
-      y: 5131, 
-      width: 90, 
+      x: 4531, 
+      y: 5127, 
+      width: 95, 
       height: 80, 
       rotation: 0,
-      text: "Bet you wish you could zoom out, eh?\n\nTake this!"
+      text: "Wish you could zoom out?\n\nTake this!"
     }
   ];
 
@@ -1068,6 +1068,55 @@ const App: React.FC = () => {
               }}
               onLoad={() => setImageLoaded(true)}
             />
+
+            {/* New Text Boxes */}
+            <div
+              style={{
+                position: 'absolute',
+                top: `${2974 / 5992 * 100}%`,
+                left: `${3501 / 8472 * 100}%`,
+                width: '245px',
+                height: '110px',
+                pointerEvents: 'none',
+                zIndex: 10,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center',
+                fontFamily: 'WhiteboardFont',
+                color: '#000000',
+                fontSize: '19px',
+                lineHeight: '1.4',
+                textTransform: 'uppercase',
+                letterSpacing: '1px'
+              }}
+            >
+              Advertising, Copywriting, Creative, Strategy, Direction, Writing, Ideation.
+            </div>
+
+            <div
+              style={{
+                position: 'absolute',
+                top: `${3042 / 5992 * 100}%`,
+                left: `${4007 / 8472 * 100}%`,
+                width: '150px',
+                height: '80px',
+                pointerEvents: 'none',
+                zIndex: 10,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center',
+                fontFamily: 'WhiteboardFont',
+                color: '#000000',
+                fontSize: '27px',
+                lineHeight: '1.5',
+                fontWeight: 'bold'
+              }}
+            >
+              John Close<br/>
+              Copywriter
+            </div>
 
             {/* Navigation Buttons */}
             <button
