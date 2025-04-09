@@ -1135,7 +1135,7 @@ const App: React.FC = () => {
             {/* Navigation Buttons */}
             <button
               style={btnStyle('46.783%', '47.299%', 'red', '16deg')}
-              onClick={() => moveTo(1052, 1057)}
+              onClick={() => moveTo(1252, 1257)}
             >
               About
             </button>
@@ -1156,7 +1156,7 @@ const App: React.FC = () => {
 
             <button
               style={btnStyle('45.396%', '49.256%', 'yellow', '-18deg')}
-              onClick={() => moveTo(7014, 1400)}
+              onClick={() => moveTo(7272, 1231)}
             >
               Work
             </button>
