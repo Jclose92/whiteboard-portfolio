@@ -957,44 +957,79 @@ const App: React.FC = () => {
     height: 100
   };
 
+  // Add zoom handling
+  const [zoomLevel, setZoomLevel] = useState(1.0);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const [containerHeight, setContainerHeight] = useState(0);
+
+  useEffect(() => {
+    // Get the container dimensions
+    const container = document.querySelector('#root');
+    if (container) {
+      setContainerWidth(container.clientWidth);
+      setContainerHeight(container.clientHeight);
+    }
+
+    // Calculate optimal zoom level based on container size
+    const calculateOptimalZoom = () => {
+      const containerAspect = containerWidth / containerHeight;
+      const imageAspect = imageWidth / imageHeight;
+      
+      // Calculate the zoom level that maintains the aspect ratio
+      let zoom = 1.0;
+      if (containerAspect > imageAspect) {
+        // Container is wider than the image
+        zoom = containerHeight / imageHeight;
+      } else {
+        // Container is taller than the image
+        zoom = containerWidth / imageWidth;
+      }
+      
+      // Apply a minimum zoom level to ensure the image is visible
+      const minZoom = 0.5;
+      const maxZoom = 1.5;
+      const optimalZoom = Math.max(minZoom, Math.min(maxZoom, zoom));
+      
+      setZoomLevel(optimalZoom);
+    };
+
+    // Calculate initial zoom
+    calculateOptimalZoom();
+
+    // Recalculate zoom on window resize
+    const handleResize = () => {
+      if (container) {
+        setContainerWidth(container.clientWidth);
+        setContainerHeight(container.clientHeight);
+        calculateOptimalZoom();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [containerWidth, containerHeight]);
+
+  // Update TransformWrapper configuration
+  const transformWrapperStyle: React.CSSProperties = {
+    width: '100vw',
+    height: '100vh',
+    overflow: 'hidden',
+  };
+
   return (
-    <div
-      style={{
-        position: 'relative' as React.CSSProperties['position'],
-        width: '100vw',
-        height: '100vh',
-        overflow: 'hidden',
-      }}
-    >
+    <div style={transformWrapperStyle}>
       <TransformWrapper
-        ref={transformRef}
-        initialScale={scale}
-        minScale={scale}
-        maxScale={scale}
-        centerOnInit={false}
-        limitToBounds={true}
-        panning={{
-          disabled: false,
-          velocityDisabled: true,
-          allowLeftClickPan: true,
-          excluded: ['input', 'textarea', 'button']
-        }}
+        initialScale={zoomLevel}
+        minScale={0.5}
+        maxScale={3}
+        initialPositionX={0}
+        initialPositionY={0}
+        wheel={{ wheelDisabled: true }}
+        panning={{ disabled: true }}
         doubleClick={{ disabled: true }}
-        pinch={{ disabled: true }}
-        wheel={{ disabled: true }}
+        ref={transformRef}
       >
-        <TransformComponent
-          wrapperStyle={{
-            width: '100%' as React.CSSProperties['width'],
-            height: '100%' as React.CSSProperties['height'],
-          }}
-          contentStyle={{
-            width: `${imageWidth}px` as React.CSSProperties['width'],
-            height: `${imageHeight}px` as React.CSSProperties['height'],
-            position: 'relative' as React.CSSProperties['position'],
-            backgroundColor: '#fff' as React.CSSProperties['backgroundColor'],
-          }}
-        >
+        <TransformComponent>
           <div
             style={{
               width: imageWidth,
