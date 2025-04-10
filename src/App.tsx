@@ -960,17 +960,17 @@ const App: React.FC = () => {
   return (
     <div
       style={{
-        position: 'relative' as React.CSSProperties['position'],
+        position: 'relative',
         width: '100vw',
         height: '100vh',
-        overflow: 'hidden',
+        overflow: 'hidden'
       }}
     >
       <TransformWrapper
         ref={transformRef}
-        initialScale={scale}
-        minScale={scale}
-        maxScale={scale}
+        initialScale={1}
+        minScale={0.5}
+        maxScale={3}
         centerOnInit={false}
         limitToBounds={true}
         panning={{
@@ -985,21 +985,21 @@ const App: React.FC = () => {
       >
         <TransformComponent
           wrapperStyle={{
-            width: '100%' as React.CSSProperties['width'],
-            height: '100%' as React.CSSProperties['height'],
+            width: '100%',
+            height: '100%',
           }}
           contentStyle={{
-            width: `${imageWidth}px` as React.CSSProperties['width'],
-            height: `${imageHeight}px` as React.CSSProperties['height'],
-            position: 'relative' as React.CSSProperties['position'],
-            backgroundColor: '#fff' as React.CSSProperties['backgroundColor'],
+            width: `${imageWidth}px`,
+            height: `${imageHeight}px`,
+            position: 'relative',
+            backgroundColor: '#fff',
           }}
         >
           <div
             style={{
               width: imageWidth,
               height: imageHeight,
-              position: 'relative' as React.CSSProperties['position'],
+              position: 'relative',
             }}
           >
             {/* Text Box */}
