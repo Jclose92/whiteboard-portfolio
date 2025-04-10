@@ -6,7 +6,7 @@
       "use": "@vercel/static-build",
       "config": {
         "distDir": "build",
-        "buildCommand": "yarn install && yarn build"
+        "buildCommand": "npm run build:vercel"
       }
     }
   ],
