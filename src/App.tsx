@@ -765,8 +765,6 @@ const App: React.FC = () => {
     height: '217px',
     backgroundColor: 'transparent',
     borderRadius: '8px',
-    alignItems: 'center',
-    justifyContent: 'center',
     cursor: 'pointer',
     border: 'none',
     outline: 'none',
@@ -776,8 +774,6 @@ const App: React.FC = () => {
     transform: 'translate(-50%, -50%)',
     fontFamily: 'WhiteboardFont',
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     padding: 0,
   };
 
