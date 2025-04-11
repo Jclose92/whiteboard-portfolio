@@ -1,7 +1,12 @@
 export type DeviceType = 'desktop' | 'tablet' | 'mobile';
 export type Orientation = 'portrait' | 'landscape';
 
-export const detectDeviceType = () => {
+export interface DeviceInfo {
+  type: DeviceType;
+  orientation: Orientation;
+}
+
+export const detectDeviceType = (): DeviceInfo => {
   const userAgent = navigator.userAgent;
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
@@ -10,30 +15,30 @@ export const detectDeviceType = () => {
   // Check for mobile devices
   if (/(Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini)/i.test(userAgent)) {
     return {
-      type: 'mobile',
-      orientation: isPortrait ? 'portrait' : 'landscape'
+      type: 'mobile' as DeviceType,
+      orientation: isPortrait ? 'portrait' : 'landscape' as Orientation
     };
   }
 
   // Check for tablets based on screen size
   if (screenWidth >= 600 && screenWidth <= 1200) {
     return {
-      type: 'tablet',
-      orientation: isPortrait ? 'portrait' : 'landscape'
+      type: 'tablet' as DeviceType,
+      orientation: isPortrait ? 'portrait' : 'landscape' as Orientation
     };
   }
 
   // Default to desktop
   return {
-    type: 'desktop',
-    orientation: 'landscape'
+    type: 'desktop' as DeviceType,
+    orientation: 'landscape' as Orientation
   };
 };
 
 export const getInitialZoomLevel = () => {
   const { type } = detectDeviceType();
   
-  const zoomLevels = {
+  const zoomLevels: Record<DeviceType, number> = {
     desktop: 1.0,
     tablet: 0.8,
     mobile: 0.42
@@ -55,9 +60,9 @@ export const getDeviceCenterPosition = () => {
       portrait: { x: 4200, y: 3100 },
       landscape: { x: 4150, y: 3050 }
     }
-  };
+  } as const;
 
   return type === 'desktop' 
     ? positions.desktop 
-    : positions[type][orientation];
+    : positions[type as 'tablet' | 'mobile'][orientation];
 };
