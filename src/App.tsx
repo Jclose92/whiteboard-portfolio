@@ -3,7 +3,7 @@ import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'reac
 import GoogleDriveSlideshow from './components/GoogleDriveSlideshow';
 import ComedySlideshow from './components/ComedySlideshow';
 import './index.css';
-import { detectDeviceType, getInitialZoomLevel } from './utils/deviceDetection';
+import { detectDeviceType, getInitialZoomLevel, getDeviceCenterPosition } from './utils/deviceDetection';
 
 const App: React.FC = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -193,9 +193,10 @@ const App: React.FC = () => {
   useEffect(() => {
     if (imageLoaded && transformRef.current && !initialized) {
       const timeout = setTimeout(() => {
-        moveTo(4070, 2990); // Your preferred view
+        const { x, y } = getDeviceCenterPosition();
+        moveTo(x, y);
         setInitialized(true);
-      }, 400); // Give TransformWrapper time to initialize
+      }, 400);
 
       return () => clearTimeout(timeout);
     }
