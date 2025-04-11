@@ -1382,7 +1382,7 @@ const App: React.FC = () => {
                 style={sendButtonStyle}
               >
                 <img
-                  src="/public/RavenOverlay.png"
+                  src={process.env.NODE_ENV === 'production' ? '/RavenOverlay.png' : 'ravenoverlay.png'}
                   alt="Send"
                   style={sendButtonImageStyle}
                 />
