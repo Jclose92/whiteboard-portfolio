@@ -761,21 +761,17 @@ const App: React.FC = () => {
     position: 'absolute',
     top: `${5083 / imageHeight * 100}%`,
     left: `${6710 / imageWidth * 100}%`,
-    width: '260px',
-    height: '217px',
+    width: '100px',
+    height: '100px',
     backgroundColor: 'transparent',
-    borderRadius: '8px',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
     border: 'none',
-    outline: 'none',
-    transition: 'background-color 0.3s ease',
+    cursor: 'pointer',
     zIndex: 15,
     pointerEvents: 'auto',
-    transform: 'translate(-50%, -50%)',
-    fontFamily: 'WhiteboardFont',
     display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 0,
   };
 
   // Send button image style
@@ -1386,7 +1382,7 @@ const App: React.FC = () => {
                 style={sendButtonStyle}
               >
                 <img
-                  src="../public/RavenOverlay.png"
+                  src="ravenoverlay.png"
                   alt="Send"
                   style={sendButtonImageStyle}
                 />
