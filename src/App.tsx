@@ -3,6 +3,7 @@ import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'reac
 import GoogleDriveSlideshow from './components/GoogleDriveSlideshow';
 import ComedySlideshow from './components/ComedySlideshow';
 import './index.css';
+import { detectDeviceType, getInitialZoomLevel } from './utils/deviceDetection';
 
 const App: React.FC = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -18,7 +19,8 @@ const App: React.FC = () => {
   const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
   const clickStart = useRef<{ x: number; y: number } | null>(null);
 
-  const scale = 1.5;
+  // Get initial zoom level based on device type
+  const initialScale = getInitialZoomLevel();
   const imageWidth = 8472;
   const imageHeight = 5992;
 
@@ -176,14 +178,14 @@ const App: React.FC = () => {
     const screenCenterX = window.innerWidth / 2;
     const screenCenterY = window.innerHeight / 2;
 
-    const scaledX = x * scale;
-    const scaledY = y * scale;
+    const scaledX = x * initialScale;
+    const scaledY = y * initialScale;
 
     const targetX = screenCenterX - scaledX;
     const targetY = screenCenterY - scaledY;
 
     if (transformRef.current) {
-      transformRef.current.setTransform(targetX, targetY, scale);
+      transformRef.current.setTransform(targetX, targetY, initialScale);
     }
   };
 
@@ -958,7 +960,7 @@ const App: React.FC = () => {
   };
 
   // Add zoom handling
-  const [zoomLevel, setZoomLevel] = useState(1.0);
+  const [zoomLevel, setZoomLevel] = useState(initialScale);
   const [containerWidth, setContainerWidth] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
 
@@ -1027,7 +1029,7 @@ const App: React.FC = () => {
     >
       <TransformWrapper
         ref={transformRef}
-        initialScale={1}
+        initialScale={initialScale}
         minScale={0.5}
         maxScale={3}
         centerOnInit={false}
