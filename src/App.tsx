@@ -1386,7 +1386,7 @@ const App: React.FC = () => {
                 style={sendButtonStyle}
               >
                 <img
-                  src="ravenoverlay.png"
+                  src="/public/RavenOverlay.png"
                   alt="Send"
                   style={sendButtonImageStyle}
                 />
