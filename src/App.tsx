@@ -1017,24 +1017,48 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={transformWrapperStyle}>
+    <div
+      style={{
+        position: 'relative',
+        width: '100vw',
+        height: '100vh',
+        overflow: 'hidden'
+      }}
+    >
       <TransformWrapper
-        initialScale={zoomLevel}
+        ref={transformRef}
+        initialScale={1}
         minScale={0.5}
         maxScale={3}
-        initialPositionX={0}
-        initialPositionY={0}
-        wheel={{ wheelDisabled: true }}
-        panning={{ disabled: true }}
+        centerOnInit={false}
+        limitToBounds={true}
+        panning={{
+          disabled: false,
+          velocityDisabled: true,
+          allowLeftClickPan: true,
+          excluded: ['input', 'textarea', 'button']
+        }}
         doubleClick={{ disabled: true }}
-        ref={transformRef}
+        pinch={{ disabled: true }}
+        wheel={{ disabled: true }}
       >
-        <TransformComponent>
+        <TransformComponent
+          wrapperStyle={{
+            width: '100%',
+            height: '100%',
+          }}
+          contentStyle={{
+            width: `${imageWidth}px`,
+            height: `${imageHeight}px`,
+            position: 'relative',
+            backgroundColor: '#fff',
+          }}
+        >
           <div
             style={{
               width: imageWidth,
               height: imageHeight,
-              position: 'relative' as React.CSSProperties['position'],
+              position: 'relative',
             }}
           >
             {/* Text Box */}
