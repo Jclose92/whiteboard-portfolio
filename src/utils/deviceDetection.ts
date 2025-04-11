@@ -53,12 +53,12 @@ export const getDeviceCenterPosition = () => {
   const positions = {
     desktop: { x: 4070, y: 2990 },
     tablet: {
-      portrait: { x: 4055, y: 2860 },
-      landscape: { x: 4055, y: 2860 }
+      portrait: { x: 4055, y: 2850 },
+      landscape: { x: 4055, y: 2850 }
     },
     mobile: {
-      portrait: { x: 3861, y: 2990 },
-      landscape: { x: 3861, y: 2990 }
+      portrait: { x: 3861, y: 3010 },
+      landscape: { x: 3861, y: 3010 }
     }
   } as const;
 
