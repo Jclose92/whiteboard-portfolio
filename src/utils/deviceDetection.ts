@@ -24,8 +24,8 @@ export const getInitialZoomLevel = () => {
   // These values can be adjusted based on testing
   const zoomLevels = {
     desktop: 1.0,
-    tablet: 0.7,
-    mobile: 0.6
+    tablet: 0.75,
+    mobile: 0.4
   };
 
   return zoomLevels[deviceType];
