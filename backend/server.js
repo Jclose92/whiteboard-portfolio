@@ -7,7 +7,10 @@ dotenv.config();
 
 const app = express();
 
+// Enable CORS for all routes
 app.use(cors());
+
+// Parse JSON bodies
 app.use(express.json());
 
 // Create a transporter using the default SMTP transport
@@ -19,7 +22,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Contact form submission endpoint
+// Handle POST requests to /api/contact
 app.post('/api/contact', async (req, res) => {
   try {
     const { name, email, message } = req.body;
@@ -42,7 +45,12 @@ app.post('/api/contact', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
+// Handle all other routes
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Backend is running' });
+});
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
