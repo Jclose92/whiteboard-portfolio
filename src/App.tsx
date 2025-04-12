@@ -707,10 +707,21 @@ const App: React.FC = () => {
     const audio = new Audio('/Website Crow Sound Effect 4.mp3');
     audio.play().catch(console.error);
 
-    // Simulate form submission
     try {
-      // In a real application, you would send this data to your backend
-      console.log('Form submitted:', contactForm);
+      // Send form data to backend
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactForm),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      // Show success message
       setShowSuccessMessage(true);
       setContactForm({ name: '', email: '', message: '' });
       setIsFormValid(false);
@@ -718,6 +729,7 @@ const App: React.FC = () => {
       setSendButtonVisible(false);
     } catch (error) {
       console.error('Error submitting form:', error);
+      alert('Failed to send message. Please try again later.');
     } finally {
       setIsSending(false);
     }
