@@ -25,9 +25,11 @@ app.get('/api/test', (req, res) => {
   res.status(200).json({ message: 'Backend is running' });
 });
 
-// Create a transporter using the default SMTP transport
+// Create a transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
@@ -72,7 +74,11 @@ app.post('/api/contact', async (req, res) => {
     res.status(200).json({ success: true, message: 'Message sent successfully' });
   } catch (error) {
     console.error('Error sending email:', error);
-    res.status(500).json({ success: false, message: error.message || 'Error sending message' });
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Error sending message',
+      error: error
+    });
   }
 });
 
