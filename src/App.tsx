@@ -708,6 +708,9 @@ const App: React.FC = () => {
     audio.play().catch(console.error);
 
     try {
+      // Log the request body
+      console.log('Sending form data:', contactForm);
+
       // Send form data to backend
       const response = await fetch('https://whiteboard-portfolio-v3w9.vercel.app/api/contact', {
         method: 'POST',
@@ -717,7 +720,11 @@ const App: React.FC = () => {
         body: JSON.stringify(contactForm)
       });
 
+      // Log the response status
+      console.log('Response status:', response.status);
+
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (!response.ok) {
         throw new Error(data.message || 'Failed to send message');
@@ -731,7 +738,8 @@ const App: React.FC = () => {
       setSendButtonVisible(false);
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Failed to send message. Please try again later.\n\nError details: ' + error.message);
+      console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
+      alert('Failed to send message. Please try again later.\n\nError details: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setIsSending(false);
     }
