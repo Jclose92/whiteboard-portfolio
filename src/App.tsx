@@ -709,8 +709,9 @@ const App: React.FC = () => {
 
     try {
       // Send form data to backend
-      const response = await fetch(`https://whiteboard-portfolio-v3w9.vercel.app/api/contact`, {
+      const response = await fetch('https://whiteboard-portfolio-v3w9.vercel.app/api/contact', {
         method: 'POST',
+        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
