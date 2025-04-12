@@ -711,15 +711,16 @@ const App: React.FC = () => {
       // Send form data to backend
       const response = await fetch('https://whiteboard-portfolio-v3w9.vercel.app/api/contact', {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(contactForm),
+        body: JSON.stringify(contactForm)
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        throw new Error(data.message || 'Failed to send message');
       }
 
       // Show success message
@@ -730,7 +731,7 @@ const App: React.FC = () => {
       setSendButtonVisible(false);
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Failed to send message. Please try again later.');
+      alert('Failed to send message. Please try again later.\n\nError details: ' + error.message);
     } finally {
       setIsSending(false);
     }
