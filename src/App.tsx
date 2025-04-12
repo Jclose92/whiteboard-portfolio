@@ -709,7 +709,7 @@ const App: React.FC = () => {
 
     try {
       // Send form data to backend
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/contact`, {
+      const response = await fetch(`https://whiteboard-portfolio-backend.vercel.app/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
