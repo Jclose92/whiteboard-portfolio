@@ -37,11 +37,25 @@ const transporter = nodemailer.createTransport({
 // Handle POST requests to /api/contact
 app.post('/api/contact', async (req, res) => {
   try {
-    const { name, email, message } = req.body;
+    // Get the request body
+    const body = req.body;
+    
+    // Validate the request body
+    if (!body || typeof body !== 'object') {
+      return res.status(400).json({ success: false, message: 'Invalid request body' });
+    }
+
+    const { name, email, message } = body;
 
     // Validate required fields
     if (!name || !email || !message) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ success: false, message: 'Invalid email format' });
     }
 
     // Email content
@@ -58,7 +72,7 @@ app.post('/api/contact', async (req, res) => {
     res.status(200).json({ success: true, message: 'Message sent successfully' });
   } catch (error) {
     console.error('Error sending email:', error);
-    res.status(500).json({ success: false, message: 'Error sending message' });
+    res.status(500).json({ success: false, message: error.message || 'Error sending message' });
   }
 });
 
