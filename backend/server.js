@@ -5,6 +5,14 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+// Validate environment variables
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  console.error('Missing required environment variables');
+  console.error('EMAIL_USER:', process.env.EMAIL_USER ? 'SET' : 'MISSING');
+  console.error('EMAIL_PASS:', process.env.EMAIL_PASS ? 'SET' : 'MISSING');
+  process.exit(1);
+}
+
 const app = express();
 
 // Enable CORS with specific configuration
@@ -22,7 +30,13 @@ app.use(express.json());
 
 // Test route to verify server is running
 app.get('/api/test', (req, res) => {
-  res.status(200).json({ message: 'Backend is running' });
+  res.status(200).json({ 
+    message: 'Backend is running',
+    emailConfig: {
+      user: process.env.EMAIL_USER ? 'SET' : 'MISSING',
+      pass: process.env.EMAIL_PASS ? 'SET' : 'MISSING'
+    }
+  });
 });
 
 // Create a transporter using Gmail SMTP
@@ -77,7 +91,10 @@ app.post('/api/contact', async (req, res) => {
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Error sending message',
-      error: error
+      error: {
+        type: error.code || 'unknown',
+        message: error.message || 'Unknown error'
+      }
     });
   }
 });
@@ -90,4 +107,8 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log('Email configuration:', {
+    user: process.env.EMAIL_USER ? 'SET' : 'MISSING',
+    pass: process.env.EMAIL_PASS ? 'SET' : 'MISSING'
+  });
 });
