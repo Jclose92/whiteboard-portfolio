@@ -20,6 +20,11 @@ app.use(cors(corsOptions));
 // Parse JSON bodies
 app.use(express.json());
 
+// Test route to verify server is running
+app.get('/api/test', (req, res) => {
+  res.status(200).json({ message: 'Backend is running' });
+});
+
 // Create a transporter using the default SMTP transport
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -33,6 +38,11 @@ const transporter = nodemailer.createTransport({
 app.post('/api/contact', async (req, res) => {
   try {
     const { name, email, message } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !message) {
+      return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
 
     // Email content
     const mailOptions = {
