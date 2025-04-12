@@ -7,8 +7,15 @@ dotenv.config();
 
 const app = express();
 
-// Enable CORS for all routes
-app.use(cors());
+// Enable CORS with specific configuration
+const corsOptions = {
+  origin: ['https://whiteboard-portfolio.vercel.app', 'http://localhost:3000'],
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 
 // Parse JSON bodies
 app.use(express.json());
