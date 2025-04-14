@@ -41,7 +41,7 @@ export const getInitialZoomLevel = () => {
   const zoomLevels: Record<DeviceType, number> = {
     desktop: 1.0,
     tablet: 1.05,
-    mobile: 0.42
+    mobile: 0.41
   };
 
   return zoomLevels[type];
