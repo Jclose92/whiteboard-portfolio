@@ -15,6 +15,8 @@ const App: React.FC = () => {
   const [overlayAnimation, setOverlayAnimation] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [hasPlayedAnimations, setHasPlayedAnimations] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [initialPositionSet, setInitialPositionSet] = useState(false);
 
   const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
   const clickStart = useRef<{ x: number; y: number } | null>(null);
@@ -192,13 +194,12 @@ const App: React.FC = () => {
   // Center after image loads and transform wrapper is ready
   useEffect(() => {
     if (imageLoaded && transformRef.current && !initialized) {
-      const timeout = setTimeout(() => {
-        const { x, y } = getDeviceCenterPosition();
-        moveTo(x, y);
-        setInitialized(true);
-      }, 400);
-
-      return () => clearTimeout(timeout);
+      const { x, y } = getDeviceCenterPosition();
+      moveTo(x, y);
+      setInitialized(true);
+      setInitialPositionSet(true);
+      // Hide loading overlay after a short delay
+      setTimeout(() => setIsLoading(false), 100);
     }
   }, [imageLoaded, initialized]);
 
@@ -1040,428 +1041,446 @@ const App: React.FC = () => {
     overflow: 'hidden',
   };
 
+  // Loading overlay style
+  const loadingOverlayStyle: React.CSSProperties = {
+    position: 'fixed' as React.CSSProperties['position'],
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    backgroundColor: 'white',
+    zIndex: 10000,
+    pointerEvents: 'none',
+  };
+
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100vw',
-        height: '100vh',
-        overflow: 'hidden'
-      }}
-    >
-      <TransformWrapper
-        ref={transformRef}
-        initialScale={initialScale}
-        minScale={0.5}
-        maxScale={3}
-        centerOnInit={false}
-        limitToBounds={true}
-        panning={{
-          disabled: false,
-          velocityDisabled: true,
-          allowLeftClickPan: true,
-          excluded: ['input', 'textarea', 'button']
+    <>
+      {isLoading && (
+        <div style={loadingOverlayStyle} />
+      )}
+      
+      <div
+        style={{
+          position: 'relative',
+          width: '100vw',
+          height: '100vh',
+          overflow: 'hidden'
         }}
-        doubleClick={{ disabled: true }}
-        pinch={{ disabled: true }}
-        wheel={{ disabled: true }}
       >
-        <TransformComponent
-          wrapperStyle={{
-            width: '100%',
-            height: '100%',
+        <TransformWrapper
+          ref={transformRef}
+          initialScale={initialScale}
+          minScale={0.5}
+          maxScale={3}
+          centerOnInit={false}
+          limitToBounds={true}
+          panning={{
+            disabled: false,
+            velocityDisabled: true,
+            allowLeftClickPan: true,
+            excluded: ['input', 'textarea', 'button']
           }}
-          contentStyle={{
-            width: `${imageWidth}px`,
-            height: `${imageHeight}px`,
-            position: 'relative',
-            backgroundColor: '#fff',
-          }}
+          doubleClick={{ disabled: true }}
+          pinch={{ disabled: true }}
+          wheel={{ disabled: true }}
         >
-          <div
-            style={{
-              width: imageWidth,
-              height: imageHeight,
+          <TransformComponent
+            wrapperStyle={{
+              width: '100%',
+              height: '100%',
+            }}
+            contentStyle={{
+              width: `${imageWidth}px`,
+              height: `${imageHeight}px`,
               position: 'relative',
+              backgroundColor: '#fff',
             }}
           >
-            {/* Text Box */}
-            <div style={textBoxStyle}>
-              {!selectedBrand ? (
-                <div style={initialTextStyle}>
-                  <h2>Pick a piece of work.</h2>
-                  <p>I'll tell you what the hook is.</p>
-                </div>
-              ) : (
-                <div style={brandTextStyle}>
-                  <p style={{ fontSize: '19.5px' }}>{brandContent[selectedBrand]?.description}</p>
-                </div>
-              )}
-            </div>
-
-            {/* Slideshow */}
-            {showSlideshow && selectedBrand && (
-              <div style={{
-                position: 'absolute',
-                top: `${slideshowPosition.y / imageHeight * 100}%`,
-                left: `${slideshowPosition.x / imageWidth * 100}%`,
-                width: `${slideshowPosition.width}px`,
-                height: `${slideshowPosition.height}px`,
-                zIndex: 10,
-              }}>
-                <GoogleDriveSlideshow
-                  slides={brandContent[selectedBrand].slides}
-                  autoPlay={true}
-                  autoPlayInterval={5000}
-                  showControls={true}
-                  showNavigation={true}
-                  showTitle={false}
-                  showDescription={false}
-                  width="100%"
-                  height="100%"
-                  className="slideshow-container"
-                  onSlideChange={(slideIndex) => setCurrentSlide(slideIndex)}
-                />
-              </div>
-            )}
-            {showOverlay && renderOverlay()}
-            <img
-              src="/Portfolio Website Main Image 4 copy.jpg"
-              alt="Portfolio Whiteboard"
+            <div
               style={{
                 width: imageWidth,
                 height: imageHeight,
-                position: 'absolute' as React.CSSProperties['position'],
-                top: 0,
-                left: 0,
-                cursor: 'grab' as React.CSSProperties['cursor'],
-              }}
-              onLoad={() => setImageLoaded(true)}
-            />
-
-            {/* New Text Boxes */}
-            <div
-              style={{
-                position: 'absolute',
-                top: `${2974 / 5992 * 100}%`,
-                left: `${3491 / 8472 * 100}%`,
-                width: '275px', // Increased width by 15px
-                height: '110px',
-                pointerEvents: 'none',
-                zIndex: 10,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textAlign: 'center',
-                fontFamily: 'WhiteboardFont',
-                color: '#000000',
-                fontSize: '23px',
-                lineHeight: '1.4',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                fontWeight: 'bold'
+                position: 'relative',
               }}
             >
-              Advertising, Copywriting, Creative, Strategy, Direction, Writing, Ideation.
-            </div>
+              {/* Text Box */}
+              <div style={textBoxStyle}>
+                {!selectedBrand ? (
+                  <div style={initialTextStyle}>
+                    <h2>Pick a piece of work.</h2>
+                    <p>I'll tell you what the hook is.</p>
+                  </div>
+                ) : (
+                  <div style={brandTextStyle}>
+                    <p style={{ fontSize: '19.5px' }}>{brandContent[selectedBrand]?.description}</p>
+                  </div>
+                )}
+              </div>
 
-            <div
-              style={{
-                position: 'absolute',
-                top: `${3042 / 5992 * 100}%`,
-                left: `${4007 / 8472 * 100}%`,
-                width: '150px',
-                height: '80px',
-                pointerEvents: 'none',
-                zIndex: 10,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textAlign: 'center',
-                fontFamily: 'WhiteboardFont',
-                color: '#000000',
-                fontSize: '27px', // Increased font size
-                lineHeight: '1.5',
-                fontWeight: 'bold' // Added bold styling
-              }}
-            >
-              John Close<br/>
-              Copywriter
-            </div>
+              {/* Slideshow */}
+              {showSlideshow && selectedBrand && (
+                <div style={{
+                  position: 'absolute',
+                  top: `${slideshowPosition.y / imageHeight * 100}%`,
+                  left: `${slideshowPosition.x / imageWidth * 100}%`,
+                  width: `${slideshowPosition.width}px`,
+                  height: `${slideshowPosition.height}px`,
+                  zIndex: 10,
+                }}>
+                  <GoogleDriveSlideshow
+                    slides={brandContent[selectedBrand].slides}
+                    autoPlay={true}
+                    autoPlayInterval={5000}
+                    showControls={true}
+                    showNavigation={true}
+                    showTitle={false}
+                    showDescription={false}
+                    width="100%"
+                    height="100%"
+                    className="slideshow-container"
+                    onSlideChange={(slideIndex) => setCurrentSlide(slideIndex)}
+                  />
+                </div>
+              )}
+              {showOverlay && renderOverlay()}
+              <img
+                src="/Portfolio Website Main Image 4 copy.jpg"
+                alt="Portfolio Whiteboard"
+                style={{
+                  width: imageWidth,
+                  height: imageHeight,
+                  position: 'absolute' as React.CSSProperties['position'],
+                  top: 0,
+                  left: 0,
+                  cursor: 'grab' as React.CSSProperties['cursor'],
+                }}
+                onLoad={() => setImageLoaded(true)}
+              />
 
-            {/* Social Media Links */}
-            <a
-              href="https://www.instagram.com/johncloseinbriefs/"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                position: 'absolute',
-                top: `${(5244 - (120 / 2)) / 5992 * 100}%`,
-                left: `${(6894 - (120 / 2)) / 8472 * 100}%`,
-                width: '120px',
-                height: '120px',
-                pointerEvents: 'auto',
-                zIndex: 10,
-                cursor: 'pointer'
-              }}
-            />
-
-            <a
-              href="https://www.linkedin.com/in/john-close/"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                position: 'absolute',
-                top: `${(5246 - (130 / 2)) / 5992 * 100}%`,
-                left: `${(7024 - (110 / 2)) / 8472 * 100}%`,
-                width: '110px',
-                height: '130px',
-                pointerEvents: 'auto',
-                zIndex: 10,
-                cursor: 'pointer'
-              }}
-            />
-
-            {/* Navigation Buttons */}
-            <button
-              style={btnStyle('46.783%', '47.299%', 'red', '16deg')}
-              onClick={() => moveTo(1252, 1257)}
-            >
-              About
-            </button>
-
-            <button
-              style={btnStyle('48.806%', '47.236%', 'blue', '-17deg')}
-              onClick={() => moveTo(930, 5320)}
-            >
-              Danger
-            </button>
-
-            <button
-              style={btnStyle('47.936%', '49.236%', 'green', '16deg')}
-              onClick={() => moveTo(6850, 5075)}
-            >
-              Contact
-            </button>
-
-            <button
-              style={btnStyle('45.396%', '49.256%', 'yellow', '-18deg')}
-              onClick={() => moveTo(7272, 1231)}
-            >
-              Work
-            </button>
-
-            {/* Return Buttons */}
-            <button
-              style={returnBtnStyle('17.55%', '19.3%', 'purple', '230px', '230px')} 
-              onClick={() => moveTo(4070, 2990)}
-            >
-              Return
-            </button>
-
-            <button
-              style={returnBtnStyle('90.85%', '9.53%', 'purple', '260px', '260px')}
-              onClick={() => moveTo(4070, 2990)}
-            >
-              Return
-            </button>
-
-            <button
-              style={returnBtnStyle('78.47%', '84.84%', 'purple', '260px', '260px')}
-              onClick={() => moveTo(4070, 2990)}
-            >
-              Return
-            </button>
-
-            <button
-              style={returnBtnStyle('19.66%', '77.95%', 'purple', '260px', '260px')}
-              onClick={() => moveTo(4070, 2990)}
-            >
-              Return
-            </button>
-
-            {/* Brand Buttons */}
-            {brandButtons.map((brand) => (
-              <button
-                key={brand.text}
-                onClick={() => handleBrandClick(brand.text)}
+              {/* New Text Boxes */}
+              <div
                 style={{
                   position: 'absolute',
-                  top: `${brand.y / imageHeight * 100}%`,
-                  left: `${brand.x / imageWidth * 100}%`,
-                  width: `${brand.width}px`,
-                  height: `${brand.height}px`,
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  color: 'black',
-                  fontWeight: 'bold',
-                  fontSize: '32px',
-                  fontFamily: 'WhiteboardFont, sans-serif',
-                  padding: '0 4px',
+                  top: `${2974 / 5992 * 100}%`,
+                  left: `${3491 / 8472 * 100}%`,
+                  width: '275px', // Increased width by 15px
+                  height: '110px',
+                  pointerEvents: 'none',
+                  zIndex: 10,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  transition: 'opacity 0.2s ease, transform 0.2s ease',
-                  opacity: 0.8,
-                  transform: `translate(-50%, -50%) rotate(0deg)`,
+                  textAlign: 'center',
+                  fontFamily: 'WhiteboardFont',
+                  color: '#000000',
+                  fontSize: '23px',
+                  lineHeight: '1.4',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  fontWeight: 'bold'
+                }}
+              >
+                Advertising, Copywriting, Creative, Strategy, Direction, Writing, Ideation.
+              </div>
+
+              <div
+                style={{
+                  position: 'absolute',
+                  top: `${3042 / 5992 * 100}%`,
+                  left: `${4007 / 8472 * 100}%`,
+                  width: '150px',
+                  height: '80px',
+                  pointerEvents: 'none',
+                  zIndex: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  fontFamily: 'WhiteboardFont',
+                  color: '#000000',
+                  fontSize: '27px', // Increased font size
+                  lineHeight: '1.5',
+                  fontWeight: 'bold' // Added bold styling
+                }}
+              >
+                John Close<br/>
+                Copywriter
+              </div>
+
+              {/* Social Media Links */}
+              <a
+                href="https://www.instagram.com/johncloseinbriefs/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  position: 'absolute',
+                  top: `${(5244 - (120 / 2)) / 5992 * 100}%`,
+                  left: `${(6894 - (120 / 2)) / 8472 * 100}%`,
+                  width: '120px',
+                  height: '120px',
+                  pointerEvents: 'auto',
+                  zIndex: 10,
                   cursor: 'pointer'
                 }}
               />
-            ))}
-            {/* Hoverable Items */}
-            {hoverableItems.map((item) => (
-              <button
-                key={item.text}
-                onMouseOver={() => handleHover(item.text)}
-                onMouseLeave={handleHoverLeave}
-                style={getHoverItemStyle(item)}
+
+              <a
+                href="https://www.linkedin.com/in/john-close/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  position: 'absolute',
+                  top: `${(5246 - (130 / 2)) / 5992 * 100}%`,
+                  left: `${(7024 - (110 / 2)) / 8472 * 100}%`,
+                  width: '110px',
+                  height: '130px',
+                  pointerEvents: 'auto',
+                  zIndex: 10,
+                  cursor: 'pointer'
+                }}
               />
-            ))}
-            {/* Hover Text Box */}
-            {renderHoverText()}
-            {/* Eraser Animation */}
-            {showEraserAnimation && (
-              <div
-                style={{
-                  ...eraserAnimation,
-                  top: eraserPosition.top,
-                  left: eraserPosition.left,
-                  width: eraserPosition.width,
-                  height: eraserPosition.height,
-                }}
-              >
-                <img
-                  src="/images/eraser.png"
-                  alt="Eraser"
-                  style={eraserImageStyle}
-                />
-              </div>
-            )}
-            {/* Text Boxes */}
-            {textBoxes.map((box) => (
-              <div
-                key={box.name}
-                style={{
-                  ...textBoxStyle2,
-                  width: `${box.width}px`,
-                  height: `${box.height}px`,
-                  top: `${box.y / imageHeight * 100}%`,
-                  left: `${box.x / imageWidth * 100}%`,
-                  transform: `rotate(${box.rotation}deg)`,
-                  fontSize: box.name === 'Telescope' || box.name === 'Work Sign' || box.name === 'Zoom Wizard' 
-                    ? '20px' 
-                    : box.name === 'Turn Back' 
-                      ? '24px' 
-                      : '24px'
-                }}
-              >
-                {box.name === 'About' ? aboutTexts[currentAboutIndex] : <span style={{ fontSize: '20px' }}>{box.text}</span>}
-              </div>
-            ))}
-            {/* Speech Bubble */}
-            {!isSubmitted && (
-              <div style={speechBubbleContainerStyle}>
-                <img 
-                  src="/images/speechbubble.png" 
-                  alt="Speech Bubble" 
-                  style={speechBubbleImageStyle}
-                />
-                <div style={speechBubbleTextStyle}>
-                  click me when you've written your message
-                </div>
-              </div>
-            )}
-            {/* Contact Form */}
-            <div style={contactFormStyle}>
-              {isSubmitted ? null : (
-                <>
-                  <input
-                    type="text"
-                    name="name"
-                    value={contactForm.name}
-                    onChange={handleInputChange('name')}
-                    placeholder="Name"
-                    style={inputStyle}
-                  />
-                  <input
-                    type="email"
-                    name="email"
-                    value={contactForm.email}
-                    onChange={handleInputChange('email')}
-                    placeholder="Email"
-                    style={inputStyle}
-                  />
-                  <textarea
-                    name="message"
-                    value={contactForm.message}
-                    onChange={handleInputChange('message')}
-                    placeholder="Message"
-                    style={textareaStyle}
-                  />
-                </>
-              )}
-            </div>
-            {sendButtonVisible && (
+
+              {/* Navigation Buttons */}
               <button
-                onClick={handleSubmit}
-                style={sendButtonStyle}
+                style={btnStyle('46.783%', '47.299%', 'red', '16deg')}
+                onClick={() => moveTo(1252, 1257)}
               >
-                <img
-                  src={process.env.NODE_ENV === 'production' ? '/RavenOverlay.png' : 'ravenoverlay.png'}
-                  alt="Send"
-                  style={sendButtonImageStyle}
-                />
+                About
               </button>
-            )}
-            {showSuccessMessage && (
-              <div style={successMessageStyle}>
-                <p style={successMessageTextStyle}>
-                  Thank You!<br/>
-                  The Raven Will Deliver Your Message.
-                </p>
+
+              <button
+                style={btnStyle('48.806%', '47.236%', 'blue', '-17deg')}
+                onClick={() => moveTo(930, 5320)}
+              >
+                Danger
+              </button>
+
+              <button
+                style={btnStyle('47.936%', '49.236%', 'green', '16deg')}
+                onClick={() => moveTo(6850, 5075)}
+              >
+                Contact
+              </button>
+
+              <button
+                style={btnStyle('45.396%', '49.256%', 'yellow', '-18deg')}
+                onClick={() => moveTo(7272, 1231)}
+              >
+                Work
+              </button>
+
+              {/* Return Buttons */}
+              <button
+                style={returnBtnStyle('17.55%', '19.3%', 'purple', '230px', '230px')} 
+                onClick={() => moveTo(4070, 2990)}
+              >
+                Return
+              </button>
+
+              <button
+                style={returnBtnStyle('90.85%', '9.53%', 'purple', '260px', '260px')}
+                onClick={() => moveTo(4070, 2990)}
+              >
+                Return
+              </button>
+
+              <button
+                style={returnBtnStyle('78.47%', '84.84%', 'purple', '260px', '260px')}
+                onClick={() => moveTo(4070, 2990)}
+              >
+                Return
+              </button>
+
+              <button
+                style={returnBtnStyle('19.66%', '77.95%', 'purple', '260px', '260px')}
+                onClick={() => moveTo(4070, 2990)}
+              >
+                Return
+              </button>
+
+              {/* Brand Buttons */}
+              {brandButtons.map((brand) => (
+                <button
+                  key={brand.text}
+                  onClick={() => handleBrandClick(brand.text)}
+                  style={{
+                    position: 'absolute',
+                    top: `${brand.y / imageHeight * 100}%`,
+                    left: `${brand.x / imageWidth * 100}%`,
+                    width: `${brand.width}px`,
+                    height: `${brand.height}px`,
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    color: 'black',
+                    fontWeight: 'bold',
+                    fontSize: '32px',
+                    fontFamily: 'WhiteboardFont, sans-serif',
+                    padding: '0 4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'opacity 0.2s ease, transform 0.2s ease',
+                    opacity: 0.8,
+                    transform: `translate(-50%, -50%) rotate(0deg)`,
+                    cursor: 'pointer'
+                  }}
+                />
+              ))}
+              {/* Hoverable Items */}
+              {hoverableItems.map((item) => (
+                <button
+                  key={item.text}
+                  onMouseOver={() => handleHover(item.text)}
+                  onMouseLeave={handleHoverLeave}
+                  style={getHoverItemStyle(item)}
+                />
+              ))}
+              {/* Hover Text Box */}
+              {renderHoverText()}
+              {/* Eraser Animation */}
+              {showEraserAnimation && (
+                <div
+                  style={{
+                    ...eraserAnimation,
+                    top: eraserPosition.top,
+                    left: eraserPosition.left,
+                    width: eraserPosition.width,
+                    height: eraserPosition.height,
+                  }}
+                >
+                  <img
+                    src="/images/eraser.png"
+                    alt="Eraser"
+                    style={eraserImageStyle}
+                  />
+                </div>
+              )}
+              {/* Text Boxes */}
+              {textBoxes.map((box) => (
+                <div
+                  key={box.name}
+                  style={{
+                    ...textBoxStyle2,
+                    width: `${box.width}px`,
+                    height: `${box.height}px`,
+                    top: `${box.y / imageHeight * 100}%`,
+                    left: `${box.x / imageWidth * 100}%`,
+                    transform: `rotate(${box.rotation}deg)`,
+                    fontSize: box.name === 'Telescope' || box.name === 'Work Sign' || box.name === 'Zoom Wizard' 
+                      ? '20px' 
+                      : box.name === 'Turn Back' 
+                        ? '24px' 
+                        : '24px'
+                  }}
+                >
+                  {box.name === 'About' ? aboutTexts[currentAboutIndex] : <span style={{ fontSize: '20px' }}>{box.text}</span>}
+                </div>
+              ))}
+              {/* Speech Bubble */}
+              {!isSubmitted && (
+                <div style={speechBubbleContainerStyle}>
+                  <img 
+                    src="/images/speechbubble.png" 
+                    alt="Speech Bubble" 
+                    style={speechBubbleImageStyle}
+                  />
+                  <div style={speechBubbleTextStyle}>
+                    click me when you've written your message
+                  </div>
+                </div>
+              )}
+              {/* Contact Form */}
+              <div style={contactFormStyle}>
+                {isSubmitted ? null : (
+                  <>
+                    <input
+                      type="text"
+                      name="name"
+                      value={contactForm.name}
+                      onChange={handleInputChange('name')}
+                      placeholder="Name"
+                      style={inputStyle}
+                    />
+                    <input
+                      type="email"
+                      name="email"
+                      value={contactForm.email}
+                      onChange={handleInputChange('email')}
+                      placeholder="Email"
+                      style={inputStyle}
+                    />
+                    <textarea
+                      name="message"
+                      value={contactForm.message}
+                      onChange={handleInputChange('message')}
+                      placeholder="Message"
+                      style={textareaStyle}
+                    />
+                  </>
+                )}
               </div>
-            )}
-            {/* Button */}
-            <button
-              style={{
-                ...buttonStyle,
-              }}
-              onClick={handleDogClick}
-            >
-              Pet Dog
-            </button>
-            {/* Comedy Slideshow */}
-            <ComedySlideshow
-              slides={comedySlideshow.slides}
-              x={comedySlideshow.x}
-              y={comedySlideshow.y}
-              width={comedySlideshow.width}
-              height={comedySlideshow.height}
-            />
-            {/* Comedy Button */}
-            <button
-              style={{
-                position: 'absolute',
-                top: `${comedyButtonPosition.y / 5992 * 100}%`,
-                left: `${comedyButtonPosition.x / 8472 * 100}%`,
-                width: `${comedyButtonPosition.width}px`,
-                height: `${comedyButtonPosition.height}px`,
-                backgroundColor: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                pointerEvents: 'auto',
-                zIndex: 10
-              }}
-              onClick={() => {
-                // This will be handled by the ComedySlideshow component
-              }}
-            >
-              {/* Button content will be added later */}
-            </button>
-          </div>
-        </TransformComponent>
-      </TransformWrapper>
-    </div>
+              {sendButtonVisible && (
+                <button
+                  onClick={handleSubmit}
+                  style={sendButtonStyle}
+                >
+                  <img
+                    src={process.env.NODE_ENV === 'production' ? '/RavenOverlay.png' : 'ravenoverlay.png'}
+                    alt="Send"
+                    style={sendButtonImageStyle}
+                  />
+                </button>
+              )}
+              {showSuccessMessage && (
+                <div style={successMessageStyle}>
+                  <p style={successMessageTextStyle}>
+                    Thank You!<br/>
+                    The Raven Will Deliver Your Message.
+                  </p>
+                </div>
+              )}
+              {/* Button */}
+              <button
+                style={{
+                  ...buttonStyle,
+                }}
+                onClick={handleDogClick}
+              >
+                Pet Dog
+              </button>
+              {/* Comedy Slideshow */}
+              <ComedySlideshow
+                slides={comedySlideshow.slides}
+                x={comedySlideshow.x}
+                y={comedySlideshow.y}
+                width={comedySlideshow.width}
+                height={comedySlideshow.height}
+              />
+              {/* Comedy Button */}
+              <button
+                style={{
+                  position: 'absolute',
+                  top: `${comedyButtonPosition.y / 5992 * 100}%`,
+                  left: `${comedyButtonPosition.x / 8472 * 100}%`,
+                  width: `${comedyButtonPosition.width}px`,
+                  height: `${comedyButtonPosition.height}px`,
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  pointerEvents: 'auto',
+                  zIndex: 10
+                }}
+                onClick={() => {
+                  // This will be handled by the ComedySlideshow component
+                }}
+              >
+                {/* Button content will be added later */}
+              </button>
+            </div>
+          </TransformComponent>
+        </TransformWrapper>
+      </div>
+    </>
   );
 };
 
