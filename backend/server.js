@@ -17,7 +17,7 @@ const app = express();
 
 // Enable CORS with specific configuration
 const corsOptions = {
-  origin: ['https://whiteboard-portfolio.vercel.app', 'http://localhost:3000'],
+  origin: ['https://whiteboard-portfolio.vercel.app', 'http://localhost:3000', 'https://johnclose.ie'],
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
   credentials: true
