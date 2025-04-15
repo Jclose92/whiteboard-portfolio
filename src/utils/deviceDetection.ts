@@ -40,7 +40,7 @@ export const getInitialZoomLevel = () => {
   
   const zoomLevels: Record<DeviceType, number> = {
     desktop: 1.0,
-    tablet: 0.65,
+    tablet: 0.64,  // Reduced from 0.65 to 0.64
     mobile: 0.41
   };
 
@@ -49,20 +49,21 @@ export const getInitialZoomLevel = () => {
 
 export const getDeviceCenterPosition = () => {
   const { type, orientation } = detectDeviceType();
-
-  const positions = {
-    desktop: { x: 4070, y: 2990 },
+  
+  const centerPositions: Record<DeviceType, Record<Orientation, { x: number; y: number }>> = {
+    desktop: {
+      landscape: { x: 3636, y: 1703 },
+      portrait: { x: 1703, y: 3636 }
+    },
     tablet: {
-      portrait: { x: 4055, y: 2850 },
-      landscape: { x: 4055, y: 2850 }
+      landscape: { x: 3636, y: 1703 },
+      portrait: { x: 1703, y: 3636 }
     },
     mobile: {
-      portrait: { x: 3861, y: 3010 },
-      landscape: { x: 3861, y: 3010 }
+      landscape: { x: 3636, y: 1703 },
+      portrait: { x: 1703, y: 3636 }
     }
-  } as const;
+  };
 
-  return type === 'desktop' 
-    ? positions.desktop 
-    : positions[type as 'tablet' | 'mobile'][orientation];
+  return centerPositions[type][orientation];
 };
