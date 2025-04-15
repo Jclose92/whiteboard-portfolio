@@ -713,7 +713,7 @@ const App: React.FC = () => {
       console.log('Sending form data:', contactForm);
 
       // Send form data to backend
-      const response = await fetch('https://whiteboard-portfolio-v3w9.vercel.app/api/contact', {
+      const response = await fetch('https://api.johnclose.ie/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
