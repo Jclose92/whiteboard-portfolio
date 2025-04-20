@@ -1059,6 +1059,28 @@ const App: React.FC = () => {
         <div style={loadingOverlayStyle} />
       )}
       
+      <a
+        href="/red-overlay"
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: 'red',
+          color: 'white',
+          padding: '15px 30px',
+          border: 'none',
+          borderRadius: '8px',
+          fontSize: '18px',
+          cursor: 'pointer',
+          textDecoration: 'none',
+          display: 'inline-block',
+          zIndex: 1000,
+        }}
+      >
+        Go to Red Overlay
+      </a>
+
       <div
         style={{
           position: 'relative',
