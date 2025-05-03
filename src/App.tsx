@@ -26,6 +26,18 @@ const App: React.FC = () => {
   const imageWidth = 8472;
   const imageHeight = 5992;
 
+  // Page detection – are we on /zoomfly?
+  const isZoomFly = typeof window !== 'undefined' && window.location.pathname.includes('zoomfly');
+
+  // Updated ZoomFly button coordinates (adding 40px to x, 30px to y)
+  const zoomFlyCoords = { x: 4727, y: 5178 };
+
+  // Allow full-image zoom-out on zoomfly page
+  const fitScale = typeof window !== 'undefined'
+    ? Math.min(window.innerWidth / imageWidth, window.innerHeight / imageHeight)
+    : 0.1;
+  const minScaleValue = isZoomFly ? fitScale : 0.5;
+
   // Calculate percentage positions for brand buttons
   const brandButtons = [
     { text: 'Certa', x: 7074, y: 1406, width: 190, height: 120 },
@@ -194,7 +206,7 @@ const App: React.FC = () => {
   // Center after image loads and transform wrapper is ready
   useEffect(() => {
     if (imageLoaded && transformRef.current && !initialized) {
-      const { x, y } = getDeviceCenterPosition();
+      const { x, y } = isZoomFly ? zoomFlyCoords : getDeviceCenterPosition();
       moveTo(x, y);
       setInitialized(true);
       setInitialPositionSet(true);
@@ -1070,7 +1082,7 @@ const App: React.FC = () => {
         <TransformWrapper
           ref={transformRef}
           initialScale={initialScale}
-          minScale={0.5}
+          minScale={minScaleValue}
           maxScale={3}
           centerOnInit={false}
           limitToBounds={true}
@@ -1081,8 +1093,8 @@ const App: React.FC = () => {
             excluded: ['input', 'textarea', 'button']
           }}
           doubleClick={{ disabled: true }}
-          pinch={{ disabled: true }}
-          wheel={{ disabled: true }}
+          pinch={{ disabled: !isZoomFly }}
+          wheel={{ disabled: !isZoomFly }}
         >
           <TransformComponent
             wrapperStyle={{
@@ -1144,7 +1156,7 @@ const App: React.FC = () => {
               )}
               {showOverlay && renderOverlay()}
               <img
-                src="/Portfolio Website Main Image 4 copy.jpg"
+                src={isZoomFly ? "/Whiteboard Portfolio Zoomfly.jpg" : "/Whiteboard Portfolio Main.jpg"}
                 alt="Portfolio Whiteboard"
                 style={{
                   width: imageWidth,
@@ -1186,8 +1198,8 @@ const App: React.FC = () => {
               <div
                 style={{
                   position: 'absolute',
-                  top: `${3042 / 5992 * 100}%`,
-                  left: `${4007 / 8472 * 100}%`,
+                  top: `${3042 / imageHeight * 100}%`,
+                  left: `${4007 / imageWidth * 100}%`,
                   width: '150px',
                   height: '80px',
                   pointerEvents: 'none',
@@ -1267,6 +1279,32 @@ const App: React.FC = () => {
                 onClick={() => moveTo(7272, 1231)}
               >
                 Work
+              </button>
+
+              {/* ZoomFly Button */}
+              <button
+                style={{
+                  position: 'absolute',
+                  top: `${zoomFlyCoords.y / imageHeight * 100}%`,
+                  left: `${zoomFlyCoords.x / imageWidth * 100}%`,
+                  width: '80px',
+                  height: '70px',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: isZoomFly ? 'black' : 'transparent',
+                  fontWeight: 'bold',
+                  fontSize: '48px',
+                  fontFamily: 'WhiteboardFont, sans-serif',
+                  transform: 'translate(-50%, -50%)',
+                  display: isZoomFly ? 'none' : 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  zIndex: 10,
+                }}
+                onClick={() => (window.location.href = '/zoomfly')}
+              >
+                !
               </button>
 
               {/* Return Buttons */}
