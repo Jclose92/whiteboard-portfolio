@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import GoogleDriveSlideshow from './components/GoogleDriveSlideshow';
 import ComedySlideshow from './components/ComedySlideshow';
@@ -11,12 +11,13 @@ const App: React.FC = () => {
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
   const [showSlideshow, setShowSlideshow] = useState(false);
   const [showEraserAnimation, setShowEraserAnimation] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true); // Overlay visible from load to avoid initial flash
   const [overlayAnimation, setOverlayAnimation] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [hasPlayedAnimations, setHasPlayedAnimations] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [initialPositionSet, setInitialPositionSet] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
   const clickStart = useRef<{ x: number; y: number } | null>(null);
@@ -292,12 +293,15 @@ const App: React.FC = () => {
     width: `${slideshowPosition.width}px` as React.CSSProperties['width'],
     height: `${slideshowPosition.height}px` as React.CSSProperties['height'],
     backgroundColor: 'transparent',
-    border: 'none',
+    border: '0',
     overflow: 'hidden',
     zIndex: 11 as React.CSSProperties['zIndex'],
     pointerEvents: 'none',
     clipPath: overlayAnimation ? 'inset(0 0 0 100%)' : 'inset(0 0 0 0)',
-    transition: `clip-path 1.89s ease-in-out`,
+    transition: `clip-path 1.97s ease-in-out`,
+    outline: 'none',
+    boxShadow: 'none',
+    willChange: 'clip-path' as React.CSSProperties['willChange'],
   };
 
   // Overlay image style
@@ -348,12 +352,12 @@ const App: React.FC = () => {
     playSound();
     setSelectedBrand(brand);
     
-    // Only show overlay if it hasn't been shown before
+    // Only set hasPlayedAnimations to true if it hasn't been set before
     if (!hasPlayedAnimations) {
       setShowSlideshow(true);
+      // overlay already visible from load; ensure it remains in DOM
       setShowOverlay(true);
       
-      // Only set hasPlayedAnimations to true if it hasn't been set before
       setHasPlayedAnimations(true);
       
       // Start overlay animation
@@ -381,7 +385,7 @@ const App: React.FC = () => {
       // Remove animation after completion
       setTimeout(() => {
         setShowEraserAnimation(false);
-      }, 3700);
+      }, 4300);
     } else {
       // For subsequent clicks, just show the slideshow without the overlay
       setShowSlideshow(true);
@@ -501,14 +505,14 @@ const App: React.FC = () => {
   const eraserAnimation: React.CSSProperties = {
     position: 'absolute' as React.CSSProperties['position'],
     zIndex: 20 as React.CSSProperties['zIndex'],
-    animation: 'eraserArc 3.2s linear',
+    animation: 'eraserArc 3.8s linear',
     backgroundColor: 'transparent',
     border: 'none',
     display: 'flex' as React.CSSProperties['display'],
     alignItems: 'center' as React.CSSProperties['alignItems'],
     justifyContent: 'center' as React.CSSProperties['justifyContent'],
     opacity: 1 as React.CSSProperties['opacity'],
-    transform: 'rotate(-90deg)' as React.CSSProperties['transform'],
+    transform: 'translateZ(0) rotate(-90deg)' as React.CSSProperties['transform'],
     transformOrigin: 'center' as React.CSSProperties['transformOrigin'],
     willChange: 'transform' as React.CSSProperties['willChange'],
   };
@@ -523,42 +527,42 @@ const App: React.FC = () => {
           left: ${5500 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
-        25% { 
+        21.05% { 
           top: ${(970 + 120) / 5992 * 100}%; 
           left: ${7080 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
-        31.25% { 
+        26.32% { 
           top: ${(890 + 120) / 5992 * 100}%; 
           left: ${7130 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
-        37.5% { 
+        31.58% { 
           top: ${(1050 + 120) / 5992 * 100}%; 
           left: ${7230 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
-        43.75% { 
+        36.84% { 
           top: ${(890 + 120) / 5992 * 100}%; 
           left: ${7330 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
-        50% { 
+        42.11% { 
           top: ${(1050 + 120) / 5992 * 100}%; 
           left: ${7430 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
-        56.25% { 
+        47.37% { 
           top: ${(890 + 120) / 5992 * 100}%; 
           left: ${7530 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
-        62.5% { 
+        52.63% { 
           top: ${(1050 + 120) / 5992 * 100}%; 
           left: ${7630 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
         }
-        75% { 
+        62.11% { 
           top: ${(970 + 120) / 5992 * 100}%; 
           left: ${7680 / 8472 * 100}%; 
           transform: translate(-50%, -50%) rotate(-90deg);
@@ -885,7 +889,7 @@ const App: React.FC = () => {
       width: 95, 
       height: 80, 
       rotation: 0,
-      text: "Wish you could zoom out?\n\nTake this!"
+      text: isZoomFly ? "Enjoy flying about!" : "Wish you could zoom out?\n\nTake this!"
     }
   ];
 
@@ -1065,6 +1069,45 @@ const App: React.FC = () => {
     pointerEvents: 'none',
   };
 
+  // constants
+  const keyboardPanStep = 120; // tune as desired
+
+  // Add arrow-key navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!transformRef.current) return;
+      const state = transformRef.current.state || (transformRef.current as any).transformState;
+      if (!state) return;
+      const { positionX, positionY, scale } = state;
+
+      let dx = 0;
+      let dy = 0;
+      switch (e.key) {
+        case 'ArrowUp':
+          dy = keyboardPanStep;
+          break;
+        case 'ArrowDown':
+          dy = -keyboardPanStep;
+          break;
+        case 'ArrowLeft':
+          dx = keyboardPanStep;
+          break;
+        case 'ArrowRight':
+          dx = -keyboardPanStep;
+          break;
+        default:
+          return; // exit if not arrow key
+      }
+      // Adjust movement relative to current scale to keep visual distance similar
+      const adjustedDX = dx / scale;
+      const adjustedDY = dy / scale;
+      transformRef.current.setTransform(positionX + adjustedDX, positionY + adjustedDY, scale);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <>
       {isLoading && (
@@ -1088,18 +1131,22 @@ const App: React.FC = () => {
           limitToBounds={true}
           panning={{
             disabled: false,
-            velocityDisabled: true,
+            velocityDisabled: false,
             allowLeftClickPan: true,
             excluded: ['input', 'textarea', 'button']
           }}
           doubleClick={{ disabled: true }}
-          pinch={{ disabled: !isZoomFly }}
-          wheel={{ disabled: !isZoomFly }}
+          pinch={{ disabled: !isZoomFly, step: 0.15 }}
+          wheel={{ disabled: !isZoomFly, step: 35 }}
+          velocityAnimation={{ animationTime: 250, sensitivity: 0.4, equalToMove: false, disabled: false }}
+          onPanningStart={() => setIsDragging(true)}
+          onPanningStop={() => setIsDragging(false)}
         >
           <TransformComponent
             wrapperStyle={{
               width: '100%',
               height: '100%',
+              cursor: isDragging ? 'grabbing' : 'grab',
             }}
             contentStyle={{
               width: `${imageWidth}px`,
@@ -1164,7 +1211,7 @@ const App: React.FC = () => {
                   position: 'absolute' as React.CSSProperties['position'],
                   top: 0,
                   left: 0,
-                  cursor: 'grab' as React.CSSProperties['cursor'],
+                  cursor: isDragging ? 'grabbing' as React.CSSProperties['cursor'] : 'grab' as React.CSSProperties['cursor'],
                 }}
                 onLoad={() => setImageLoaded(true)}
               />
