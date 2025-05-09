@@ -1247,7 +1247,9 @@ const App: React.FC = () => {
   // --- Typewriter text states ---
   const typewriterMessages = [
     'Welcome to the whiteboard ad portfolio. Drag around to explore.',
-    'Well done finding the wizard. If you’re really bored test out the contact form.',
+    isZoomFly
+      ? 'Well done finding the wizard. If you’re really bored test out the contact form.'
+      : 'Also keep your eyes open for the wizard that lets you zoom out.',
     'advertising, copywriting, creative, strategy, direction, writing, ideation'
   ];
 
@@ -1258,8 +1260,8 @@ const App: React.FC = () => {
     const currentMessage = typewriterMessages[typeMsgIndex];
     if (!currentMessage) return;
 
-    const typingDuration = 6000; // ms per message typing
-    const holdDuration = 6000; // ms to hold after fully typed
+    const typingDuration = 4000; // ms per message typing
+    const holdDuration = 5000; // ms to hold after fully typed
     const intervalMs = typingDuration / currentMessage.length;
 
     let charIndex = 0;
