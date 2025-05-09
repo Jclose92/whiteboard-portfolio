@@ -1247,7 +1247,7 @@ const App: React.FC = () => {
   // --- Typewriter text states ---
   const typewriterMessages = [
     'Welcome to the whiteboard ad portfolio. Drag around to explore.',
-    'And keep an eye out for the wizard that gives you the power to zoom out.',
+    'Well done finding the wizard. If you’re really bored test out the contact form.',
     'advertising, copywriting, creative, strategy, direction, writing, ideation'
   ];
 
