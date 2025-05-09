@@ -114,11 +114,14 @@ const App: React.FC = () => {
 
   // Brand text content
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentCopyIndex, setCurrentCopyIndex] = useState(0);
+
+  // --- Slideshows for each brand (Google Drive links remain as before) ---
   const brandContent: Record<string, { description: string; slides: { url: string; type: 'video' | 'image' }[] }> = {
     Lyons: {
-      description: currentSlide >= 10 && currentSlide <= 17 
-        ? 'Gen Tea\nWhat?\nReaffirm Lyons\' \"Puts the Talk into Tea\" position in a campaign that needed to be radio first.\nHow?\nCharming cut downs of real chats between actual Lyons tea drinkers from different generations, showing tea brings us together no matter our age.'
-        : 'We\'re Square\nWhat?\nTransition them from their beloved pyramid bags to their new square ones.\nHow?\nA full PR and advertising campaign celebrating just how spiritually square both tea and the people who drink it are, and how great it is when we own that.',
+      description: currentSlide >= 10 && currentSlide <= 17
+        ? 'Gen Tea\nLyons\nRadio-first campaign bringing generations together.'
+        : 'We\'re Square\nLyons\nCelebrating our spiritually square brew.',
       slides: [
         { url: 'https://drive.google.com/file/d/1NQrYVED2G54hhl4cKv_zPrfWuMuwVtH4/preview', type: 'video' },
         { url: 'https://lh3.googleusercontent.com/d/1CpzUwRmRax9c8PSlZEw-mR4FX0dubYe-', type: 'image' },
@@ -141,7 +144,7 @@ const App: React.FC = () => {
       ]
     },
     Tayto: {
-      description: 'Where Is Mr Tayto\nWhat?\nWe made Mr. Tayto relevant to the Gen-Z audience.\nHow?\nA 2 week PR stunt touting Mr Tayto\'s disappearance from packaging before unveiling a 50 video, TikTok campaign of him travelling the globe in-person, doubling Tayto\'s online following.',
+      description: 'Where Is Mr Tayto\nTayto\nMaking the mascot matter to Gen-Z.',
       slides: [
         { url: 'https://drive.google.com/file/d/1QKtDkmBtEpkBdfXOiajz9i7atViXJy8K/preview', type: 'video' },
         { url: 'https://drive.google.com/file/d/19uvguWDXZa_vyjI4SdPgC9wB-frpgwJs/preview', type: 'video' },
@@ -154,7 +157,7 @@ const App: React.FC = () => {
       ]
     },
     Kerry: {
-      description: 'Pride of Kerry\nWhat?\nWe celebrated their 30 year sponsorship of the Kerry GAA team.\nHow?\nA docu-film showing where both Kerry, the team, and everyone in The Kingdom\'s overwhelming pride comes from, perfectly timing its release for the All Ireland.',
+      description: 'Pride of Kerry\nKerry Group\n30 years of proud sponsorship.',
       slides: [
         { url: 'https://drive.google.com/file/d/1NE3dQCKTOFJYPHpygrctYd27uyvCoYI-/preview', type: 'video' },
         { url: 'https://drive.google.com/file/d/1ZuxMQ7a2tBTTYQT-xJEcogXHBH9Bmeot/preview', type: 'video' },
@@ -163,7 +166,7 @@ const App: React.FC = () => {
       ]
     },
     Certa: {
-      description: 'Breaking Boundaries\nWhat?\nLaunch their sponsorship of the Irish women\'s cricket team.\nHow?\nThree digital videos of outdated cricket relics being smashed apart in mesmerising slow motion, along with any old notions of the sport or this exceptional team.',
+      description: 'Breaking Boundaries\nCerta\nLaunching women\'s cricket sponsorship.',
       slides: [
         { url: 'https://drive.google.com/file/d/15sOBTvKH2tJhCtTX5DeDK9FtmgrDGvq8/preview', type: 'video' },
         { url: 'https://drive.google.com/file/d/1qdGHIrpxSBt6uaToELrr_IBtAwDQn7Wm/preview', type: 'video' },
@@ -171,21 +174,121 @@ const App: React.FC = () => {
       ]
     },
     Headstuff: {
-      description: 'Join the Cast\nWhat?\nWe brought them fresh listeners and ideas for podcasts.\nHow?\nA competition, which we bolstered with 2 audio ads, requiring a short voice note pitch for a podcast, where finalists record a pilot for a clash to win their own series.',
+      description: 'Join the Cast\nHeadStuff\nCrowd-sourced podcasts on a shoestring.',
       slides: [
         { url: 'https://drive.google.com/file/d/1kA0teOILfxwbxkwk3iwZVwIx19ymVPKO/preview', type: 'video' },
         { url: 'https://drive.google.com/file/d/1LNjQUX_HL1AWM6pYyBTy5knO-Iq-wcAc/preview', type: 'video' }
       ]
     },
     'Aer Lingus': {
-      description: currentSlide === 1 
-        ? 'Calm\nWhat?\nDemonstrate how welcoming and soothing it is aboard their flights.\nHow?\nA series of 8 hour long ambience videos for their YouTube, immersing audiences into Aer Lingus window seats and aeroplane soundscapes, perfect to work or relax to.'
-        : 'Sadie\'s Home\nWhat?\nFilm their Christmas within an incredibly quick turnaround time.\nHow?\nEfficiently delivering a heart melting twist on a classic airport reunion and showing Aer Lingus\' passion for bringing us together at Christmas time.',
+      description: currentSlide === 1
+        ? 'Calm\nAer Lingus\n8-hour ambience flights.'
+        : 'Sadie\'s Home\nAer Lingus\nChristmas reunion film.',
       slides: [
         { url: 'https://drive.google.com/file/d/1JelRhbwXGZxNb84EED35Ers7JXSRB1R_/preview', type: 'video' },
         { url: 'https://drive.google.com/file/d/1kS-hfb3RmxUtkFw2VcTpjLWQ5KvJyIfq/preview', type: 'video' }
       ]
     }
+  };
+
+  // COPY BLOCK ARRAYS (PER BRAND / PROJECT)
+  const lyonsSquareCopy = [
+    `Lyons\nWe’re Square\nClick the arrows and I’ll catch you up.`,
+    `Brand Problem\nLyons had hyped pyramid bags for years; so flipping to square bags risked public uproar, flavour doubts and looking flakey on their messaging. This PR storm needed a good angle.`,
+    `Creative Insight\nRivals were pretending their tea was trendy, which it’s not. It’s comfortingly uncool. And everything is better when it owns what it is anyway, so we embraced being square in every sense with “We’re Square”.`,
+    `The Work\nKitsch kitchen signs airport takeover, granny-core OOH, corny merch, a square newspaper, an influencer tea party, a niche hobbyist chat-show - all to celebrate squares everywhere while explaining the new bags.`,
+    `The Results\n84 media mentions, 12.2M total reach, 4.7M OOH impressions, an APMC Silver + two Bronze, a Bronze Impact Award - and Lyons kept its status as Ireland’s No.1 selling brew.`
+  ];
+
+  const lyonsGenTeaCopy = [
+    `Lyons\nGen Tea\nClick the arrows and I’ll catch you up.`,
+    `Brand Problem\nLyons wanted to bring back its “Puts the Talk into Tea” asset in a way that spoke to every demographic, with radio as their prime target.`,
+    `Creative Insight\nStick a kettle on and ages melt away no matter who you’re talking to - even your grandparents. So, we bet inter-generational banter and genuine chats over tea could handily beat scripted ads.`,
+    `The Work\nCreated 9 radio spots and 9 social clips by recording hours of tea & chat between three age-gapped pairs in a cosy cottage. We also released a slew of OOH flipping Gen-Z slang with Boomer sayings.`,
+    `The Results\n53% radio coverage over 13 weeks; 470k audio platforms impressions; 26.6M impressions on Meta & TikTok; 500k OOH impressions - and an Audio Award in Casting to boot.`
+  ];
+
+  const taytoCopy = [
+    `Tayto\nWhere Is Mr Tayto\nClick the arrows and I’ll catch you up.`,
+    `Brand Problem\nGen Z hadn’t grown up with iconic Mr Tayto ads; the mascot felt a bit dusty. Tayto was feeling the sting as Ireland’s top crisp was fighting for attention.`,
+    `Creative Insight\nYou only miss something once it’s gone. So if younger generations weren't going to give Mr Tayto attention, then we wondered how they’d feel if he just disappeared…`,
+    `The Work\nBlank Mr Tayto-less crisp packets sparked conspiracies; weeks later ,after rocketing into relevance, he resurfaced on TikTok, saying he’s only getting ready for his holidays. Then the globe-trotting adventure began.`,
+    `The Results\n50+ videos that doubled their following, 10M impressions, national coverage, a media partnership, influencer content - and more awards than crisps in a bag of tayto (which in awards terms is still a lot).`
+  ];
+
+  const aerSadiesCopy = [
+    `Aer Lingus\nSadie’s Home\nClick the arrows and I’ll catch you up.`,
+    `Brand Problem\nAfter a year of tough PR, Aer Lingus wanted to rekindle brand love before Christmas, but they only had six weeks and a budget that was just as slim.`,
+    `Creative Insight\nIt’s gotten harder and harder for Airport reunions to melt hearts. You just always know what’s going to happen. So, we wanted to flip expectations and still get that magic moment.`,
+    `The Work\nFor under €66k, we shot a 90-second social film in record time telling the story of a lonely young man at the airport collecting his best friend - his dog.`,
+    `The Results\nReleased five days pre-Christmas, “Sadie’s Home” reached 1.2 million views.`
+  ];
+
+  const aerCalmCopy = [
+    `Aer Lingus\nCalm\nClick the arrows and I’ll catch you up.`,
+    `Brand Problem\nThe Aer Lingus rebrand promised a welcoming journey; they wanted digital content proving this.`,
+    `Creative Insight\nOnline ambience loops dominate study playlists; and it’s always rainy coffee shops or forest streams. There weren’t a whole lot of flying window seats, which, to be fair, are pretty relaxing.`,
+    `The Work\nWe created 3 eight-hour YouTube ambience videos: Clear sky, Sunset, and Night. They came with a view of an Aer Lingus shamrock wingtip and a gentle engine hum that was perfect for working and relaxing.`
+  ];
+
+  const kerryCopy = [
+    `Kerry Group\nPride of Kerry\nClick the arrows and I’ll catch you up.`,
+    `Brand Problem\nAfter 30 years backing Kerry county football, Kerry group wanted something special to celebrate and remind everybody of their long running sponsorship.`,
+    `Creative Insight\nPride drives both Kerry GAA and Kerry’s scientific approach to nutrition. In both worlds, people at all levels take great pride in getting the finer details right. `,
+    `The Work\nReleased a series of emotive docu-films under the umbrella Pride of Kerry. These didn’t just focus on players but the fans, coaches, support staff, and nutritionists who make up Kerry GAA.`,
+    `The Results\n3 videos promoting the All Ireland, and a further 3 videos with 8 cutdowns for the Aer Lingus College Classic. A microsite, prideofkerry.ie, and 8 part cooking series that gets into the finer details of fuelling yourself.`
+  ];
+
+  const certaCopy = [
+    `Certa\nBreaking Boundaries\nClick the arrows and I’ll catch you up.`,
+    `Brand Problem\nCerta were launching their Irish women’s cricket sponsorship, and wanted to grab the country’s attention and let them know this is a world class team they should care about.`,
+    `Creative Insight\nWe surveyed Irish people to learn about their understanding of cricket. The expected old notions came up: boring, old fashioned, confusing. None knew about modern cricket or our top tier women’s team. `,
+    `The Work\n#BreakingBoundaries was a three part series of digital spots where old cricket relics like tea sets, cakes, and sandwich tiers were smashed apart by star players in mesmerising slow-motion. `
+  ];
+
+  const headstuffCopy = [
+    `HeadStuff\nJoin The Cast\nClick the arrows and I’ll catch you up.`,
+    `Brand Problem\nHeadStuff’s listenership was dipping and they needed some new shows to bring in new audiences. All without any budget.`,
+    `Creative Insight\nWe’ve all heard somebody say “you should make a podcast out of that”. So why not give Headstuff’s listenership the chance to make one with a low-barrier audition using just a phone.`,
+    `The Work\nOur podcast pilot competition, Join the Cast, needed just voicenotes for pitches with the best getting made into pilots and eventually a €10k series. We amplified with a pair of audio ads, “If this sounds like you”, targeting people who leave long ass voicenotes.`,
+    `The Results\nThe competition drew 300+ entries and thousands of votes, a winner’s show green-lit. And for me an Irish Audio Award shortlist for “If this sounds like you”.`
+  ];
+
+  // Helper to choose correct copy set based on current slide index
+  const getCopyBlocks = (brand: string): string[] => {
+    switch (brand) {
+      case 'Lyons':
+        return currentSlide >= 10 && currentSlide <= 17 ? lyonsGenTeaCopy : lyonsSquareCopy;
+      case 'Aer Lingus':
+        return currentSlide === 1 ? aerCalmCopy : aerSadiesCopy;
+      case 'Tayto':
+        return taytoCopy;
+      case 'Kerry':
+        return kerryCopy;
+      case 'Certa':
+        return certaCopy;
+      case 'Headstuff':
+        return headstuffCopy;
+      default:
+        return [];
+    }
+  };
+
+  // Reset copy index whenever brand or slide changes
+  useEffect(() => {
+    setCurrentCopyIndex(0);
+  }, [selectedBrand, currentSlide]);
+
+  // Handlers to paginate copy blocks
+  const handlePrevCopy = () => {
+    if (!selectedBrand) return;
+    setCurrentCopyIndex((idx) => Math.max(0, idx - 1));
+  };
+
+  const handleNextCopy = () => {
+    if (!selectedBrand) return;
+    const maxIdx = getCopyBlocks(selectedBrand).length - 1;
+    setCurrentCopyIndex((idx) => Math.min(maxIdx, idx + 1));
   };
 
   // Move to a specific point and center it on screen
@@ -1108,6 +1211,77 @@ const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // --- Helper to render copy block with dynamic typography ---
+  const renderCopyBlock = (brand: string) => {
+    const blocks = getCopyBlocks(brand);
+    if (!blocks.length) return null;
+    const safeIndex = Math.min(currentCopyIndex, blocks.length - 1);
+    const copy = blocks[safeIndex];
+    const lines = copy.split('\n');
+
+    // First slide styling
+    if (currentCopyIndex === 0) {
+      const brandName = lines[0] || '';
+      const projectName = lines[1] || '';
+      const rest = lines.slice(2).join('\n');
+      return (
+        <div style={{ whiteSpace: 'pre-wrap' }}>
+          <span style={{ fontSize: '27.5px', fontWeight: 'bold' }}>{brandName}</span><br/>
+          <span style={{ fontSize: '24.5px', fontWeight: 'bold' }}>{projectName}</span><br/><br/><br/>
+          <span style={{ fontSize: '21.5px' }}>{rest}</span>
+        </div>
+      );
+    }
+
+    // Subsequent slides styling
+    const title = lines[0] || '';
+    const body = lines.slice(1).join('\n');
+    return (
+      <div style={{ whiteSpace: 'pre-wrap' }}>
+        <span style={{ fontSize: '24.5px', fontWeight: 'bold' }}>{title}</span><br/><br/>
+        <span style={{ fontSize: '21.5px' }}>{body}</span>
+      </div>
+    );
+  };
+
+  // --- Typewriter text states ---
+  const typewriterMessages = [
+    'Welcome to the whiteboard ad portfolio. Drag around to explore.',
+    'And keep an eye out for the wizard that gives you the power to zoom out.',
+    'advertising, copywriting, creative, strategy, direction, writing, ideation'
+  ];
+
+  const [typeMsgIndex, setTypeMsgIndex] = useState(0);
+  const [typedText, setTypedText] = useState('');
+
+  useEffect(() => {
+    const currentMessage = typewriterMessages[typeMsgIndex];
+    if (!currentMessage) return;
+
+    const typingDuration = 6000; // ms per message typing
+    const holdDuration = 6000; // ms to hold after fully typed
+    const intervalMs = typingDuration / currentMessage.length;
+
+    let charIndex = 0;
+    setTypedText('');
+
+    const typeInterval = setInterval(() => {
+      charIndex += 1;
+      setTypedText(currentMessage.slice(0, charIndex));
+
+      if (charIndex >= currentMessage.length) {
+        clearInterval(typeInterval);
+        if (typeMsgIndex < typewriterMessages.length - 1) {
+          setTimeout(() => {
+            setTypeMsgIndex((idx) => idx + 1);
+          }, holdDuration);
+        }
+      }
+    }, intervalMs);
+
+    return () => clearInterval(typeInterval);
+  }, [typeMsgIndex]);
+
   return (
     <>
       {isLoading && (
@@ -1170,8 +1344,49 @@ const App: React.FC = () => {
                     <p>I'll tell you what the hook is.</p>
                   </div>
                 ) : (
-                  <div style={brandTextStyle}>
-                    <p style={{ fontSize: '19.5px' }}>{brandContent[selectedBrand]?.description}</p>
+                  <div style={{ ...brandTextStyle, position: 'relative', height: '100%', overflow: 'auto', paddingTop: '16px' }}>
+                    {selectedBrand && renderCopyBlock(selectedBrand)}
+
+                    {/* Arrow navigation – show only if multiple copy blocks */}
+                    {selectedBrand && getCopyBlocks(selectedBrand).length > 1 && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '8px',
+                        right: '8px',
+                        display: 'flex',
+                        gap: '6px',
+                        pointerEvents: 'auto'
+                      }}>
+                        <button
+                          onClick={handlePrevCopy}
+                          disabled={currentCopyIndex === 0}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            fontSize: '20px',
+                            cursor: currentCopyIndex === 0 ? 'default' : 'pointer',
+                            opacity: currentCopyIndex === 0 ? 0.3 : 0.8,
+                            fontFamily: 'WhiteboardFont'
+                          }}
+                        >
+                          <img src="/images/ArrowLeft.png" alt="Left" style={{ width: '24px', height: '24px' }} />
+                        </button>
+                        <button
+                          onClick={handleNextCopy}
+                          disabled={currentCopyIndex === getCopyBlocks(selectedBrand).length - 1}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            fontSize: '20px',
+                            cursor: currentCopyIndex === getCopyBlocks(selectedBrand).length - 1 ? 'default' : 'pointer',
+                            opacity: currentCopyIndex === getCopyBlocks(selectedBrand).length - 1 ? 0.3 : 0.8,
+                            fontFamily: 'WhiteboardFont'
+                          }}
+                        >
+                          <img src="/images/ArrowRight.png" alt="Right" style={{ width: '24px', height: '24px' }} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -1234,12 +1449,11 @@ const App: React.FC = () => {
                   color: '#000000',
                   fontSize: '23px',
                   lineHeight: '1.4',
-                  textTransform: 'uppercase',
                   letterSpacing: '1px',
                   fontWeight: 'bold'
                 }}
               >
-                Advertising, Copywriting, Creative, Strategy, Direction, Writing, Ideation.
+                {typedText}
               </div>
 
               <div

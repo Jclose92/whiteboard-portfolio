@@ -154,7 +154,7 @@ const GoogleDriveSlideshow: React.FC<GoogleDriveSlideshowProps> = ({
       );
     }
 
-    // For images, use the l3h format
+    // For images, use the direct lh3.googleusercontent link which had previously worked
     return (
       <img
         src={url}
