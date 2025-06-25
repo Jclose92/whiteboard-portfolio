@@ -43,11 +43,26 @@ const App: React.FC = () => {
   const brandButtons = [
     { text: 'Certa', x: 7074, y: 1406, width: 190, height: 120 },
     { text: 'Tayto', x: 7084, y: 1544, width: 320, height: 100 },
-    { text: 'Lyons', x: 7094, y: 1660, width: 450, height: 100 },
+    { text: 'Lyons', x: 7069, y: 1660, width: 310, height: 100 },
     { text: 'Kerry', x: 7580, y: 1420, width: 170, height: 85 },
     { text: 'Aer Lingus', x: 7580, y: 1532, width: 350, height: 130 },
-    { text: 'Headstuff', x: 7580, y: 1693, width: 440, height: 180 },
+    { text: 'Headstuff', x: 7580, y: 1693, width: 390, height: 165 },
+    { text: 'Whack', x: 7325, y: 1615, width: 180, height: 130 },
   ];
+
+  // Helper to pick a color for each brand button
+  const getBrandColor = (brandName: string): string => {
+    const colors: Record<string, string> = {
+      'Certa': 'orange',
+      'Tayto': 'blue',
+      'Lyons': 'red',
+      'Kerry': 'pink',
+      'Aer Lingus': 'teal',
+      'Headstuff': 'green',
+      'Whack': 'yellow',
+    };
+    return colors[brandName] || 'transparent';
+  };
 
   // Calculate percentage positions for text box and slideshow
   const textBoxPosition = {
@@ -188,7 +203,13 @@ const App: React.FC = () => {
         { url: 'https://drive.google.com/file/d/1JelRhbwXGZxNb84EED35Ers7JXSRB1R_/preview', type: 'video' },
         { url: 'https://drive.google.com/file/d/1kS-hfb3RmxUtkFw2VcTpjLWQ5KvJyIfq/preview', type: 'video' }
       ]
-    }
+    },
+    Whack: {
+      description: 'The Property Market But It\'s A Coffee Shop\nWhack\nShowing how daft house-hunting norms are.',
+      slides: [
+        { url: 'https://drive.google.com/file/d/1HXRC1qRIcug9P_5f0RZ02ORapOQ7h_9q/preview', type: 'video' }
+      ]
+}
   };
 
   // COPY BLOCK ARRAYS (PER BRAND / PROJECT)
@@ -254,6 +275,13 @@ const App: React.FC = () => {
     `The Results\nThe competition drew 300+ entries and thousands of votes, a winner’s show green-lit. And for me an Irish Audio Award shortlist for “If this sounds like you”.`
   ];
 
+  const whackCopy = [
+    `Whack\nThe Property Market But It's A Coffee Shop\nClick the arrows and I’ll catch you up.`,
+    `Brand Problem\nWhack was a new property tool tackling the crazy home buying norms encouraged by the likes of DAFT & MyHome. So, to launch it needed people to know what it is and what it's trying to do.`,
+    `Creative Insight\nEverybody just accepts the ways the housing market works. But if you were to place them in any other context you'd see them for how daft they really are.`,
+    `The Work\nWe shed genuinely funny light on the house-buying frustrations Whack is trying to tackle by showing how maddening they are when buying a coffee.`
+  ];
+
   // Helper to choose correct copy set based on current slide index
   const getCopyBlocks = (brand: string): string[] => {
     switch (brand) {
@@ -269,6 +297,8 @@ const App: React.FC = () => {
         return certaCopy;
       case 'Headstuff':
         return headstuffCopy;
+      case 'Whack':
+        return whackCopy;
       default:
         return [];
     }
@@ -1245,13 +1275,15 @@ const App: React.FC = () => {
   };
 
   // --- Typewriter text states ---
-  const typewriterMessages = [
-    'Welcome to the whiteboard ad portfolio. Drag around to explore.',
-    isZoomFly
-      ? 'Well done finding the wizard. If you’re really bored test out the contact form.'
-      : 'Also keep your eyes open for the wizard that lets you zoom out.',
-    'advertising, copywriting, creative, strategy, direction, writing, ideation'
-  ];
+  const typewriterMessages = isZoomFly
+    ? [
+        'Well done finding the wizard. If you’re really bored test out the contact form.'
+      ]
+    : [
+        'Welcome to my whiteboard\nad portfolio.\nDrag around to explore.',
+        'Also keep your eyes open for the wizard that lets you zoom out.',
+        'advertising, copywriting, creative, strategy, direction, writing, ideation.'
+      ];
 
   const [typeMsgIndex, setTypeMsgIndex] = useState(0);
   const [typedText, setTypedText] = useState('');
@@ -1273,11 +1305,9 @@ const App: React.FC = () => {
 
       if (charIndex >= currentMessage.length) {
         clearInterval(typeInterval);
-        if (typeMsgIndex < typewriterMessages.length - 1) {
-          setTimeout(() => {
-            setTypeMsgIndex((idx) => idx + 1);
+        setTimeout(() => {
+            setTypeMsgIndex((idx) => (idx + 1) % typewriterMessages.length);
           }, holdDuration);
-        }
       }
     }, intervalMs);
 
@@ -1612,6 +1642,7 @@ const App: React.FC = () => {
                     height: `${brand.height}px`,
                     backgroundColor: 'transparent',
                     border: 'none',
+                    borderRadius: '50%',
                     color: 'black',
                     fontWeight: 'bold',
                     fontSize: '32px',
