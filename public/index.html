@@ -5,17 +5,45 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <meta name="description" content="John Close is a Dublin-based creative copywriter and advertising professional. Portfolio of ad campaigns, freelance copywriting, and brand work."/>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="%PUBLIC_URL%/fonts/WhiteboardFontForWebsite-Regular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="%PUBLIC_URL%/Whiteboard Portfolio Main.jpg" as="image">
+    
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon.ico" />
+    
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="John Close | Creative Copywriter Dublin"/>
+    <meta property="og:description" content="Freelance creative copywriter based in Dublin. Advertising, branding, and copywriting portfolio."/>
+    <meta property="og:image" content="https://johnclose.ie/og-image.jpg"/>
+    <meta property="og:url" content="https://johnclose.ie"/>
+
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="John Close | Creative Copywriter Dublin"/>
+    <meta name="twitter:description" content="Freelance creative copywriter based in Dublin. Advertising, branding, and copywriting portfolio."/>
+    <meta name="twitter:image" content="https://johnclose.ie/og-image.jpg"/>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "John Close",
+      "jobTitle": "Creative Copywriter",
+      "url": "https://johnclose.ie",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Dublin",
+        "addressCountry": "Ireland"
+      }
+    }
+    </script>
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>John Close</title>
+    <title>John Close | Creative Copywriter Dublin | Freelance Advertising Copywriting</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

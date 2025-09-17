@@ -149,11 +149,13 @@ const ComedySlideshow: React.FC<ComedySlideshowProps> = ({ slides = [], x = 0, y
     );
   };
 
+  // Reset internal state only once on mount to avoid losing the current slide
   useEffect(() => {
     setCurrentSlideIndex(0);
     setVideoLoading(false);
     setVideoError(false);
-  }, [slides]);
+  }, []);
+
 
   return (
     <>
