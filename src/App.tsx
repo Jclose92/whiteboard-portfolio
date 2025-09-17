@@ -1320,14 +1320,7 @@ const App: React.FC = () => {
         <div style={loadingOverlayStyle} />
       )}
       
-      <div
-        style={{
-          position: 'relative',
-          width: '100vw',
-          height: '100vh',
-          overflow: 'hidden'
-        }}
-      >
+      <main role="main" style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
         <TransformWrapper
           ref={transformRef}
           initialScale={initialScale}
