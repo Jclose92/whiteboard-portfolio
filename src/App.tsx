@@ -1255,11 +1255,11 @@ const App: React.FC = () => {
       const projectName = lines[1] || '';
       const rest = lines.slice(2).join('\n');
       return (
-        <div style={{ whiteSpace: 'pre-wrap' }}>
-          <span style={{ fontSize: '27.5px', fontWeight: 'bold' }}>{brandName}</span><br/>
-          <span style={{ fontSize: '24.5px', fontWeight: 'bold' }}>{projectName}</span><br/><br/><br/>
-          <span style={{ fontSize: '21.5px' }}>{rest}</span>
-        </div>
+        <section style={{ whiteSpace: 'pre-wrap' }}>
+          <h1 style={{ fontSize: '27.5px', fontWeight: 'bold', margin: 0 }}>{brandName}</h1><br/>
+          <h2 style={{ fontSize: '24.5px', fontWeight: 'bold', margin: 0 }}>{projectName}</h2><br/><br/><br/>
+          <p style={{ fontSize: '21.5px', margin: 0 }}>{rest}</p>
+        </section>
       );
     }
 
@@ -1267,10 +1267,10 @@ const App: React.FC = () => {
     const title = lines[0] || '';
     const body = lines.slice(1).join('\n');
     return (
-      <div style={{ whiteSpace: 'pre-wrap' }}>
-        <span style={{ fontSize: '24.5px', fontWeight: 'bold' }}>{title}</span><br/><br/>
-        <span style={{ fontSize: '21.5px' }}>{body}</span>
-      </div>
+      <section style={{ whiteSpace: 'pre-wrap' }}>
+        <h3 style={{ fontSize: '24.5px', fontWeight: 'bold', margin: 0 }}>{title}</h3><br/><br/>
+        <p style={{ fontSize: '21.5px', margin: 0 }}>{body}</p>
+      </section>
     );
   };
 
@@ -1451,7 +1451,7 @@ const App: React.FC = () => {
               {showOverlay && renderOverlay()}
               <img
                 src={isZoomFly ? "/Whiteboard Portfolio Zoomfly.jpg" : "/Whiteboard Portfolio Main.jpg"}
-                alt="Portfolio Whiteboard"
+                alt="John Close's interactive whiteboard portfolio showcasing creative copywriting campaigns for Tayto, Lyons, Aer Lingus, Kerry Group, Certa, Headstuff and Whack"
                 style={{
                   width: imageWidth,
                   height: imageHeight,
@@ -1634,6 +1634,8 @@ const App: React.FC = () => {
                 <button
                   key={brand.text}
                   onClick={() => handleBrandClick(brand.text)}
+                  aria-label={`View ${brand.text} campaign portfolio`}
+                  title={`Click to explore ${brand.text} advertising campaigns`}
                   style={{
                     position: 'absolute',
                     top: `${brand.y / imageHeight * 100}%`,
@@ -1811,7 +1813,7 @@ const App: React.FC = () => {
             </div>
           </TransformComponent>
         </TransformWrapper>
-      </div>
+      </main>
     </>
   );
 };
